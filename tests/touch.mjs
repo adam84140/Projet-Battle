@@ -63,6 +63,28 @@ try {
   await page.tap('#pause [data-act="resume"]');
   C.ok('reprise', await get(page, "g.state === 'playing'"));
 
+  // marqueurs d'objectifs : jamais sur les commandes tactiles ni sur la mini-carte
+  const mk = await page.evaluate(() => {
+    const g = window.__game;
+    const inter = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    let overlaps = 0, shown = 0, zones = [];
+    for (let k = 0; k < 16; k++) {
+      g.controller.yaw += Math.PI / 8;
+      g.update(1 / 30);
+      g.input.endFrame();
+      // (après la reprise, le calque tactile réapparaît à la première image)
+      zones = [...document.querySelectorAll('.abilities .ab, #touch .t-btn, .minimap')].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0);
+      for (const m of document.querySelectorAll('.pmark')) {
+        if (m.style.display === 'none') continue;
+        shown++;
+        const r = m.getBoundingClientRect();
+        if (zones.some((z) => inter(r, z) > 4)) overlaps++;
+      }
+    }
+    return { overlaps, shown, zones: zones.length };
+  });
+  C.ok('marqueurs hors des commandes tactiles', mk.overlaps === 0 && mk.shown > 16 && mk.zones >= 9, mk);
+
   C.ok('aucune erreur console', errors.length === 0, errors.slice(0, 3).join(' | '));
 } catch (err) {
   C.ok('exécution du scénario', false, err.message);

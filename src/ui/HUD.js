@@ -324,6 +324,17 @@ export class HUD {
     const touch = document.body.classList.contains('touch');
     const kfN = this.el.killfeed.childElementCount;
     const kfBottom = kfN ? (touch ? 108 + kfN * 24 : 204 + kfN * 30) + 22 : 0;
+    // tactile : colonne de boutons à droite (compétences, viser, tir) à ne pas recouvrir
+    let ctrl = null;
+    if (touch) {
+      this.ctrlT = (this.ctrlT || 0) - 1;
+      if (this.ctrlT <= 0 || !this.ctrlRect) {
+        this.ctrlT = 30;
+        const r = this.el.abilities.getBoundingClientRect();
+        this.ctrlRect = { left: r.left - 30, top: r.top - 26 };
+      }
+      ctrl = this.ctrlRect;
+    }
     for (const pt of game.conquest.points) {
       const m = this.pointMarkers[pt.id];
       _v.copy(pt.pos);
@@ -342,11 +353,13 @@ export class HUD {
         sx = W - sx < W / 2 ? 30 : W - 30;
         sy = H - sy;
       }
-      const x = Math.max(30, Math.min(W - 30, sx));
+      let x = Math.max(30, Math.min(W - 30, sx));
       // ni sous la mini-carte (coin haut droit) ni sur le fil des éliminations
-      let minY = x > W - 215 ? 215 : 80;
+      const mmSize = touch ? 130 : 215;
+      let minY = x > W - mmSize ? mmSize : 80;
       if (kfN && (touch ? x < 280 : x > W - 330)) minY = Math.max(minY, kfBottom);
       const y = Math.max(minY, Math.min(H - 150, sy));
+      if (ctrl && x > ctrl.left && y > ctrl.top) x = ctrl.left;
       m.style.transform = `translate(${x}px, ${y}px)`;
       m.dataset.owner = pt.owner || 'none';
       m.classList.toggle('contested', pt.contested);
