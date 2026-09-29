@@ -35,6 +35,14 @@ Village méditerranéen, mode Conquête, 3 drapeaux. Données : `src/game/map.js
 - **Collisions** : tout nouvel objet solide a une boîte de collision ; tout feuillage au-dessus de la tête a une boîte « caméra seule » (`physics.addCameraBox`).
 - **Navigation** : la grille A* est construite depuis les collisions au chargement (cellules de 1,5 m) ; vérifier avec `npm run test:bots` que les bots ne se bloquent pas autour d'un ajout.
 
+## Horizon méditerranéen (décor de fond, [DECISIONS](../DECISIONS.md) D-012)
+La carte recevra, pendant la passe artistique environnement ([ROADMAP](../ROADMAP.md), étape 4), la mer et l'horizon côtier de l'image 03 ([VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md)). Contraintes :
+- **uniquement du décor de fond**, hors des limites jouables (x ∈ [-112, 112], z ∈ [-128, 128]) ;
+- ne pas changer la disposition jouable, ne pas déplacer les objectifs, ne pas changer les routes de jeu ;
+- aucune collision ni cellule de navigation ajoutée ou retirée pour la mer ; `test:bots` et `test:camera` inchangés ;
+- ajouts après `buildScatter()` (ordre des tirages aléatoires préservé) ; coût de rendu mesuré (quelques appels de rendu au plus) ;
+- le côté de la carte qui donne sur la mer et le sort des montagnes de fond actuelles se décident pendant la passe, par captures depuis les trois zones.
+
 ## Faiblesses connues (à traiter pour GOLD)
 - Grands espaces ouverts entre les bases et les drapeaux, peu de couverts sur les routes nord/sud.
 - Pas de verticalité accessible (maisons pleines, pas d'intérieurs ni de toits praticables).

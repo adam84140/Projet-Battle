@@ -19,7 +19,7 @@ Jeu de tir **cartoon à la 3ᵉ personne** jouable dans le navigateur (Three.js 
 Interdit sans autorisation explicite : nouvelles cartes, nouveaux modes, multijoueur, serveur, progression, passe de combat, boutique, monétisation, clans, matchmaking, grandes bibliothèques d'armes, grands systèmes de personnalisation. Autorisé : finition, correction, contenu de la carte 1, production du Master Assault.
 
 ## Références visuelles officielles
-[`docs/product/VISUAL-REFERENCES.md`](docs/product/VISUAL-REFERENCES.md) (D-009) : image 01 = autorité du Master Assault, image 03 = autorité de la présentation en jeu, image 02 = détails du personnage. L'image 04 (vision produit) **n'autorise aucun contenu** hors périmètre. *Battlefield Heroes* = inspiration seulement : **ne jamais reproduire** ses éléments, personnages, marque, interface ou cartes.
+[`docs/product/VISUAL-REFERENCES.md`](docs/product/VISUAL-REFERENCES.md) (D-009) : image 01 = autorité du Master Assault, image 03 = autorité de la présentation en jeu, image 02 = détails du personnage. L'image 04 (vision produit) **n'autorise aucun contenu** hors périmètre. *Battlefield Heroes* = inspiration seulement : **ne jamais reproduire** ses éléments, personnages, marque, interface ou cartes. Les maquettes ne changent ni l'identité d'équipe (aigle bleu, étoile rouge : D-011) ni les règles de la conquête (victoire aux tickets : D-013) ; la mer de l'image 03 est un décor de fond (D-012).
 
 ## Aucune affirmation « terminé » sans preuve
 Un travail n'est terminé que si **tout** est vrai :

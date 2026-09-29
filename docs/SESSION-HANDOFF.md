@@ -27,7 +27,7 @@ Relancés en début de session sur `claude/dazzling-cray-gn1bg5` : `npm run buil
 Blocages brefs des bots (~1 %) · pic de 40 à 65 ms en 16v16 (réserve de modèles vide) · 455 à 709 appels de rendu en 16v16 · arme au-dessus du sol dans une variante de mort · chevauchement forcé rare · bots qui ne conduisent pas · FPS réels, son et vrai téléphone non vérifiés. Détail : [CURRENT-STATE](CURRENT-STATE.md).
 
 ## Décisions verrouillées
-D-001 ONE MAP FIRST · D-002 MASTER CHARACTER FIRST · D-004 point de contrôle `05827b4` · D-005 Git source de vérité · D-006 préserver ce qui fonctionne · D-007 animation pilotée par le code · D-009 références visuelles officielles. En attente : **D-003 squelette canonique**. Voir [DECISIONS](DECISIONS.md).
+D-001 ONE MAP FIRST · D-002 MASTER CHARACTER FIRST · D-004 point de contrôle `05827b4` · D-005 Git source de vérité · D-006 préserver ce qui fonctionne · D-007 animation pilotée par le code · D-009 références visuelles officielles · D-010 Assaut par défaut sans sac · D-011 identité d'équipe canonique · D-012 mer en décor de fond · D-013 direction du HUD, règles de la conquête inchangées. En attente : **D-003 squelette canonique**. Voir [DECISIONS](DECISIONS.md).
 
 ## Docs et skills utiles pour la suite
 - Docs : [VISUAL-REFERENCES](product/VISUAL-REFERENCES.md) · [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) · [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md) · [ANIMATION](systems/ANIMATION.md) · [PERFORMANCE](systems/PERFORMANCE.md) · [ART-DIRECTION](product/ART-DIRECTION.md)
@@ -36,6 +36,6 @@ D-001 ONE MAP FIRST · D-002 MASTER CHARACTER FIRST · D-004 point de contrôle 
 ## Objectif exact de la prochaine session
 1. Démarrer selon la procédure de `CLAUDE.md` : vérifier Git, lire ce fichier, `npm install`, `npm run build`, `npm test`.
 2. **Étape 1 de la [ROADMAP](ROADMAP.md)** : petites corrections des problèmes connus, chacune avec son test (d'abord la réserve de modèles en 16v16).
-3. Puis **démarrer le Master Assault** par la revue de la spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) avec le propriétaire (proportions, squelette, sockets, budgets, critères GOLD) **et les questions ouvertes de [VISUAL-REFERENCES](product/VISUAL-REFERENCES.md)** (sac à dos, drapeau à étoile ailée, bord de mer, HUD), et proposer le **prototype d'intégration** décrit dans [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md) avant tout code.
+3. Puis **démarrer le Master Assault** par la revue de la spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) avec le propriétaire (proportions, squelette, sockets, budgets, critères GOLD) (les questions sur les références sont tranchées : D-010 à D-013), et proposer le **prototype d'intégration** décrit dans [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md) avant tout code.
 
 **Ne pas supposer que le Master Character existe** : au commit `05827b4`, tous les personnages sont encore procéduraux.

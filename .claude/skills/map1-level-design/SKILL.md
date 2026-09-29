@@ -16,6 +16,7 @@ description: Modifier la carte 1 de Frontline Legends (Castelmare, drapeaux A Mo
 - Routes praticables par la jeep et le char ; pas d'obstacle bloquant sur une route.
 - Couverts de combat entre 0,7 et 1,8 m de haut : les bots savent s'en servir.
 - ONE MAP FIRST : aucune nouvelle carte ([DECISIONS](../../../docs/DECISIONS.md) D-001).
+- Mer et horizon côtier (D-012) : **décor de fond seulement**, hors des limites jouables, pendant la passe environnement ; jamais de changement de disposition, d'objectifs, de routes, de collisions ou de navigation pour eux.
 
 ## Critères de design
 Couvert tous les ~6 m dans une zone de capture ; au moins deux approches par drapeau ; pas de couloir de plus de ~80 m sans obstacle vers un drapeau ; repères visuels (moulin, clocher, grange) jamais masqués.

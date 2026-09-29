@@ -16,7 +16,7 @@ Rendu actuel du personnage procédural, à comparer à ces références (`fiche.
 ## Personnages
 - Proportions héroïques : tête légèrement surdimensionnée, épaules larges, taille fine, avant-bras lisibles, mains et bottes légèrement exagérées, haut du corps fort.
 - Cheveux stylisés en volumes simples, visage expressif (sourcils, bouche, yeux lisibles).
-- **Silhouette propre à chaque classe** : Assaut (en jeu aujourd'hui : sac à dos et grenades ; cible de l'image 01 : tête nue, harnais, ceinture à poches, étui de cuisse, sac en accessoire — à confirmer), Artilleur (casque, épaulières, bandoulière, carrure 1,12), Commando (bonnet, écharpe, étui de couteau, carrure 0,95).
+- **Silhouette propre à chaque classe** : Assaut (cible de l'image 01 : tête nue, harnais, ceinture à poches, étui de cuisse ; **pas de sac par défaut**, sac en accessoire optionnel — D-010 ; le jeu actuel porte encore le sac par défaut jusqu'à l'intégration du Master Assault), Artilleur (casque, épaulières, bandoulière, carrure 1,12), Commando (bonnet, écharpe, étui de couteau, carrure 0,95).
 - Équipement identifiable (gilet, harnais, ceinture à poches, emblèmes poitrine, manches et dos).
 - Détails complets : [MASTER-ASSAULT](../characters/MASTER-ASSAULT.md).
 
@@ -28,6 +28,8 @@ Rendu actuel du personnage procédural, à comparer à ces références (`fiche.
 | Pantalon | `#8A8466` olive | `#5A5C50` gris-vert |
 | Emblème | aigle ailé | étoile |
 
+Identité canonique ([DECISIONS](../DECISIONS.md) D-011) : une référence qui montre un autre emblème (par exemple le drapeau bleu à étoile ailée de l'image 03) se réinterprète avec ces emblèmes.
+
 Valeurs actuelles du jeu (`src/config.js`). La palette relevée sur l'image 01 est dans [VISUAL-REFERENCES](VISUAL-REFERENCES.md) ; l'harmonisation se fera avec le Master Assault.
 
 La couleur d'équipe doit rester dominante sur le haut du corps et visible de dos (emblème du dos, bande du casque ou du bonnet, sac quand il est porté).
@@ -36,6 +38,7 @@ La couleur d'équipe doit rester dominante sur le haut du corps et visible de do
 Silhouettes épaisses et lisibles, légèrement surdimensionnées (×1,12), crosse et garde-main tan `#8B7A57`, métal sombre. Chaque arme se reconnaît à sa forme : fusil compact avec viseur rouge, mitrailleuse massive à caisson, sniper long à grosse lunette.
 
 ## Environnement
+- Horizon : mer méditerranéenne et côte en décor de fond (image 03), sans changement de la disposition jouable (D-012, passe environnement).
 - Village méditerranéen : murs crème à ocre, toits de tuiles orangées, volets colorés, pierres d'angle, balcons en fer forgé, jardinières fleuries.
 - Oliviers, cyprès, murets de pierre sèche, bottes de foin, moulin, ferme à grange rouge.
 - Couverts de combat lisibles (sacs de sable, murets) : leur forme dit « je protège ».

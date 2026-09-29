@@ -60,7 +60,33 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
   - **05** *Battlefield Heroes* : inspiration seulement (lisibilité arcade, 3ᵉ personne accessible, classes lisibles, véhicules, capture de points, ton militaire bon enfant). **Ne jamais reproduire** ses éléments, personnages, marque, interface, cartes ou designs protégés. L'image n'est pas stockée dans le dépôt (marques d'un tiers).
 - **Raison :** donner une cible visuelle unique au Master Assault et à la finition de la carte 1, sans élargir le périmètre.
 - **Conséquences :**
-  - la spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) suit l'image 01 : hauteur 1,85 m, tête nue, emblèmes poitrine / deux manches / dos, **modèle de base sans sac à dos** (le sac devient un accessoire) — point à confirmer à la revue de la spécification ;
+  - la spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) suit l'image 01 : hauteur 1,85 m, tête nue, emblèmes poitrine / deux manches / dos, **modèle de base sans sac à dos** (confirmé par D-010) ;
+  - le rapprochement 03 = capture de jeu, 04 = vision produit (ordre d'envoi inversé) est confirmé par le propriétaire ;
   - le gel du périmètre et D-001 restent entiers : les classes, cartes, avions et menus visibles dans les images 03 et 04 ne sont pas des demandes de travail ;
   - aucune valeur du jeu (couleurs, HUD, caméra) n'est modifiée par cette décision seule ; chaque écart listé dans [VISUAL-REFERENCES](product/VISUAL-REFERENCES.md) est traité dans l'étape de la [ROADMAP](ROADMAP.md) concernée, avec captures avant/après ;
   - une règle technique déjà fixée (hitboxes, budgets, lisibilité bleu/rouge) n'est jamais changée en silence à cause d'une référence : le conflit est soumis au propriétaire.
+
+## D-010 — ASSAUT PAR DÉFAUT SANS SAC À DOS
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
+- **Décision :** le Master Assault par défaut **n'a pas de sac à dos**. Les images 01 et 03 font autorité pour sa silhouette par défaut ; l'**emblème du dos doit rester bien visible** depuis la caméra à la 3ᵉ personne. Le sac à dos est **uniquement un accessoire de personnalisation optionnel**.
+- **Conservé :** le support du sac dans l'architecture (socket `socket_back`, option `backpack` de la personnalisation, construction de l'accessoire) : un sac doit pouvoir être équipé plus tard. Ne pas le supprimer.
+- **Conséquences :** la distinction entre classes ne repose plus sur le sac (test de silhouette à refaire avec le Master Assault) ; le changement de la valeur par défaut en jeu (`DEFAULT_CUSTOM.backpack`) se fait **avec l'intégration du Master Assault**, en respectant la compatibilité des réglages sauvegardés (clé `frontline-legends-settings-v1`).
+
+## D-011 — IDENTITÉ D'ÉQUIPE CANONIQUE
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
+- **Décision :** l'identité d'équipe établie reste canonique : **Les Aigles (bleu) = emblème ailé actuel** ; **La Légion (rouge) = étoile actuelle** (`src/character/emblems.js`, `TEAMS` dans `src/config.js`).
+- **Raison :** les maquettes générées sont des références visuelles, pas des documents de game design garantis cohérents (l'image 03 montre un drapeau bleu à étoile ailée).
+- **Conséquences :** quand une référence contredit cette identité, on la réinterprète avec l'emblème canonique ; aucun changement de gameplay ni d'identité d'équipe pour cette raison.
+
+## D-012 — MER ET HORIZON MÉDITERRANÉENS EN DÉCOR DE FOND
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
+- **Décision :** la carte 1 recevra à terme la mer méditerranéenne et l'horizon côtier de l'image 03, traités comme **art d'environnement et décor de fond**.
+- **Interdit pour cela :** changer la disposition jouable, déplacer les objectifs, changer les routes de jeu, modifier collisions ou navigation.
+- **Quand :** passe artistique environnement de la carte 1 ([ROADMAP](ROADMAP.md), étape 4). **Pas de refonte de la carte pendant le jalon Master Character.** Exigence documentée dans [LEVEL-DESIGN](map1/LEVEL-DESIGN.md).
+
+## D-013 — DIRECTION DU HUD ET RÈGLES DE LA CONQUÊTE
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
+- **Décision :** le HUD se rapprochera visuellement de l'image 03 : mini-carte à gauche ; portrait du héros avec la santé ; état des tickets et des objectifs plus clair en haut au centre ; hiérarchie munitions / compétences plus nette ; fil d'éliminations à une place cohérente ; finition visuelle de niveau commercial.
+- **Règles inchangées :** la victoire aux tickets reste la règle canonique de la conquête ; on ne change pas les règles pour reproduire une maquette.
+- **Chrono :** acceptable plus tard s'il est **informatif seulement** (durée écoulée) et n'influence jamais la victoire ou la défaite. **Aucun compte à rebours ni limite de temps sans autorisation explicite séparée.**
+- **Quand :** passe HUD de la [ROADMAP](ROADMAP.md) (étape 5), avec vérifications de chevauchement (ordinateur et tactile) ; pas pendant le Master Character.

@@ -12,7 +12,7 @@
 | 04 | [ref-04-product-ui-vision.webp](../_attachments/ref-04-product-ui-vision.webp) | vision produit et interface, long terme | cohérence seulement, **n'autorise rien** |
 | 05 | *non versionnée* (voir plus bas) | inspiration *Battlefield Heroes* | inspiration seulement, **ne jamais reproduire** |
 
-*Frontline Legends* et les images 01 à 04 sont l'autorité visuelle. Dans le message d'origine, les images 03 et 04 ont été jointes dans l'ordre inverse de leur numéro ; l'attribution ci-dessus suit leur **contenu** (03 = capture de jeu avec HUD ; 04 = menus, boutique, passe, clan), conformément aux rôles décrits par le propriétaire.
+*Frontline Legends* et les images 01 à 04 sont l'autorité visuelle. Dans le message d'origine, les images 03 et 04 ont été jointes dans l'ordre inverse de leur numéro ; l'attribution ci-dessus suit leur **contenu** (03 = capture de jeu avec HUD ; 04 = menus, boutique, passe, clan) et a été **confirmée par le propriétaire**.
 
 ## Règles d'usage
 1. **Personnage** : l'image 01 prime ; l'image 02 complète (expressions, accessoires, poses, échelle). En cas de conflit entre elles, l'image 01 l'emporte.
@@ -21,7 +21,8 @@
 4. **Image 05** : qualités à comprendre, jamais d'éléments à copier.
 5. Ce sont des images de concept, pas des modèles : elles fixent l'intention, pas des cotes exactes. Les couleurs relevées ci-dessous sont **approximatives** (image compressée).
 6. Une règle technique ou de gameplay déjà fixée (hitboxes, budgets, lisibilité bleu/rouge, [DECISIONS](../DECISIONS.md)) n'est jamais modifiée en silence à cause d'une référence : le conflit est noté ici et soumis au propriétaire.
-7. Une référence n'est pas une preuve : un changement est validé par captures du jeu (skill `visual-validation`), comparées aux références.
+7. Les images sont des maquettes générées, **pas des documents de game design cohérents**. Quand l'une d'elles contredit l'identité canonique du jeu (emblèmes d'équipe, règles de la conquête), on la **réinterprète** avec l'élément canonique ([D-011](../DECISIONS.md), [D-013](../DECISIONS.md)).
+8. Une référence n'est pas une preuve : un changement est validé par captures du jeu (skill `visual-validation`), comparées aux références.
 
 ---
 
@@ -94,7 +95,7 @@ Fait autorité pour : présentation du personnage à la 3ᵉ personne, cadrage, 
 | Effets | éclairs de bouche jaune-orangé, explosion vive avec étincelles, fumée discrète |
 | HUD | haut centre : score bleu, chrono, score rouge, pastilles A B C à la couleur du propriétaire · haut gauche : mini-carte ronde orientée (N) · haut droite : fil d'éliminations (noms colorés, icône d'arme) · bas gauche : portrait du héros et santé (`+ 100`, barre verte) · bas droite : munitions (`30 │ 120`), grenades, objet |
 | Véhicules | jeep avec mitrailleuse montée et tireur ; avion dans le ciel |
-| Drapeau | bleu, étoile blanche dans une cocarde ailée |
+| Drapeau | bleu, étoile blanche dans une cocarde ailée — **incohérent avec l'identité du jeu** : se lit comme le drapeau des Aigles avec l'emblème ailé canonique (D-011) |
 
 ## 04 — Vision produit et interface (long terme)
 
@@ -119,7 +120,7 @@ Comparaison du 2026-09-29 entre les références et le jeu (code identique à `0
 | Élément | Référence (01, 03) | Jeu actuel |
 | --- | --- | --- |
 | Construction | modèle sculpté, 1,85 m | primitives Three.js, bâti sur 1,80 m (capsule physique `body.height`) |
-| Sac à dos | **absent** du modèle de base | présent par défaut (`DEFAULT_CUSTOM.backpack: true`) ; en visée, il masque la chemise et l'emblème du dos |
+| Sac à dos | **absent** du modèle de base (D-010) ; accessoire de personnalisation seulement | présent par défaut (`DEFAULT_CUSTOM.backpack: true`) ; en visée, il masque la chemise et l'emblème du dos |
 | Emblème du dos | sur le panneau du harnais, visible de la caméra | sur le gilet, caché par le sac ; le sac porte son propre emblème |
 | Emblèmes de manche | deux manches | manche gauche seulement |
 | Cuisse gauche | poche noire et sangles | poche cargo seulement |
@@ -128,24 +129,27 @@ Comparaison du 2026-09-29 entre les références et le jeu (code identique à `0
 
 Ce qui correspond déjà : chemise bleue à col et tee-shirt sombre, revers gris, gilet sombre à sangles de cuir, étui sur la cuisse droite, genouillères, gants mi-doigts (simplifiés), bottes brunes, emblème ailé à trois plumes par aile.
 
-### Présentation en jeu → étapes ultérieures, sur décision du propriétaire
-| Domaine | Référence (03) | Jeu actuel |
-| --- | --- | --- |
-| Cadrage en visée | épaule, personnage dans le tiers gauche | **déjà proche** (capture `aim`) |
-| Cadrage hors visée | — (la référence montre la visée) | personnage centré, en pied |
-| Mini-carte | haut gauche | haut droite |
-| Chrono de partie | au centre, entre les scores | absent : la conquête se joue aux tickets, sans limite de temps |
-| Portrait du héros | bas gauche, avec la santé | icône d'arme |
-| Compétences | compteurs grenade et objet en bas à droite | barre de 3 compétences en bas au centre |
-| Lumière et ciel | ciel bleu franc, cumulus, contraste plus fort | ciel pastel, nuages facettés, image plus plate |
-| Décor | côtier (mer, port, pont), pierre détaillée, végétation dense | *Castelmare* dans les terres (collines, montagnes) |
-| Jeep | mitrailleuse montée avec tireur | pas d'arme montée ; bots non conducteurs |
+### Présentation en jeu → étapes ultérieures
+| Domaine | Référence (03) | Jeu actuel | Traitement |
+| --- | --- | --- | --- |
+| Cadrage en visée | épaule, personnage dans le tiers gauche | **déjà proche** (capture `aim`) | à revérifier avec le Master Assault |
+| Cadrage hors visée | — (la référence montre la visée) | personnage centré, en pied | inchangé |
+| Mini-carte | haut gauche | haut droite | passe HUD (D-013) |
+| Chrono de partie | au centre, entre les scores | absent : la conquête se joue aux tickets, sans limite de temps | passe HUD : **durée écoulée, informative seulement** (D-013) ; aucun compte à rebours |
+| Tickets et drapeaux | scores et pastilles A B C au centre | tickets et pastilles au centre | passe HUD : état plus lisible (D-013) |
+| Portrait du héros | bas gauche, avec la santé | icône d'arme | passe HUD (D-013) |
+| Munitions et compétences | compteurs grenade et objet en bas à droite | barre de 3 compétences en bas au centre, munitions en bas à droite | passe HUD : hiérarchie plus claire ; les 3 compétences restent (D-013) |
+| Fil d'éliminations | haut droite | droite, sous la mini-carte | passe HUD : position cohérente (D-013) |
+| Lumière et ciel | ciel bleu franc, cumulus, contraste plus fort | ciel pastel, nuages facettés, image plus plate | passe artistique environnement (étape 4) |
+| Décor | côtier (mer, port, pont), pierre détaillée, végétation dense | *Castelmare* dans les terres (collines, montagnes) | **mer et côte en décor de fond** à l'étape 4, sans toucher à la disposition (D-012) |
+| Drapeau | étoile ailée sur fond bleu | aigle bleu, étoile rouge | **inchangé** : identité canonique (D-011) |
+| Jeep | mitrailleuse montée avec tireur | pas d'arme montée ; bots non conducteurs | non décidé : changement de gameplay, demande une autorisation séparée |
 
 ### Hors périmètre → aucune action avant MAP 1 GOLD
 Avion ; classes Médecin, Éclaireur et Soutien des images 03 et 04 (le jeu a Assaut, Artilleur, Commando) ; autres cartes ; menus boutique, passe, clan, saison, progression.
 
-## Questions ouvertes pour le propriétaire
-1. **Sac à dos** : le Master Assault de base est-il sans sac (images 01 et 03) avec le sac en accessoire (image 02) ? La [spécification](../characters/MASTER-ASSAULT.md) suit l'image 01 en attendant la confirmation ; la distinction entre classes se revérifie alors au test de silhouette.
-2. **Drapeau à étoile ailée** (image 03) : l'étoile est aujourd'hui l'emblème de La Légion (rouge). Garder les emblèmes actuels (aigle bleu, étoile rouge) ?
-3. **Bord de mer** (image 03) : simple horizon au loin, ou rien ? La disposition de *Castelmare* reste verrouillée ([LEVEL-DESIGN](../map1/LEVEL-DESIGN.md)).
-4. **HUD** (image 03) : faut-il rapprocher la disposition actuelle de la cible (mini-carte à gauche, portrait) lors d'une passe de finition, et un chrono est-il voulu (changement de règle de la conquête) ?
+## Réponses du propriétaire (2026-09-29)
+1. **Sac à dos → [D-010](../DECISIONS.md)** : le Master Assault par défaut **n'a pas de sac à dos** ; l'emblème du dos reste bien visible. Le sac est un **accessoire de personnalisation optionnel** ; la capacité d'attache (socket `socket_back`, option de personnalisation) est conservée.
+2. **Emblèmes d'équipe → [D-011](../DECISIONS.md)** : l'identité canonique est conservée (Aigles bleus = emblème ailé actuel ; Légion rouge = étoile actuelle). Une image qui la contredit est réinterprétée avec l'emblème canonique. Aucun changement de gameplay ni d'identité d'équipe.
+3. **Mer et horizon → [D-012](../DECISIONS.md)** : la carte 1 recevra une mer méditerranéenne et une côte **en décor de fond**, pendant la passe artistique environnement (étape 4 de la [ROADMAP](../ROADMAP.md)). Disposition jouable, objectifs, routes, collisions et navigation inchangés. Pas de refonte de la carte pendant le Master Character.
+4. **HUD et chrono → [D-013](../DECISIONS.md)** : direction visuelle de l'image 03 adoptée (mini-carte à gauche, portrait et santé, tickets et objectifs plus lisibles en haut au centre, hiérarchie munitions / compétences plus claire, fil d'éliminations à une place cohérente, finition commerciale). Les règles de la conquête **ne changent pas** : victoire aux tickets. Un chrono, s'il est affiché, montre la **durée écoulée** et n'influence jamais la victoire ; aucun compte à rebours ni limite de temps sans autorisation séparée.

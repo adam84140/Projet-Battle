@@ -25,7 +25,7 @@ Le héros de la jaquette : l'Assaut bleu à l'aigle ailé des images 01 à 03. I
 
 ### Silhouette
 - Lisible en ombre pleine, **tête nue** (coiffure relevée), gilet ouvert à harnais, ceinture chargée de poches, étui sur la cuisse droite, genouillères, bottes massives, fusil compact.
-- **Pas de sac à dos sur le modèle de base** (images 01 et 03) : le sac devient un accessoire (image 02). À confirmer par le propriétaire ([VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md), questions ouvertes).
+- **Pas de sac à dos sur le modèle par défaut** ([DECISIONS](../DECISIONS.md) D-010) : l'emblème du dos doit rester bien visible. Le sac est un **accessoire de personnalisation optionnel** (image 02) ; son support (`socket_back`, option `backpack`) est conservé.
 - Différente de l'Artilleur (plus massif, casque, épaulières) et du Commando (plus fin, bonnet, écharpe) : à revérifier au test de silhouette puisque le sac ne porte plus la différence.
 
 ### Visage et cheveux
@@ -35,7 +35,7 @@ Le héros de la jaquette : l'Assaut bleu à l'aigle ailé des images 01 à 03. I
 
 ### Lisibilité d'équipe
 - Chemise aux couleurs d'équipe, dominante sur le haut du corps (manches retroussées à revers gris clair).
-- Emblème blanc (aigle ailé / étoile) : **poitrine**, **les deux manches**, **grand emblème du dos** sur le panneau du harnais, visible de la caméra à la 3ᵉ personne (image 03).
+- Emblème blanc, **identité canonique** (Aigles : emblème ailé ; Légion : étoile ; [DECISIONS](../DECISIONS.md) D-011) : **poitrine**, **les deux manches**, **grand emblème du dos** sur le panneau du harnais, visible de la caméra à la 3ᵉ personne (image 03).
 - Couleurs actuelles du jeu : bleu `#2F5BB7` / rouge `#B2382C` ; gilet `#29344A` / `#4A2C27` ; pantalon olive / gris-vert (voir [ART-DIRECTION](../product/ART-DIRECTION.md)). Palette relevée sur l'image 01 (bleu plus sombre `#32548F`, olive `#787752`, cuir `#493427`…) : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md). L'harmonisation se fait avec l'asset et se valide par le test bleu/rouge à 40 m.
 
 ### Équipement (modèle de base, image 01)

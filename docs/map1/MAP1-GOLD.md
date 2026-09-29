@@ -28,6 +28,7 @@ Chaque critère est validé par une preuve reproductible (test, mesure ou captur
 
 ## 5. Carte et environnement
 - [ ] Passe artistique environnement terminée (kit village cohérent, pas de zone vide ou non finie).
+- [ ] Mer méditerranéenne et horizon côtier visibles en décor de fond, sans changement de disposition, d'objectifs, de routes, de collisions ni de navigation ([DECISIONS](../DECISIONS.md) D-012).
 - [ ] Chaque zone de capture respecte les règles de [LEVEL-DESIGN](LEVEL-DESIGN.md) (couverts, lignes de vue, flancs).
 - [ ] Cartes de chaleur des morts sans point aberrant (camping, couloir de la mort).
 
@@ -37,6 +38,7 @@ Chaque critère est validé par une preuve reproductible (test, mesure ou captur
 - [ ] Revue finale du son **à l'oreille par un humain** (volumes, répétitions, spatialisation).
 
 ## 7. Interface
+- [ ] HUD rapproché de l'image 03 ([VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md), [DECISIONS](../DECISIONS.md) D-013) : mini-carte à gauche, portrait et santé, tickets et objectifs lisibles, hiérarchie munitions / compétences, fil d'éliminations cohérent ; règles de la conquête inchangées.
 - [ ] Aucun chevauchement du HUD sur ordinateur et en tactile (vérifications géométriques des tests).
 - [ ] Menus, déploiement, scores, fin de partie : complets et sans texte coupé en 1280×720, 1920×1080 et 844×390 tactile.
 
