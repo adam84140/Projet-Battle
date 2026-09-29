@@ -42,8 +42,10 @@ export class Game {
     renderer.setSize(container.clientWidth || window.innerWidth, container.clientHeight || window.innerHeight);
     renderer.shadowMap.enabled = settings.quality !== 'low';
     renderer.shadowMap.type = THREE.PCFShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    // rendu des tons « neutre » : garde les couleurs franches du style cartoon
+    // (ACES ternissait les couleurs d'équipe et le ciel)
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1.0;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
     this.renderer = renderer;
@@ -54,8 +56,8 @@ export class Game {
     this.scene = scene;
     this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.08, 1500);
 
-    scene.add(new THREE.HemisphereLight(0xcfe6ff, 0x7a6a50, 1.25));
-    const sun = new THREE.DirectionalLight(0xfff1d6, 2.7);
+    scene.add(new THREE.HemisphereLight(0xcfe6ff, 0x7a6a50, 1.4));
+    const sun = new THREE.DirectionalLight(0xfff1d6, 2.6);
     sun.castShadow = true;
     sun.shadow.mapSize.set(coarse ? 1024 : 2048, coarse ? 1024 : 2048);
     const sc = sun.shadow.camera;
@@ -70,6 +72,8 @@ export class Game {
     scene.add(sun, sun.target);
     this.sun = sun;
     this.sunOffset = new THREE.Vector3(55, 95, 35);
+    // au menu, le soleil vient du côté de la caméra : le héros est éclairé de face
+    this.menuSunOffset = new THREE.Vector3(-35, 90, -60);
 
     // Monde
     this.physics = new Physics();
@@ -352,7 +356,7 @@ export class Game {
         this.camera.updateProjectionMatrix();
       }
       this.effects.update(realDt, this.camera);
-      this.followSun(this.menuHero ? this.menuHero.root.position : this.camera.position);
+      this.followSun(this.menuHero ? this.menuHero.root.position : this.camera.position, this.menuSunOffset);
       return;
     }
     if (this.state === 'paused') return;
@@ -457,14 +461,14 @@ export class Game {
     }
   }
 
-  followSun(target) {
+  followSun(target, offset = this.sunOffset) {
     const s = this.sun;
     // on aligne sur la grille de texels pour éviter le scintillement des ombres
     const step = 96 / 2048;
     const tx = Math.round(target.x / step) * step;
     const tz = Math.round(target.z / step) * step;
     s.target.position.set(tx, 0, tz);
-    s.position.set(tx + this.sunOffset.x, this.sunOffset.y, tz + this.sunOffset.z);
+    s.position.set(tx + offset.x, offset.y, tz + offset.z);
     s.target.updateMatrixWorld();
   }
 
