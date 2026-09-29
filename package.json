@@ -11,7 +11,8 @@
     "test:smoke": "node tests/smoke.mjs",
     "test:touch": "node tests/touch.mjs",
     "test:camera": "node tests/camera.mjs",
-    "test": "node tests/smoke.mjs && node tests/touch.mjs && node tests/camera.mjs",
+    "test:bots": "node tests/bots.mjs",
+    "test": "node tests/smoke.mjs && node tests/touch.mjs && node tests/camera.mjs && node tests/bots.mjs",
     "shots": "node tests/shots.mjs"
   },
   "dependencies": {

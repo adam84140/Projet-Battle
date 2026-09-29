@@ -39,6 +39,7 @@ npm run test:smoke   # desktop : menu, déploiement, déplacement, tir, dégâts
                      # mort/respawn, changement de classe, jeep, char, partie simulée, victoire/défaite
 npm run test:touch   # téléphone émulé : joystick, visée, tir, compétences, saut, pause
 npm run test:camera  # caméra : jamais dans un mur, un feuillage ou le sol, pas de recul brutal
+npm run test:bots    # partie simulée de 3 min : bots bloqués, combats, captures, coût logique
 npm run shots -- mon-etiquette   # captures avant/après dans test-results/shots/
 ```
 
