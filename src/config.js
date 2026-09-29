@@ -32,7 +32,7 @@ export const TEAMS = {
     shirtDark: 0x24478f,
     cuff: 0x9aa6b8,
     pants: 0x8a8466,
-    vest: 0x2e3238,
+    vest: 0x29344a,
     flag: 0x2f5bb7,
   },
   red: {
@@ -46,7 +46,7 @@ export const TEAMS = {
     shirtDark: 0x8a2a21,
     cuff: 0xc8b49a,
     pants: 0x5a5c50,
-    vest: 0x4a3f33,
+    vest: 0x4a2c27,
     flag: 0xc0392b,
   },
 };

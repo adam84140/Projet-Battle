@@ -149,6 +149,7 @@ export class Face {
       const dome = new THREE.SphereGeometry(0.152, isLowDetail() ? 14 : 22, isLowDetail() ? 7 : 12, 0, Math.PI * 2, 0, 1.45);
       part(g, dome, helm, { s: [1, 0.98, 1.06], rough: 0.6 });
       part(g, cyl(0.16, 0.166, 0.022, 24), shade(helm, 0.85), { p: [0, 0.018, 0], s: [1, 1, 1.06] });
+      part(g, cyl(0.1545, 0.1575, 0.032, 24), this.team.shirt, { p: [0, 0.052, 0], s: [1, 1, 1.06] });
       part(g, emblemGeometry(this.team.emblem), 0xffffff, { p: [0, 0.075, 0.143], s: 0.03, r: [-0.45, 0, 0], shadow: false });
       // Jugulaire
       for (const sd of [1, -1]) part(h, box3(0.008, 0.1, 0.012), 0x2a2622, { p: [0.112 * sd, 0.08, 0.035], r: [0.25, 0, 0] });
@@ -163,7 +164,7 @@ export class Face {
       h.add(g);
       const dome = new THREE.SphereGeometry(0.136, isLowDetail() ? 14 : 22, isLowDetail() ? 7 : 12, 0, Math.PI * 2, 0, 1.3);
       part(g, dome, knit, { s: [1, 1.14, 1.05], rough: 0.95 });
-      part(g, cyl(0.134, 0.136, 0.045, 24), shade(knit, 0.85), { p: [0, 0.045, 0], s: [1, 1, 1.05], rough: 0.95 });
+      part(g, cyl(0.134, 0.136, 0.045, 24), shade(this.team.shirt, 0.5), { p: [0, 0.045, 0], s: [1, 1, 1.05], rough: 0.95 });
       part(g, SPHERE, shade(knit, 0.9), { p: [0, 0.16, 0], s: 0.03, rough: 0.95 });
       part(h, SPHERE, hair, { p: [0, 0.11, -0.08], s: [0.1, 0.06, 0.06] });
       return;
@@ -174,11 +175,12 @@ export class Face {
     part(h, SPHERE, hair, { p: [0, 0.12, -0.075], s: [0.105, 0.085, 0.065] }); // nuque
     for (const sd of [1, -1]) part(h, SPHERE, hair, { p: [0.103 * sd, 0.185, -0.025], s: [0.024, 0.058, 0.09] });
     if (cap) return; // la casquette cache la banane
-    part(h, SPHERE, hair, { p: [0.005, 0.272, 0.045], s: [0.095, 0.05, 0.085], r: [0.25, 0, -0.12] });
-    part(h, SPHERE, hair, { p: [-0.045, 0.262, 0.03], s: [0.065, 0.045, 0.08], r: [0.15, 0, 0.3] });
-    part(h, SPHERE, hair, { p: [0.05, 0.258, 0.06], s: [0.06, 0.042, 0.065], r: [0.2, 0, -0.35] });
-    part(h, SPHERE, hair, { p: [0.025, 0.25, 0.1], s: [0.08, 0.04, 0.048], r: [0.7, 0, -0.25] });
-    part(h, SPHERE, shade(hair, 1.12), { p: [0.03, 0.285, 0.06], s: [0.05, 0.022, 0.05], r: [0.3, 0, -0.2] }); // reflet
+    part(h, SPHERE, hair, { p: [0.005, 0.276, 0.045], s: [0.1, 0.056, 0.09], r: [0.25, 0, -0.12] });
+    part(h, SPHERE, hair, { p: [-0.048, 0.264, 0.028], s: [0.068, 0.048, 0.084], r: [0.15, 0, 0.3] });
+    part(h, SPHERE, hair, { p: [0.052, 0.262, 0.06], s: [0.064, 0.046, 0.07], r: [0.2, 0, -0.35] });
+    part(h, SPHERE, hair, { p: [0.028, 0.256, 0.104], s: [0.088, 0.046, 0.052], r: [0.75, 0, -0.25] }); // mèche avant relevée
+    part(h, SPHERE, hair, { p: [0.055, 0.238, 0.118], s: [0.05, 0.03, 0.035], r: [1.0, 0, -0.5] }); // pointe de la banane
+    part(h, SPHERE, shade(hair, 1.14), { p: [0.03, 0.292, 0.06], s: [0.055, 0.024, 0.055], r: [0.3, 0, -0.2] }); // reflet
   }
 
   setExpression(name) {

@@ -215,7 +215,7 @@ function renderFace() {
       if (d === 'eye') {
         const eye = ch.face.eyes[1].getWorldPosition(new THREE.Vector3());
         lookAt(eye.clone().add(V(-0.05, 0.02, 0.55)), eye.clone().add(V(0, 0.012, 0)), 9);
-      } else lookAt(head.clone().add(V(0, 0.03, 1.35)), head, 17);
+      } else lookAt(head.clone().add(V(0, 0.03, 1.58)), head, 17);
       blob.visible = false;
       draw(c, studio, cam);
     });

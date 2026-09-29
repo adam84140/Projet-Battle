@@ -19,7 +19,8 @@ const O_LH = O_IKR + 1; // décalage du poignet gauche (repère de l'arme)
 const N = O_LH + 3;
 
 export const UPPER_ARM = 0.3;
-export const FOREARM = 0.28;
+// Avant-bras un peu plus long (style héroïque) : la main gauche atteint le garde-main sans se détacher
+export const FOREARM = 0.3;
 
 // Tenues de l'arme dans le repère du buste (droite du personnage = -X)
 const HOLDS = {

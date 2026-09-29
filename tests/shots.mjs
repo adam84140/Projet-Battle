@@ -13,6 +13,16 @@ mkdirSync(dir, { recursive: true });
 const { server, url } = await startServer();
 const { browser, page, errors } = await launch();
 
+if (only === 'all' || only === 'turn') {
+  await page.setViewportSize({ width: 2130, height: 560 });
+  for (const [cls, team] of [['assaut', 'blue'], ['assaut', 'red'], ['artilleur', 'red'], ['artilleur', 'blue'], ['commando', 'blue'], ['commando', 'red']]) {
+    await page.goto(`${url}/tests/turntable.html?classe=${cls}&equipe=${team}&bake=1`);
+    await page.waitForFunction(() => window.__done === true, null, { timeout: 120000 });
+    await page.screenshot({ path: `${dir}turn-${cls}-${team}.png` });
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+}
+
 if (only === 'all' || only === 'sheet') {
   await page.setViewportSize({ width: 1500, height: 1000 });
   for (const [cls, team] of [['assaut', 'blue'], ['artilleur', 'red'], ['commando', 'blue'], ['assaut', 'red']]) {

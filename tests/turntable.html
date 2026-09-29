@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Turntable héros</title>
+    <style>
+      body { margin: 0; background: #1b2638; color: #e8eefc; font: 13px sans-serif; }
+      .row { display: flex; gap: 4px; padding: 4px; }
+      figure { margin: 0; text-align: center; }
+      canvas { display: block; background: linear-gradient(#34496e, #1d2a44); }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      // Outil d'inspection : vues du héros en grand (face, 3/4, profil, dos, idle, visée, course).
+      // ?classe=assaut|artilleur|commando&equipe=blue|red&bake=1 (géométrie de jeu)
+      import * as THREE from 'three';
+      import { Character } from '/src/character/Character.js';
+      const q = new URLSearchParams(location.search);
+      const classId = q.get('classe') || 'assaut';
+      const team = q.get('equipe') || 'blue';
+      const bake = q.get('bake') === '1';
+      const W = 300, H = 520;
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer.setSize(W, H);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      const scene = new THREE.Scene();
+      scene.add(new THREE.HemisphereLight(0xe3eeff, 0x4a4030, 1.5));
+      const key = new THREE.DirectionalLight(0xfff0dc, 2.6);
+      key.position.set(2.5, 4, 5);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(0xa9c8ff, 2);
+      rim.position.set(-3, 3, -4);
+      scene.add(rim);
+      const cam = new THREE.PerspectiveCamera(20, W / H, 0.05, 50);
+      const views = [
+        ['Face', 0, 'stand'], ['3/4', 0.7, 'stand'], ['Profil', Math.PI / 2, 'stand'], ['Dos', Math.PI, 'stand'],
+        ['Idle combat', -0.6, 'idle'], ['Visée', -0.9, 'aim'], ['Course', -1.2, 'run'],
+      ];
+      const row = document.createElement('div');
+      row.className = 'row';
+      document.body.appendChild(row);
+      for (const [label, yaw, pose] of views) {
+        const c = new Character({ team, classId, bake, custom: { backpack: true } });
+        const a = c.anim;
+        if (pose === 'stand') a.mode = 'stand';
+        if (pose === 'aim') a.aim = true;
+        if (pose === 'run') { a.speed = 6; }
+        for (let i = 0; i < 50; i++) c.update(1 / 60);
+        if (pose === 'run') { c.animator.phase = Math.PI * 0.45; c.animator.update(0, true); }
+        c.root.rotation.y = yaw;
+        scene.add(c.root);
+        c.root.updateMatrixWorld(true);
+        cam.position.set(0, 1.02, 7.2);
+        cam.lookAt(0, 0.98, 0);
+        renderer.render(scene, cam);
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        cv.getContext('2d').drawImage(renderer.domElement, 0, 0);
+        const f = document.createElement('figure');
+        f.appendChild(cv);
+        const cap = document.createElement('figcaption');
+        cap.textContent = label;
+        f.appendChild(cap);
+        row.appendChild(f);
+        scene.remove(c.root);
+      }
+      window.__done = true;
+    </script>
+  </body>
+</html>

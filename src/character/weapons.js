@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { part, rbox, cyl, box, SPHERE, mat } from './parts.js';
+import { part, rbox, cyl, box, SPHERE, mat, shade } from './parts.js';
 
 // Armes modélisées le long de +Z (canon vers l'avant), poignée à l'origine.
 // Chaque arme expose les points de prise en main utilisés par la cinématique
@@ -10,6 +10,7 @@ const METAL = 0x2a2c30;
 const METAL2 = 0x3c3f45;
 const POLY = 0x33363b;
 const WOOD = 0x7a5232;
+const TAN = 0x8b7a57; // polymère sable : l'arme se détache du gilet sombre
 
 function flashGeometry() {
   const s = new THREE.Shape();
@@ -61,27 +62,27 @@ function addFlash(g, muzzle, size) {
 }
 
 function rifle(g) {
-  part(g, rbox(0.056, 0.085, 0.34, 0.012), METAL, { p: [0, 0.02, 0.05], rough: 0.5, metal: 0.3 });
+  part(g, rbox(0.066, 0.095, 0.34, 0.014), METAL, { p: [0, 0.02, 0.05], rough: 0.5, metal: 0.3 });
   part(g, rbox(0.032, 0.018, 0.3, 0.004), METAL2, { p: [0, 0.07, 0.05], metal: 0.4, rough: 0.5 });
   // Viseur point rouge
-  part(g, cyl(0.022, 0.022, 0.07, 14), METAL, { p: [0, 0.104, 0.02], r: [Math.PI / 2, 0, 0], metal: 0.4, rough: 0.4 });
-  part(g, cyl(0.017, 0.017, 0.072, 14), 0x6a1a1a, { p: [0, 0.104, 0.02], r: [Math.PI / 2, 0, 0], rough: 0.2, emissive: 0x220000 });
+  part(g, cyl(0.027, 0.027, 0.075, 14), METAL, { p: [0, 0.11, 0.02], r: [Math.PI / 2, 0, 0], metal: 0.4, rough: 0.4 });
+  part(g, cyl(0.021, 0.021, 0.077, 14), 0x6a1a1a, { p: [0, 0.11, 0.02], r: [Math.PI / 2, 0, 0], rough: 0.2, emissive: 0x220000 });
   part(g, rbox(0.03, 0.02, 0.05, 0.005), METAL, { p: [0, 0.084, 0.02] });
   // Garde-main + canon
-  part(g, rbox(0.062, 0.072, 0.22, 0.016), POLY, { p: [0, 0.015, 0.31] });
-  for (let i = 0; i < 4; i++) part(g, box(0.064, 0.01, 0.018), 0x25272b, { p: [0, 0.004, 0.23 + i * 0.05] });
+  part(g, rbox(0.076, 0.086, 0.23, 0.02), TAN, { p: [0, 0.013, 0.31] });
+  for (let i = 0; i < 4; i++) part(g, box(0.078, 0.012, 0.02), shade(TAN, 0.75), { p: [0, 0.0, 0.225 + i * 0.05] });
   part(g, cyl(0.011, 0.011, 0.2, 10), METAL, { p: [0, 0.022, 0.5], r: [Math.PI / 2, 0, 0], metal: 0.5, rough: 0.4 });
-  part(g, cyl(0.017, 0.017, 0.055, 10), METAL2, { p: [0, 0.022, 0.605], r: [Math.PI / 2, 0, 0], metal: 0.5, rough: 0.4 });
+  part(g, cyl(0.023, 0.023, 0.065, 10), METAL2, { p: [0, 0.022, 0.61], r: [Math.PI / 2, 0, 0], metal: 0.5, rough: 0.4 });
   part(g, box(0.012, 0.04, 0.012), METAL, { p: [0, 0.06, 0.4] });
   // Crosse
   part(g, cyl(0.014, 0.014, 0.14, 8), METAL, { p: [0, 0.03, -0.09], r: [Math.PI / 2, 0, 0] });
-  part(g, rbox(0.046, 0.095, 0.15, 0.018), POLY, { p: [0, 0.0, -0.2] });
-  part(g, rbox(0.05, 0.11, 0.025, 0.01), 0x1c1d20, { p: [0, -0.005, -0.28] });
+  part(g, rbox(0.058, 0.11, 0.16, 0.022), TAN, { p: [0, -0.002, -0.2] });
+  part(g, rbox(0.062, 0.122, 0.028, 0.01), 0x1c1d20, { p: [0, -0.007, -0.285] });
   // Poignée pistolet + pontet
-  part(g, rbox(0.034, 0.1, 0.045, 0.01), POLY, { p: [0, -0.065, -0.02], r: [0.35, 0, 0] });
-  part(g, box(0.01, 0.01, 0.07), METAL, { p: [0, -0.04, 0.03] });
+  part(g, rbox(0.042, 0.105, 0.05, 0.012), TAN, { p: [0, -0.065, -0.02], r: [0.35, 0, 0] });
+  part(g, box(0.012, 0.012, 0.07), METAL, { p: [0, -0.042, 0.03] });
   // Chargeur courbe (animé au rechargement)
-  const mag = part(g, rbox(0.034, 0.14, 0.064, 0.01), METAL2, { p: [0, -0.09, 0.11], r: [-0.28, 0, 0], dynamic: true });
+  const mag = part(g, rbox(0.042, 0.15, 0.072, 0.012), METAL2, { p: [0, -0.095, 0.11], r: [-0.28, 0, 0], dynamic: true });
   return {
     mag,
     rightWrist: new THREE.Vector3(0, -0.075, -0.075),
@@ -93,16 +94,16 @@ function rifle(g) {
 }
 
 function machineGun(g) {
-  part(g, rbox(0.075, 0.105, 0.42, 0.016), METAL, { p: [0, 0.02, 0.06], rough: 0.5, metal: 0.3 });
+  part(g, rbox(0.088, 0.118, 0.42, 0.018), METAL, { p: [0, 0.02, 0.06], rough: 0.5, metal: 0.3 });
   // Poignée de transport
   part(g, box(0.014, 0.05, 0.014), METAL2, { p: [0, 0.095, -0.02] });
   part(g, box(0.014, 0.05, 0.014), METAL2, { p: [0, 0.095, 0.14] });
   part(g, cyl(0.014, 0.014, 0.18, 8), 0x1c1d20, { p: [0, 0.125, 0.06], r: [Math.PI / 2, 0, 0] });
   // Canon avec manchon ajouré
-  part(g, cyl(0.026, 0.026, 0.3, 12), METAL2, { p: [0, 0.02, 0.42], r: [Math.PI / 2, 0, 0], metal: 0.4, rough: 0.5 });
-  for (let i = 0; i < 5; i++) part(g, cyl(0.028, 0.028, 0.012, 12), 0x1c1d20, { p: [0, 0.02, 0.3 + i * 0.055], r: [Math.PI / 2, 0, 0] });
+  part(g, cyl(0.032, 0.032, 0.3, 12), METAL2, { p: [0, 0.02, 0.42], r: [Math.PI / 2, 0, 0], metal: 0.4, rough: 0.5 });
+  for (let i = 0; i < 5; i++) part(g, cyl(0.035, 0.035, 0.014, 12), 0x1c1d20, { p: [0, 0.02, 0.3 + i * 0.055], r: [Math.PI / 2, 0, 0] });
   part(g, cyl(0.014, 0.014, 0.18, 10), METAL, { p: [0, 0.02, 0.66], r: [Math.PI / 2, 0, 0], metal: 0.5 });
-  part(g, cyl(0.022, 0.018, 0.06, 10), METAL, { p: [0, 0.02, 0.77], r: [Math.PI / 2, 0, 0] });
+  part(g, cyl(0.03, 0.022, 0.07, 10), METAL, { p: [0, 0.02, 0.775], r: [Math.PI / 2, 0, 0] });
   // Bipied replié
   for (const sd of [1, -1]) part(g, cyl(0.007, 0.007, 0.26, 6), METAL2, { p: [0.02 * sd, -0.02, 0.55], r: [Math.PI / 2 - 0.08, 0, 0] });
   // Crosse bois
@@ -126,10 +127,10 @@ function machineGun(g) {
 function sniper(g) {
   part(g, rbox(0.052, 0.07, 0.3, 0.012), METAL, { p: [0, 0.03, 0.05], metal: 0.35, rough: 0.45 });
   // Lunette
-  part(g, cyl(0.026, 0.026, 0.26, 16), 0x1c1d20, { p: [0, 0.115, 0.04], r: [Math.PI / 2, 0, 0], metal: 0.4, rough: 0.35 });
-  part(g, cyl(0.036, 0.026, 0.06, 16), 0x1c1d20, { p: [0, 0.115, 0.19], r: [Math.PI / 2, 0, 0] });
-  part(g, cyl(0.033, 0.026, 0.05, 16), 0x1c1d20, { p: [0, 0.115, -0.11], r: [Math.PI / 2, 0, 0] });
-  part(g, cyl(0.03, 0.03, 0.005, 16), 0x6ab0ff, { p: [0, 0.115, 0.221], r: [Math.PI / 2, 0, 0], rough: 0.05, metal: 0.8, shadow: false });
+  part(g, cyl(0.031, 0.031, 0.26, 16), 0x1c1d20, { p: [0, 0.12, 0.04], r: [Math.PI / 2, 0, 0], metal: 0.4, rough: 0.35 });
+  part(g, cyl(0.043, 0.031, 0.065, 16), 0x1c1d20, { p: [0, 0.12, 0.195], r: [Math.PI / 2, 0, 0] });
+  part(g, cyl(0.039, 0.031, 0.05, 16), 0x1c1d20, { p: [0, 0.12, -0.11], r: [Math.PI / 2, 0, 0] });
+  part(g, cyl(0.037, 0.037, 0.005, 16), 0x6ab0ff, { p: [0, 0.12, 0.229], r: [Math.PI / 2, 0, 0], rough: 0.05, metal: 0.8, shadow: false });
   part(g, cyl(0.012, 0.012, 0.03, 8), 0x1c1d20, { p: [0, 0.15, 0.04] });
   for (const z of [-0.03, 0.12]) part(g, box(0.03, 0.05, 0.018), METAL, { p: [0, 0.075, z] });
   // Long canon

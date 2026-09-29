@@ -277,7 +277,7 @@ export class Soldier {
     this.char.update(dt);
     this.char.root.updateMatrixWorld(true);
     this.char.bones.head.getWorldPosition(this.headPos);
-    this.headPos.y += 0.14;
+    this.headPos.y += this.char.headOffset;
   }
 
   updateTimers(dt) {

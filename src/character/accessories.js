@@ -9,10 +9,12 @@ const OLIVE = 0x6f6a45;
 const LEATHER = 0x6b4a2e;
 const BUCKLE = 0xb8a070;
 
-export function buildBackpack(emblem = 'eagle') {
+export function buildBackpack(emblem = 'eagle', teamColor = null) {
   const g = new THREE.Group();
   part(g, rbox(0.32, 0.36, 0.15, 0.05), OLIVE);
   part(g, rbox(0.33, 0.13, 0.16, 0.035), shade(OLIVE, 0.88), { p: [0, 0.14, 0.006] });
+  // bande aux couleurs de l'équipe : lisible de dos
+  if (teamColor !== null) part(g, rbox(0.336, 0.036, 0.166, 0.012), teamColor, { p: [0, 0.092, 0.006] });
   part(g, rbox(0.22, 0.15, 0.07, 0.03), shade(OLIVE, 0.94), { p: [0, -0.07, 0.085] });
   part(g, rbox(0.23, 0.05, 0.075, 0.02), shade(OLIVE, 0.85), { p: [0, 0.005, 0.087] });
   for (const sd of [1, -1]) {
@@ -90,7 +92,7 @@ export function buildBandana(color = 0x3a67c8) {
 }
 
 export const ACCESSORY_LIST = [
-  { id: 'backpack', label: 'Sac à dos', build: (e) => buildBackpack(e) },
+  { id: 'backpack', label: 'Sac à dos', build: (e, team) => buildBackpack(e, team === 'red' ? 0xb2382c : 0x2f5bb7) },
   { id: 'grenades', label: 'Grenades', build: () => {
     const g = new THREE.Group();
     const a = buildGrenade();

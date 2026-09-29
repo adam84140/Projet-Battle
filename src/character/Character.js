@@ -12,6 +12,7 @@ const LEATHER_DARK = 0x4a3322;
 const GLOVE = 0x1f2124;
 const BOOT = 0x6b4a2e;
 const SOLE = 0x2a1f18;
+const HEAD_SCALE = 1.13;
 
 // Héros stylisé construit entièrement en code (≈ 1,85 m).
 // Le personnage regarde vers +Z ; sa droite est donc du côté -X.
@@ -25,6 +26,8 @@ export class Character {
     this.root.name = 'character';
     this.bones = {};
     this.hipsHeight = 0.95;
+    // Centre du crâne au-dessus de l'os de la tête (zone de touche "tête")
+    this.headOffset = 0.145 * HEAD_SCALE;
     this.weapon = null;
     this.accessories = {};
     // Les soldats en jeu (fusionnés) utilisent une géométrie allégée
@@ -59,77 +62,81 @@ export class Character {
     const skin = C.skin;
     const hips = this.bone('hips', this.root, 0, this.hipsHeight, 0);
 
-    // ---------- Bassin / ceinture ----------
-    part(hips, rbox(0.34 * b, 0.2, 0.24, 0.07), T.pants, { p: [0, -0.03, 0] });
-    part(hips, rbox(0.36 * b, 0.055, 0.255, 0.02), LEATHER_DARK, { p: [0, 0.05, 0] });
-    part(hips, rbox(0.065, 0.045, 0.02, 0.006), 0xb8a070, { p: [0, 0.05, 0.13], metal: 0.6, rough: 0.35 });
+    // ---------- Bassin / ceinture (taille resserrée) ----------
+    part(hips, rbox(0.3 * b, 0.2, 0.23, 0.07), T.pants, { p: [0, -0.03, 0] });
+    part(hips, rbox(0.32 * b, 0.06, 0.245, 0.022), LEATHER_DARK, { p: [0, 0.05, 0] });
+    part(hips, rbox(0.07, 0.05, 0.022, 0.007), 0xb8a070, { p: [0, 0.05, 0.126], metal: 0.6, rough: 0.35 });
     for (const sd of [1, -1]) {
-      part(hips, rbox(0.075, 0.085, 0.05, 0.015), LEATHER, { p: [0.11 * sd * b, 0.025, 0.125] });
-      part(hips, rbox(0.08, 0.03, 0.056, 0.01), shade(LEATHER, 0.85), { p: [0.11 * sd * b, 0.06, 0.127] });
-      part(hips, rbox(0.05, 0.09, 0.075, 0.015), LEATHER, { p: [0.185 * sd * b, 0.02, 0.03] });
+      part(hips, rbox(0.075, 0.085, 0.05, 0.015), LEATHER, { p: [0.1 * sd * b, 0.025, 0.122] });
+      part(hips, rbox(0.08, 0.03, 0.056, 0.01), shade(LEATHER, 0.85), { p: [0.1 * sd * b, 0.06, 0.124] });
+      part(hips, rbox(0.05, 0.09, 0.075, 0.015), LEATHER, { p: [0.168 * sd * b, 0.02, 0.03] });
     }
     const canteen = buildCanteen();
     canteen.scale.setScalar(0.8);
-    canteen.position.set(0.14 * b, -0.02, -0.14);
+    canteen.position.set(0.13 * b, -0.02, -0.14);
     hips.add(canteen);
 
-    // ---------- Jambes ----------
+    // ---------- Jambes (cargo amples, tibias affinés, grosses bottes) ----------
     for (const sd of [1, -1]) {
       const s = sd === 1 ? 'L' : 'R';
       const leg = this.bone('leg' + s, hips, 0.1 * sd * b, -0.04, 0);
-      part(leg, capsule(0.1 * Math.sqrt(b), 0.24), T.pants, { p: [0, -0.2, 0] });
-      part(leg, rbox(0.05, 0.12, 0.11, 0.018), shade(T.pants, 0.9), { p: [0.095 * sd, -0.23, 0.005] });
-      part(leg, rbox(0.054, 0.03, 0.115, 0.01), shade(T.pants, 0.82), { p: [0.097 * sd, -0.17, 0.005] });
+      part(leg, capsule(0.112 * Math.sqrt(b), 0.24), T.pants, { p: [0, -0.2, 0] });
+      part(leg, rbox(0.056, 0.13, 0.12, 0.02), shade(T.pants, 0.9), { p: [0.1 * sd, -0.23, 0.005] });
+      part(leg, rbox(0.06, 0.032, 0.125, 0.01), shade(T.pants, 0.82), { p: [0.102 * sd, -0.165, 0.005] });
       if (sd === -1) {
         // Holster sur la cuisse droite
-        part(leg, rbox(0.05, 0.14, 0.09, 0.02), LEATHER_DARK, { p: [-0.1, -0.13, 0.02] });
-        part(leg, rbox(0.035, 0.06, 0.03, 0.01), GLOVE, { p: [-0.1, -0.04, 0.035], r: [0.3, 0, 0] });
-        part(leg, box(0.2, 0.02, 0.2), LEATHER_DARK, { p: [0, -0.2, 0] });
+        part(leg, rbox(0.05, 0.14, 0.09, 0.02), LEATHER_DARK, { p: [-0.105, -0.13, 0.02] });
+        part(leg, rbox(0.035, 0.06, 0.03, 0.01), GLOVE, { p: [-0.105, -0.04, 0.035], r: [0.3, 0, 0] });
+        part(leg, box(0.22, 0.02, 0.2), shade(T.pants, 0.7), { p: [0, -0.2, 0] });
       }
       const knee = this.bone('knee' + s, leg, 0, -0.42, 0);
-      part(knee, capsule(0.085 * Math.sqrt(b), 0.24), T.pants, { p: [0, -0.19, 0] });
-      part(knee, rbox(0.11, 0.13, 0.06, 0.025), 0x2c2e30, { p: [0, -0.02, 0.078] });
-      part(knee, box(0.18, 0.018, 0.17), 0x1f2124, { p: [0, -0.02, 0] });
+      part(knee, capsule(0.09 * Math.sqrt(b), 0.24), T.pants, { p: [0, -0.19, 0] });
+      part(knee, rbox(0.13, 0.145, 0.07, 0.03), 0x2c2e30, { p: [0, -0.02, 0.083] });
+      part(knee, box(0.19, 0.02, 0.18), shade(T.pants, 0.7), { p: [0, -0.02, 0] });
+      // pantalon bouffant rentré dans les bottes
+      part(knee, cyl(0.1 * Math.sqrt(b), 0.094, 0.07, 14), shade(T.pants, 0.94), { p: [0, -0.325, 0] });
       const ankle = this.bone('ankle' + s, knee, 0, -0.39, 0);
-      part(ankle, cyl(0.08, 0.083, 0.17, 16), BOOT, { p: [0, 0.04, -0.005] });
-      part(ankle, cyl(0.085, 0.085, 0.025, 16), shade(BOOT, 0.8), { p: [0, 0.12, -0.005] });
-      part(ankle, rbox(0.125, 0.085, 0.26, 0.038), BOOT, { p: [0, -0.04, 0.05] });
-      part(ankle, rbox(0.135, 0.03, 0.28, 0.012), SOLE, { p: [0, -0.078, 0.05] });
-      for (let i = 0; i < 3; i++) part(ankle, box(0.06, 0.008, 0.012), 0x3a2a1e, { p: [0, 0.0 + i * 0.035, 0.078 - i * 0.004], r: [-0.3, 0, 0] });
+      part(ankle, cyl(0.09, 0.095, 0.19, 16), BOOT, { p: [0, 0.045, -0.005] });
+      part(ankle, cyl(0.098, 0.098, 0.032, 16), shade(BOOT, 0.8), { p: [0, 0.135, -0.005] });
+      part(ankle, rbox(0.15, 0.1, 0.29, 0.045), BOOT, { p: [0, -0.035, 0.055] });
+      part(ankle, SPHERE, shade(BOOT, 1.06), { p: [0, -0.04, 0.165], s: [0.074, 0.05, 0.07] }); // bout arrondi
+      part(ankle, rbox(0.16, 0.036, 0.31, 0.012), SOLE, { p: [0, -0.08, 0.055] });
+      for (let i = 0; i < 3; i++) part(ankle, box(0.07, 0.009, 0.013), 0x3a2a1e, { p: [0, 0.005 + i * 0.036, 0.09 - i * 0.004], r: [-0.3, 0, 0] });
     }
 
-    // ---------- Buste ----------
+    // ---------- Buste en V (épaules larges, taille fine) ----------
     const spine = this.bone('spine', hips, 0, 0.06, 0);
-    part(spine, cyl(0.245 * b, 0.185 * b, 0.44, 18), T.shirt, { p: [0, 0.22, 0], s: [1, 1, 0.62] });
-    part(spine, SPHERE, T.shirt, { p: [0, 0.43, 0], s: [0.25 * b, 0.075, 0.155] });
+    part(spine, cyl(0.268 * b, 0.168 * b, 0.44, 18), T.shirt, { p: [0, 0.22, 0], s: [1, 1, 0.6] });
+    part(spine, SPHERE, T.shirt, { p: [0, 0.43, 0], s: [0.28 * b, 0.085, 0.16] });
+    part(spine, SPHERE, T.shirt, { p: [0, 0.465, -0.012], s: [0.17 * b, 0.075, 0.12] }); // trapèzes
     // Gilet tactique
-    part(spine, cyl(0.258 * b, 0.203 * b, 0.3, 18), T.vest, { p: [0, 0.255, 0], s: [1, 1, 0.72] });
+    part(spine, cyl(0.275 * b, 0.19 * b, 0.3, 18), T.vest, { p: [0, 0.255, 0], s: [1, 1, 0.72] });
     for (const sd of [1, -1]) {
-      part(spine, rbox(0.085, 0.05, 0.36, 0.02), T.vest, { p: [0.14 * sd * b, 0.425, 0] });
+      part(spine, rbox(0.095, 0.06, 0.37, 0.022), T.vest, { p: [0.15 * sd * b, 0.43, 0] });
       // sangles cuir façon harnais
-      part(spine, box(0.045, 0.3, 0.016), LEATHER, { p: [0.105 * sd * b, 0.29, 0.182], r: [-0.12, 0, -0.1 * sd] });
-      part(spine, box(0.045, 0.3, 0.016), LEATHER, { p: [0.105 * sd * b, 0.29, -0.182], r: [0.12, 0, -0.1 * sd] });
-      part(spine, box(0.05, 0.025, 0.02), 0xb8a070, { p: [0.11 * sd * b, 0.21, 0.19], metal: 0.6, rough: 0.35 });
+      part(spine, box(0.05, 0.3, 0.018), LEATHER, { p: [0.11 * sd * b, 0.29, 0.186], r: [-0.12, 0, -0.1 * sd] });
+      part(spine, box(0.05, 0.3, 0.018), LEATHER, { p: [0.11 * sd * b, 0.29, -0.186], r: [0.12, 0, -0.1 * sd] });
+      part(spine, box(0.055, 0.028, 0.022), 0xb8a070, { p: [0.115 * sd * b, 0.21, 0.194], metal: 0.6, rough: 0.35 });
     }
     // Poches à chargeurs
     for (let i = -1; i <= 1; i++) {
-      part(spine, rbox(0.075, 0.095, 0.05, 0.015), 0x2a2c30, { p: [i * 0.085 * b, 0.16, 0.16] });
-      part(spine, rbox(0.078, 0.03, 0.055, 0.01), LEATHER, { p: [i * 0.085 * b, 0.205, 0.162] });
+      part(spine, rbox(0.078, 0.1, 0.052, 0.016), 0x2a2c30, { p: [i * 0.088 * b, 0.16, 0.162] });
+      part(spine, rbox(0.082, 0.032, 0.057, 0.01), LEATHER, { p: [i * 0.088 * b, 0.207, 0.164] });
     }
     // Col de chemise + t-shirt noir
     for (const sd of [1, -1]) {
-      part(spine, rbox(0.12, 0.05, 0.09, 0.018), T.shirt, { p: [0.055 * sd, 0.475, 0.06], r: [0.35, 0.45 * sd, 0.25 * sd] });
+      part(spine, rbox(0.12, 0.05, 0.09, 0.018), T.shirt, { p: [0.058 * sd, 0.48, 0.06], r: [0.35, 0.45 * sd, 0.25 * sd] });
     }
-    part(spine, rbox(0.1, 0.07, 0.03, 0.012), 0x1d1f22, { p: [0, 0.45, 0.11], r: [0.2, 0, 0] });
+    part(spine, rbox(0.1, 0.07, 0.03, 0.012), 0x1d1f22, { p: [0, 0.455, 0.112], r: [0.2, 0, 0] });
     // Emblèmes (poitrine et dos)
-    part(spine, emblemGeometry(T.emblem), 0xffffff, { p: [0, 0.335, 0.187], s: 0.072, r: [-0.05, 0, 0], shadow: false });
-    part(spine, emblemGeometry(T.emblem), 0xffffff, { p: [0, 0.3, -0.188], s: 0.1, r: [0.05, Math.PI, 0], shadow: false });
-    // Grenades sur le gilet
+    part(spine, emblemGeometry(T.emblem), 0xffffff, { p: [0, 0.335, 0.193], s: 0.076, r: [-0.05, 0, 0], shadow: false });
+    part(spine, emblemGeometry(T.emblem), 0xffffff, { p: [0, 0.3, -0.194], s: 0.105, r: [0.05, Math.PI, 0], shadow: false });
+    // Équipement propre à chaque classe (silhouette reconnaissable)
     if (this.cls.id === 'assaut') {
       for (let i = 0; i < 2; i++) {
         const g = buildGrenade();
-        g.scale.setScalar(0.85);
-        g.position.set(0.19 * b, 0.25 - i * 0.075, 0.1);
+        g.scale.setScalar(0.9);
+        g.position.set(0.2 * b, 0.25 - i * 0.078, 0.1);
         spine.add(g);
       }
     }
@@ -138,41 +145,54 @@ export class Character {
       const ang = 0.62;
       const dx = -Math.sin(ang);
       const dy = Math.cos(ang);
-      part(spine, box(0.055, 0.5, 0.02), 0x3b3a2a, { p: [0, 0.27, 0.195], r: [0, 0, ang] });
+      part(spine, box(0.058, 0.5, 0.022), 0x3b3a2a, { p: [0, 0.27, 0.203], r: [0, 0, ang] });
       for (let i = 0; i < 8; i++) {
         const a = -0.2 + i * 0.057;
-        part(spine, cyl(0.009, 0.009, 0.05, 6), 0xc9a13a, {
-          p: [a * dx, 0.27 + a * dy, 0.207],
+        part(spine, cyl(0.01, 0.01, 0.054, 6), 0xc9a13a, {
+          p: [a * dx, 0.27 + a * dy, 0.215],
           r: [0, 0, ang + Math.PI / 2],
           metal: 0.7,
           rough: 0.3,
         });
       }
+      // Épaulières blindées : silhouette massive
+      for (const sd of [1, -1]) {
+        part(spine, rbox(0.17, 0.065, 0.24, 0.03), T.vest, { p: [0.27 * sd * b, 0.465, 0], r: [0, 0, -0.38 * sd] });
+        part(spine, rbox(0.172, 0.022, 0.242, 0.01), T.shirtDark, { p: [0.285 * sd * b, 0.44, 0], r: [0, 0, -0.38 * sd] });
+      }
+    }
+    if (this.cls.id === 'commando') {
+      // Fourreau de poignard sur la sangle gauche
+      part(spine, rbox(0.034, 0.16, 0.034, 0.012), LEATHER_DARK, { p: [0.13 * b, 0.3, 0.2], r: [0, 0, 0.25] });
+      part(spine, rbox(0.03, 0.05, 0.03, 0.01), GLOVE, { p: [0.15 * b, 0.39, 0.2], r: [0, 0, 0.25] });
     }
 
-    // ---------- Bras ----------
+    // ---------- Bras (deltoïdes marqués, avant-bras lisibles, gros poings) ----------
     for (const sd of [1, -1]) {
       const s = sd === 1 ? 'L' : 'R';
+      const sb = Math.sqrt(b);
       const sh = this.bone('shoulder' + s, spine, 0.25 * sd * b, 0.42, 0);
-      part(sh, SPHERE, T.shirt, { p: [0.012 * sd, -0.02, 0], s: [0.098 * b, 0.1, 0.105] });
-      part(sh, capsule(0.08 * Math.sqrt(b), 0.1), T.shirt, { p: [0, -0.1, 0] });
-      part(sh, cyl(0.086 * Math.sqrt(b), 0.088 * Math.sqrt(b), 0.065, 16), T.cuff, { p: [0, -0.18, 0] });
-      part(sh, capsule(0.064 * Math.sqrt(b), 0.1), skin, { p: [0, -0.235, 0] });
-      if (sd === 1) part(sh, emblemGeometry(T.emblem), 0xffffff, { p: [0.083 * Math.sqrt(b), -0.09, 0], s: 0.042, r: [0, Math.PI / 2, 0], shadow: false });
+      part(sh, SPHERE, T.shirt, { p: [0.022 * sd, -0.015, 0], s: [0.114 * b, 0.112, 0.118] });
+      part(sh, capsule(0.086 * sb, 0.1), T.shirt, { p: [0, -0.1, 0] });
+      part(sh, cyl(0.093 * sb, 0.095 * sb, 0.07, 16), T.cuff, { p: [0, -0.18, 0] });
+      part(sh, capsule(0.068 * sb, 0.1), skin, { p: [0, -0.235, 0] });
+      if (sd === 1) part(sh, emblemGeometry(T.emblem), 0xffffff, { p: [0.091 * sb, -0.09, 0], s: 0.045, r: [0, Math.PI / 2, 0], shadow: false });
       const el = this.bone('elbow' + s, sh, 0, -UPPER_ARM, 0);
-      part(el, capsule(0.058 * Math.sqrt(b), 0.17), skin, { p: [0, -0.12, 0] });
-      part(el, SPHERE, skin, { p: [0, -0.07, 0.005], s: [0.064 * Math.sqrt(b), 0.08, 0.062] });
-      part(el, cyl(0.05, 0.053, 0.04, 12), GLOVE, { p: [0, -0.255, 0] });
+      part(el, capsule(0.062 * sb, 0.19), skin, { p: [0, -0.13, 0] });
+      part(el, SPHERE, skin, { p: [0, -0.085, 0.006], s: [0.075 * sb, 0.1, 0.071] });
+      part(el, cyl(0.058, 0.063, 0.05, 12), GLOVE, { p: [0, -0.275, 0] });
       const hand = this.bone('hand' + s, el, 0, -FOREARM, 0);
-      part(hand, rbox(0.085, 0.085, 0.08, 0.03), GLOVE, { p: [0, -0.045, 0.005] });
-      part(hand, rbox(0.08, 0.035, 0.07, 0.014), skin, { p: [0, -0.095, 0.01] });
-      part(hand, capsule(0.017, 0.035), skin, { p: [-0.045 * sd, -0.06, 0.03], r: [0.4, 0, 0.5 * sd] });
+      part(hand, rbox(0.1, 0.1, 0.092, 0.035), GLOVE, { p: [0, -0.05, 0.005] });
+      part(hand, rbox(0.094, 0.042, 0.08, 0.016), skin, { p: [0, -0.106, 0.01] });
+      part(hand, capsule(0.02, 0.04), skin, { p: [-0.052 * sd, -0.065, 0.034], r: [0.4, 0, 0.5 * sd] });
     }
 
     // ---------- Cou / tête ----------
     const neck = this.bone('neck', spine, 0, 0.47, 0.005);
-    part(neck, cyl(0.06, 0.066, 0.13, 14), skin, { p: [0, 0.04, 0] });
+    part(neck, cyl(0.068, 0.075, 0.13, 14), skin, { p: [0, 0.04, 0] });
     const head = this.bone('head', neck, 0, 0.08, 0.012);
+    // Tête légèrement surdimensionnée (lisibilité du visage à distance)
+    head.scale.setScalar(HEAD_SCALE);
     this.face = new Face(head, {
       skin,
       hair: C.hair,
@@ -204,7 +224,7 @@ export class Character {
     const e = this.team.emblem;
     const B = this.bones;
     if (custom.backpack) {
-      const bp = buildBackpack(e);
+      const bp = buildBackpack(e, this.team.shirt);
       bp.position.set(0, 0.26, -0.255);
       bp.rotation.y = Math.PI;
       if (this.cls.look.build > 1) bp.scale.setScalar(1.08);
@@ -217,7 +237,15 @@ export class Character {
       B.head.add(g);
       this.accessories.glasses = g;
     }
-    if (custom.bandana) {
+    if (this.cls.id === 'commando') {
+      // Écharpe (shemagh) : silhouette du tireur d'élite
+      const sc = buildBandana(0x7a7352);
+      sc.scale.set(1.32, 1.5, 1.32);
+      sc.position.set(0, 0.03, 0.004);
+      B.neck.add(sc);
+      this.accessories.scarf = sc;
+    }
+    if (custom.bandana && this.cls.id !== 'commando') {
       const g = buildBandana(this.teamId === 'blue' ? 0x3a67c8 : 0xc0453a);
       g.position.set(0, 0.05, 0.0);
       B.neck.add(g);
