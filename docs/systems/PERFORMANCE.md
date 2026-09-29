@@ -38,8 +38,22 @@ Mesures répétées par le test, sur le même code (détail : [MASTER-ASSAULT-BA
 - logique 16v16 sur les 60 s qui suivent le déploiement : **3,5 à 3,9 ms** en moyenne, p99 8,5 à 9,9 ms, 1 à 4 images > 16 ms. Plus élevé que les 1,66 ms ci-dessus (autre fenêtre de mesure, autre machine, même code) : c'est la valeur de référence pour le travail sur le personnage ;
 - mémoire stable sur 3 relances 16v16 (827 géométries GPU à chaque fois).
 
+## Étape M1 (rendu optimisé des soldats, chemin par défaut)
+Mesuré le 2026-09-29, même code de jeu ; détail : [MASTER-ASSAULT-M1](../characters/MASTER-ASSAULT-M1.md).
+
+| Mesure (16v16) | M0 / legacy | M1 |
+| --- | --- | --- |
+| Vue de jeu de référence (place B, 4 directions) | 502 à 865 appels | **156 à 265 appels** |
+| Scène chargée (32 soldats proches) | 811 à 993 appels | **208 à 313 appels** |
+| Appels par soldat (scène chargée) | 22 à 25 | 3,8 à 4,4 |
+| Géométries GPU (3 relances) | 827 | 347 |
+| Mémoire JS (3 relances) | 163 à 165 Mo | 143 à 146 Mo |
+| Logique moyenne | 3,1 à 3,9 ms | 2,5 à 3,8 ms |
+
+L'objectif « ≤ 250 appels » est atteint dans la plupart des vues de référence. Triangles envoyés : un peu plus nombreux en vue de jeu (+15 à +30 % environ : une sphère englobante par soldat au lieu d'une par os). FPS sur vrai GPU et téléphone : **non mesurés**.
+
 ## Techniques en place
-- Décor statique fusionné en paquets de 1 500 maillages (`bakeStatic`) ; personnages fusionnés par os, arme fusionnée à part sous son support animé (`bakeHierarchy`) ; véhicules fusionnés par pièce mobile.
+- Décor statique fusionné en paquets de 1 500 maillages (`bakeStatic`) ; soldats : corps en un `SkinnedMesh` à peau rigide lié aux os existants, géométrie indexée (`bakeSkinned`, chemin M1 par défaut) ou fusion par os (`bakeHierarchy`, chemin legacy) ; arme fusionnée à part sous son support animé ; véhicules fusionnés par pièce mobile.
 - Matériaux en cache (`mat()`), géométries partagées marquées (`markShared`), libération par `disposeTree` (véhicules, drapeaux, projectiles, personnages).
 - Réserve de modèles de soldats par équipe et classe, remplie pendant l'écran de déploiement (2 par case, 1 en tactile).
 - Budget de 3 recherches A* par image ; obstacles temporaires de navigation mis à jour toutes les 0,5 s.

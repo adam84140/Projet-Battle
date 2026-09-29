@@ -1,0 +1,12 @@
+{
+ "note": "Empreintes SHA-256 des pixels des planches M0 (chemin LEGACY_RENDER_PATH), rendu logiciel SwiftShader du conteneur Cloud",
+ "lineups": {
+  "lineup-assaut-blue": "d8f03b7301e829d67aa8fdff9fde9d05d4b3e663b54cd4690c4549bba7fb35ca",
+  "lineup-assaut-red": "8bed0b3edc95386944230c2b5996734583e01372459d58a24253df1562ce41ee",
+  "lineup-assaut-blue-sans-sac": "4b69282a824d18ef2930d7b7d005ac7c7e18eba9111452c3beacb4efc101151d",
+  "lineup-artilleur-blue": "4babb335683df267384a30ec17b84c9974b50abaccb5412685f5f211efc49bb7",
+  "lineup-artilleur-red": "1d964f2bdd6b42dee84be4d3394b615b616ce6e4e9b3cd69d30a6a52d2172a1d",
+  "lineup-commando-blue": "271bb232bf84bdf239404d3fd109f254f24c9d5d34ccb8a1181755afc5d3610c",
+  "lineup-commando-red": "6f757a9f1d803e0c5bacf8e31a876ae70cda809cdd172aad8b1382d5101adeac"
+ }
+}

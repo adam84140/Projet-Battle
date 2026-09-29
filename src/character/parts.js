@@ -154,6 +154,115 @@ export function bakeHierarchy(root, { material = bakedMaterial, shadow = true } 
   return root;
 }
 
+// ---------- Chemin de rendu M1 (voir renderPath.js) ----------
+// Même principe que prepareGeometry (couleurs de sommets, sans UV), mais la géométrie
+// garde son index d'origine : mêmes sommets, mêmes normales, mêmes triangles, moins de mémoire.
+function prepareIndexed(mesh, relMatrix) {
+  let g = mesh.geometry.clone();
+  g.applyMatrix4(relMatrix);
+  for (const name of Object.keys(g.attributes)) {
+    if (name !== 'position' && name !== 'normal') g.deleteAttribute(name);
+  }
+  g.morphAttributes = {};
+  g.clearGroups();
+  if (!g.attributes.normal) {
+    // normales calculées comme la fusion par os (triangles séparés)
+    if (g.index) g = g.toNonIndexed();
+    g.computeVertexNormals();
+  }
+  const n = g.attributes.position.count;
+  if (!g.index) {
+    const idx = new Uint32Array(n);
+    for (let i = 0; i < n; i++) idx[i] = i;
+    g.setIndex(new THREE.BufferAttribute(idx, 1));
+  }
+  const color = mesh.material.color || new THREE.Color(0xffffff);
+  const colors = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    colors[i * 3] = color.r;
+    colors[i * 3 + 1] = color.g;
+    colors[i * 3 + 2] = color.b;
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  return g;
+}
+
+// Collecte les maillages rattachés à un propriétaire (os ou groupe animé), avec la même règle que bakeHierarchy
+function collectOwned(owner, out) {
+  for (const child of owner.children) {
+    if (child.userData.bone || child.userData.bakeOwner || child.userData.dynamic || child.userData.noBake) continue;
+    if (child.isMesh && child.visible) out.push(child);
+    collectOwned(child, out);
+  }
+  return out;
+}
+
+// Fusion indexée d'un seul propriétaire (arme sur son support) : un maillage, comme bakeHierarchy
+export function bakeIndexed(owner, { material = bakedMaterial, shadow = true } = {}) {
+  owner.updateMatrixWorld(true);
+  const meshes = collectOwned(owner, []);
+  if (meshes.length < 2) return null;
+  const inv = new THREE.Matrix4().copy(owner.matrixWorld).invert();
+  const rel = new THREE.Matrix4();
+  const geos = meshes.map((m) => prepareIndexed(m, rel.multiplyMatrices(inv, m.matrixWorld)));
+  const merged = mergeGeometries(geos, false);
+  geos.forEach((g) => g.dispose());
+  if (!merged) return null;
+  for (const m of meshes) m.parent.remove(m);
+  const mesh = new THREE.Mesh(merged, material);
+  mesh.castShadow = shadow;
+  mesh.userData.baked = true;
+  owner.add(mesh);
+  return mesh;
+}
+
+// Fusionne tout le corps d'un personnage en UN SkinnedMesh lié aux os existants (userData.bone),
+// sans les remplacer : chaque sommet suit à 100 % l'os qui portait sa pièce (peau rigide),
+// exactement comme les maillages fusionnés par os. Arme, chargeur, éclair et poignard restent à part.
+// `sphere` : sphère englobante fixe (repère du personnage), assez large pour toutes les poses.
+export function bakeSkinned(root, { material = bakedMaterial, shadow = true, sphere = null } = {}) {
+  root.updateMatrixWorld(true);
+  const bones = [root];
+  root.traverse((o) => {
+    if (o !== root && o.userData.bone) bones.push(o);
+  });
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert();
+  const rel = new THREE.Matrix4();
+  const geos = [];
+  const taken = [];
+  bones.forEach((owner, bi) => {
+    for (const m of collectOwned(owner, [])) {
+      const g = prepareIndexed(m, rel.multiplyMatrices(inv, m.matrixWorld));
+      const n = g.attributes.position.count;
+      const skinIndex = new Uint8Array(n * 4);
+      const skinWeight = new Uint8Array(n * 4);
+      for (let i = 0; i < n; i++) {
+        skinIndex[i * 4] = bi;
+        skinWeight[i * 4] = 255;
+      }
+      g.setAttribute('skinIndex', new THREE.BufferAttribute(skinIndex, 4));
+      g.setAttribute('skinWeight', new THREE.BufferAttribute(skinWeight, 4, true));
+      geos.push(g);
+      taken.push(m);
+    }
+  });
+  if (!geos.length) return null;
+  const merged = mergeGeometries(geos, false);
+  geos.forEach((g) => g.dispose());
+  if (!merged) return null;
+  for (const m of taken) m.parent.remove(m);
+  const mesh = new THREE.SkinnedMesh(merged, material);
+  mesh.name = 'body';
+  mesh.castShadow = shadow;
+  mesh.userData.baked = true;
+  mesh.userData.skinned = true;
+  root.add(mesh);
+  mesh.bind(new THREE.Skeleton(bones));
+  if (sphere) mesh.boundingSphere = sphere.clone();
+  else mesh.computeBoundingSphere();
+  return mesh;
+}
+
 // Fusionne un groupe statique entier (décor) en un maillage par matériau "vertex colors"
 export function bakeStatic(group, { shadow = true, receive = true } = {}) {
   group.updateMatrixWorld(true);

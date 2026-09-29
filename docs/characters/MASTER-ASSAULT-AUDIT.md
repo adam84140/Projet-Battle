@@ -1,6 +1,6 @@
 # Master Assault — audit technique et plan de migration
 
-**Statut : audit accepté par le propriétaire (2026-09-29). Étape M0 terminée ([référence M0](MASTER-ASSAULT-BASELINE.md)) ; M1 et suivantes NON autorisées** (chacune demandera une autorisation explicite). Aucun code du jeu n'a été modifié pour cet audit. Base auditée : branche `claude/dazzling-cray-gn1bg5`, code du jeu identique à `05827b4` ; mesures du 2026-09-29 dans le conteneur Cloud (Chromium sans GPU : appels de rendu, triangles, mémoire et temps de construction sont fiables ; les FPS ne le sont pas).
+**Statut : audit accepté par le propriétaire (2026-09-29). Étape M0 terminée ([référence M0](MASTER-ASSAULT-BASELINE.md)) ; étape M1 terminée, en attente d'acceptation ([M1](MASTER-ASSAULT-M1.md)) ; M2 et suivantes NON autorisées** (chacune demandera une autorisation explicite). Aucun code du jeu n'a été modifié pour cet audit. Base auditée : branche `claude/dazzling-cray-gn1bg5`, code du jeu identique à `05827b4` ; mesures du 2026-09-29 dans le conteneur Cloud (Chromium sans GPU : appels de rendu, triangles, mémoire et temps de construction sont fiables ; les FPS ne le sont pas).
 
 Cible : [MASTER-ASSAULT](MASTER-ASSAULT.md) · chaîne : [CHARACTER-PIPELINE](CHARACTER-PIPELINE.md) · références : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md) · décisions : D-002, D-003, D-007, D-009, D-010, D-011 ([DECISIONS](../DECISIONS.md)).
 
@@ -120,7 +120,7 @@ Chaque étape : un ou plusieurs petits commits, `npm test` vert, captures avant 
 | Étape | Contenu | Risque | Qui | Résultat vérifiable |
 | --- | --- | --- | --- | --- |
 | **M0** Tests protecteurs ✅ [fait](MASTER-ASSAULT-BASELINE.md) | nouveau test `test:character` : maillages, appels et triangles par soldat, mémoire par soldat et sur rotation de la réserve, écart mains / points de prise dans les 18 poses (< 1 cm), écart tête visible / sphère de tête, temps de construction ; captures de référence `turn`, `poses`, `game` | aucun (tests seulement) | Claude | chiffres de ce document reproduits par un test |
-| **M1** Prototype à peau rigide | les os deviennent des `THREE.Bone` (même nom, même rôle) ; nouvelle fusion en **un seul `SkinnedMesh`** (chaque sommet lié à 100 % à son os), arme à part ; sphère englobante fixe ; variante transparente pour le camouflage ; derrière le réglage `skinned-proto` | moyen : touche `Character.bake` et `parts.js` (système central) ; le chemin actuel reste intact | Claude | rendu identique en A/B (même géométrie, mêmes couleurs) ; 18 → 3 maillages visibles par soldat ; appels de rendu 16v16 remesurés |
+| **M1** Prototype à peau rigide ✅ [fait](MASTER-ASSAULT-M1.md) | les os deviennent des `THREE.Bone` (même nom, même rôle) ; nouvelle fusion en **un seul `SkinnedMesh`** (chaque sommet lié à 100 % à son os), arme à part ; sphère englobante fixe ; variante transparente pour le camouflage ; derrière le réglage `skinned-proto` | moyen : touche `Character.bake` et `parts.js` (système central) ; le chemin actuel reste intact | Claude | rendu identique en A/B (même géométrie, mêmes couleurs) ; 18 → 3 maillages visibles par soldat ; appels de rendu 16v16 remesurés |
 | **M2** Adaptateur de squelette | reciblage vers un squelette aux repères quelconques (A-pose), IK des mains sur ses longueurs ; **squelette d'essai synthétique** exporté depuis le modèle actuel en A-pose (présenté comme donnée de test, pas comme art) ; script de contrôle d'un `.glb` (noms d'os, sockets, triangles, matériaux, textures, échelle, orientation) sans dépendance | moyen : nouveau code isolé | Claude | mains < 1 cm, hitboxes identiques, poses A/B avec le squelette d'essai |
 | **M3** Matériau à masque d'équipe | matériau stylisé partagé : couleurs d'équipe (primaire, secondaire, emblème), teint et cheveux par uniformes ; emblèmes canoniques (aigle / étoile, D-011) en décalque | faible | Claude | bleu et rouge depuis une seule géométrie et une seule texture ; test bleu/rouge à 5, 20 et 40 m |
 | **M4** Asset de production | modèle, topologie, UV, textures peintes, rig canonique, sockets, LOD 0/1/2, morph targets du visage, clips (rechargement, grenade, soin, geste, morts, assis), selon les images 01 et 02, **sans sac par défaut** (D-010), sac en `acc_backpack` | élevé (qualité artistique, délais) | **artiste 3D / Blender** ; Claude fournit contrat, liste de contrôle et vérification | `.glb` qui passe le script de contrôle |
@@ -142,7 +142,7 @@ Ensuite seulement : Artilleur et Commando sur la même architecture ([ROADMAP](.
 | Mémoire | après M3 et M5 : une géométrie et une texture partagées par classe ; asset < 1,5 Mo LOD compris |
 
 ## 6 bis. Bénéfice attendu de M1, révisé après M0
-Estimations à partir des mesures M0 ; M1 doit les **mesurer** avec `test:character`.
+Estimations faites avant M1 ; **mesures réelles** dans [MASTER-ASSAULT-M1](MASTER-ASSAULT-M1.md) (vue de jeu 16v16 : 156 à 265 appels ; scène chargée : 208 à 313 ; géométrie −28,5 %).
 
 | Mesure | M0 (actuel) | Après M1 (estimation) |
 | --- | --- | --- |

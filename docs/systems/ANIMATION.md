@@ -22,6 +22,8 @@ root
 ```
 Convention : le personnage regarde +Z ; sa droite est −X.
 
+Rendu en jeu (étape M1, [MASTER-ASSAULT-M1](../characters/MASTER-ASSAULT-M1.md)) : ces groupes restent le squelette animé ; le corps est un `SkinnedMesh` qui les suit (chemin `M1_OPTIMIZED_RENDER_PATH`, par défaut), ou des maillages fusionnés par os (chemin `LEGACY_RENDER_PATH`). L'animation est identique dans les deux cas.
+
 ## Couverture actuelle
 Repos combat, marche, course, sprint (arme portée), marche arrière, pas chassés (rotation des hanches), accroupi, pivot sur place (petits pas), saut (montée et chute continues), réception, visée, tir et recul, rechargement (chargeur retiré), lancer de grenade, poignard, soin, geste de compétence, réactions aux impacts, mort en deux temps (trois variantes), assis (jeep), A-pose (fiche).
 

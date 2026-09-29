@@ -19,6 +19,9 @@ description: Produire ou intégrer un personnage de production pour Frontline Le
 - 1 matériau corps + 1 arme (≤ 3 par soldat) ; atlas partagé ; **masque de couleurs d'équipe** : un seul modèle et une seule texture pour bleu et rouge.
 - LOD0 12 000 à 18 000 triangles, LOD1 ≈ 5 000, LOD2 ≈ 1 500 ; ≤ 4 appels de rendu par soldat en LOD0.
 
+## État (étape M1)
+Le personnage actuel est déjà rendu en un `SkinnedMesh` lié aux 16 groupes animés (chemin `M1_OPTIMIZED_RENDER_PATH`, `bakeSkinned` dans `parts.js`) ; le chemin `LEGACY_RENDER_PATH` reste le repli. Ces groupes sont le **squelette de gameplay** : hitboxes, support d'arme, bouche du canon, IK. Un asset de production s'y branchera par l'adaptateur de M2 (D-015). Voir [MASTER-ASSAULT-M1](../../../docs/characters/MASTER-ASSAULT-M1.md).
+
 ## Intégration (ce que Claude fait dans le code)
 1. Charger une fois (`GLTFLoader`), cloner par soldat (`SkeletonUtils.clone`), partager matériaux et textures.
 2. Brancher l'`Animator` existant sur les os portant les mêmes noms ; garder l'IK des mains (`solveTwoBone`) et les points de prise de l'arme.

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { TEAMS, CLASSES, DEFAULT_CUSTOM } from '../config.js';
-import { part, rbox, cyl, capsule, box, SPHERE, shade, bakeHierarchy, bakedMaterial, setDetail, disposeTree } from './parts.js';
+import { part, rbox, cyl, capsule, box, SPHERE, shade, bakeHierarchy, bakeIndexed, bakeSkinned, bakedMaterial, setDetail, disposeTree } from './parts.js';
+import { getCharacterRenderPath, LEGACY_RENDER_PATH } from './renderPath.js';
 import { emblemGeometry } from './emblems.js';
 import { Face } from './face.js';
 import { buildWeapon, buildKnife } from './weapons.js';
@@ -13,12 +14,16 @@ const GLOVE = 0x1f2124;
 const BOOT = 0x6b4a2e;
 const SOLE = 0x2a1f18;
 const HEAD_SCALE = 1.13;
+// Sphère englobante fixe du corps en SkinnedMesh (repère du personnage) : elle doit contenir
+// toutes les poses, morts comprises, pour qu'un soldat ne disparaisse jamais au bord de l'écran
+const BODY_BOUNDS = new THREE.Sphere(new THREE.Vector3(0, 0.9, 0), 2.2);
 
 // Héros stylisé construit entièrement en code (≈ 1,85 m).
 // Le personnage regarde vers +Z ; sa droite est donc du côté -X.
 export class Character {
-  constructor({ team = 'blue', classId = 'assaut', custom = {}, weapon = true, bake = false, expression = 'determine' } = {}) {
+  constructor({ team = 'blue', classId = 'assaut', custom = {}, weapon = true, bake = false, expression = 'determine', renderPath = getCharacterRenderPath() } = {}) {
     this.teamId = team;
+    this.renderPath = renderPath;
     this.team = TEAMS[team];
     this.cls = CLASSES[classId];
     this.custom = { ...DEFAULT_CUSTOM, ...custom };
@@ -286,10 +291,28 @@ export class Character {
     this.animator.update(dt);
   }
 
-  // Fusionne les maillages (utilisé en jeu pour les performances)
+  // Fusionne les maillages (utilisé en jeu pour les performances), selon le chemin de rendu (renderPath.js)
   bake() {
     const hiddenKnife = this.knife.visible;
-    bakeHierarchy(this.root);
+    if (this.renderPath === LEGACY_RENDER_PATH) {
+      bakeHierarchy(this.root);
+    } else {
+      // M1 : les os restent les groupes animés actuels (squelette de gameplay), le corps devient
+      // un seul SkinnedMesh qui les suit ; l'arme garde son maillage sous son support animé
+      if (this.weapon) bakeIndexed(this.weapon.group);
+      // Liaison dans la pose de repos du squelette (rotations nulles), indépendante de la phase de
+      // respiration tirée au hasard par l'Animator : rendu reproductible au pixel près. La pose
+      // courante est rétablie juste après ; l'animation n'est pas modifiée.
+      const saved = Object.values(this.bones).map((b) => [b, b.quaternion.clone(), b.position.clone()]);
+      for (const b of Object.values(this.bones)) b.quaternion.identity();
+      this.bones.hips.position.y = this.hipsHeight;
+      this.skinnedBody = bakeSkinned(this.root, { sphere: BODY_BOUNDS });
+      for (const [b, q, p] of saved) {
+        b.quaternion.copy(q);
+        b.position.copy(p);
+      }
+      this.root.updateMatrixWorld(true);
+    }
     this.knife.visible = hiddenKnife;
     this.baked = true;
   }
@@ -334,6 +357,7 @@ export class Character {
 
   dispose() {
     disposeTree(this.root);
+    if (this.skinnedBody) this.skinnedBody.skeleton.dispose(); // texture des os
     if (this._ghostMat) this._ghostMat.dispose();
   }
 }

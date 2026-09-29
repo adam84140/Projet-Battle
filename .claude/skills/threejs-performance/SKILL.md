@@ -32,6 +32,9 @@ Règle immédiate : **ne pas régresser** par rapport aux mesures de référence
 - Budget de 3 recherches A* par image ; particules dans deux `Points` (3 000 max chacun).
 - Ombres : une lumière directionnelle qui suit le joueur (alignée sur les texels), carte 2048 (1024 en tactile).
 
+## Soldats : chemins de rendu
+`src/character/renderPath.js` : `M1_OPTIMIZED_RENDER_PATH` (par défaut, corps en un `SkinnedMesh`) ou `LEGACY_RENDER_PATH` (fusion par os). Comparer avec `?rendu=legacy|m1` ou `RENDU=legacy|m1` ; `npm run test:character` mesure les deux ([MASTER-ASSAULT-M1](../../../docs/characters/MASTER-ASSAULT-M1.md)).
+
 ## Pièges
 - Toute nouvelle géométrie créée en boucle (projectiles, effets) doit être libérée ou mise en réserve.
 - Ne pas changer l'ordre des tirages aléatoires du décor pour « optimiser » (voir `CLAUDE.md`).

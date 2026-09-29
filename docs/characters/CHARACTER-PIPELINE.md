@@ -65,7 +65,7 @@ Toute évolution du contrat est notée dans [DECISIONS](../DECISIONS.md).
 Détaillé et chiffré dans [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (étapes M0 à M7).
 
 1. Figer la spécification ([MASTER-ASSAULT](MASTER-ASSAULT.md)) avec le propriétaire du projet.
-2. **Prototype d'intégration** : convertir le personnage procédural actuel en SkinnedMesh (un maillage, mêmes os) pour valider chargeur, animateur, sockets, IK, hitboxes et performance sans attendre l'art définitif. Il doit rester présenté comme un prototype.
+2. **Prototype d'intégration** : convertir le personnage procédural actuel en SkinnedMesh (un maillage, mêmes os) pour valider chargeur, animateur, sockets, IK, hitboxes et performance sans attendre l'art définitif. Il doit rester présenté comme un prototype. **Fait en M1** pour le corps, l'animateur, l'IK, les hitboxes et la performance ([MASTER-ASSAULT-M1](MASTER-ASSAULT-M1.md)) ; chargeur glTF et sockets relèvent de M2 et M5.
 3. Production de l'asset dans Blender selon le contrat.
 4. Intégration de l'asset, LOD, validation, comparaison A/B.
 5. Gel du squelette (D-003 passe à LOCKED), puis Artilleur et Commando.

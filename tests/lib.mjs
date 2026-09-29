@@ -28,6 +28,8 @@ export async function launch(options = {}) {
       .then((response) => route.fulfill({ response }))
       .catch(() => route.abort()),
   );
+  // Chemin de rendu des soldats imposé à tout le parcours : RENDU=legacy|m1 npm test (voir src/character/renderPath.js)
+  if (process.env.RENDU) await context.addInitScript((r) => (window.__RENDU = r), process.env.RENDU);
   const page = await context.newPage();
   const errors = [];
   page.on('console', (m) => {

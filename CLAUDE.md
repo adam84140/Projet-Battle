@@ -36,8 +36,9 @@ npm run test:smoke    # parcours complet ordinateur (48 vérifications)
 npm run test:touch    # téléphone émulé
 npm run test:camera   # caméra jamais dans le décor
 npm run test:bots     # partie simulée 3 min : blocages, combats, captures
-npm run test:character # personnage : coût, mains / arme, tête / hitbox, 16v16, mémoire (référence M0)
-npm test              # les cinq à la suite
+npm run test:character # personnage : chemins de rendu legacy et M1 comparés, 16v16, mémoire, téléphone
+npm test              # les cinq à la suite (chemin de rendu par défaut)
+RENDU=legacy npm test # les cinq sur le chemin de repli (tant que le chemin legacy existe)
 ```
 Si un changement touche un système non couvert : ajouter une vérification au test adapté. Procédure détaillée : skill `gameplay-regression`.
 

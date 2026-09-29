@@ -107,3 +107,9 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Statut :** LOCKED pour la direction ; **PENDING** pour le rendu à grande distance
 - **Décision :** architecture de matériau de production **partagée**, asset de personnage **partagé**, **masque de couleurs d'équipe** bleu/rouge, pas de géométrie ni de texture dupliquées par équipe, nombre de matériaux minimal.
 - **En attente :** la stratégie « couleurs de sommets à grande distance » (LOD2) reste **provisoire** : elle ne sera verrouillée que si des mesures visuelles et de performance montrent un gain réel sans dégrader visiblement la cible officielle.
+
+## D-017 — CHEMINS DE RENDU DES SOLDATS (ÉTAPE M1)
+- **Statut :** PENDING (implémenté et validé par les tests le 2026-09-29 ; acceptation du propriétaire attendue)
+- **Décision :** les soldats en jeu ont deux chemins de rendu, choisis dans `src/character/renderPath.js` : `LEGACY_RENDER_PATH` (fusion par os, référence M0, conservé intact) et `M1_OPTIMIZED_RENDER_PATH` (corps en un `SkinnedMesh` lié au squelette de gameplay existant, arme indexée). **M1 est le chemin par défaut**, legacy reste disponible (`?rendu=legacy`, `RENDU=legacy npm test`, ou une ligne à changer).
+- **Raison :** diviser par 3 à 4 les appels de rendu en 16v16 sans toucher au gameplay ([MASTER-ASSAULT-M1](characters/MASTER-ASSAULT-M1.md)).
+- **Conséquences :** le squelette de gameplay (16 `Group` animés) reste la source des hitboxes, du support d'arme, de la bouche du canon et de l'IK ; le futur adaptateur (D-015, M2) s'y branchera. Le chemin legacy ne sera retiré qu'avec l'accord du propriétaire.

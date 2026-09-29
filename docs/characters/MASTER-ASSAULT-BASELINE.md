@@ -10,6 +10,9 @@ Mesures dans le conteneur Cloud (Chromium sans GPU, rendu logiciel) : objets de 
 | `tests/character.mjs` (`npm run test:character`, inclus dans `npm test`) | 53 vérifications : coût par soldat, alignements, planches A/B, partie 16v16, mémoire sur relances, erreurs console. Écrit `test-results/character/metrics.json` et les captures. |
 | `tests/character-probe.js` + `tests/character.html` | sonde en lecture seule : construit des personnages dans 25 états d'animation et mesure. Aucune modification du jeu. |
 | `tests/baselines/character-m0.json` | mesures complètes de la référence M0 (une exécution), pour les comparaisons chiffrées de M1. |
+| `tests/baselines/character-m0-lineups.json` | (ajouté en M1) empreintes SHA-256 des pixels des 7 planches M0 : le chemin legacy doit les reproduire exactement. |
+
+Depuis M1, `tests/character.mjs` compare les deux chemins de rendu dans la même exécution (72 vérifications) : voir [MASTER-ASSAULT-M1](MASTER-ASSAULT-M1.md).
 
 Les gardes marquées **« problème connu »** encadrent un défaut **déjà présent** : elles empêchent qu'il s'aggrave, ce ne sont pas des objectifs de qualité. Les seuils sont en tête de `tests/character.mjs`.
 

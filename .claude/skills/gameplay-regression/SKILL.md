@@ -12,7 +12,8 @@ npm run test:smoke     # ordinateur : 48 vérifications
 npm run test:touch     # téléphone émulé 844×390
 npm run test:camera    # caméra jamais dans un mur, un feuillage ou le sol
 npm run test:bots      # partie simulée 3 min
-npm run test:character # personnage : coût par soldat, mains / arme, tête / hitbox, 16v16, mémoire
+npm run test:character # personnage : chemins legacy et M1 comparés, 16v16, mémoire, téléphone
+RENDU=legacy npm test  # tout le parcours sur le chemin de rendu de repli (si le personnage ou le rendu a changé)
 ```
 Rendu logiciel (SwiftShader) : les tests avancent la simulation par pas fixes (`step()` dans `tests/lib.mjs`) ; ne pas attendre en temps réel.
 
