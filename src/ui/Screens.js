@@ -44,7 +44,7 @@ export class UI {
             <button class="btn" data-act="controls">${icon('keyboard')} Commandes</button>
             <button class="btn" data-act="settings">${icon('gear')} Paramètres</button>
           </div>
-          <p class="note touch-note">Le jeu se joue au clavier et à la souris sur ordinateur. La fiche personnage fonctionne partout.</p>
+          <p class="note touch-note">Sur téléphone : joystick à gauche, glissez à droite pour viser, boutons d'action à droite. Le mode paysage est conseillé.</p>
         </div>
         <div class="menu-right">
           <div class="quote"></div>
@@ -110,6 +110,14 @@ export class UI {
         <dt><kbd>E</kbd></dt><dd>Monter / descendre d'un véhicule</dd>
         <dt><kbd>Tab</kbd></dt><dd>Tableau des scores</dd>
         <dt><kbd>Échap</kbd></dt><dd>Pause</dd>
+      </dl>
+      <h3 class="panel-title" style="font-size:20px;margin:6px 0 0">Sur écran tactile</h3>
+      <dl class="keys">
+        <dt>Pouce gauche</dt><dd>Joystick : se déplacer (à fond vers l'avant pour sprinter)</dd>
+        <dt>Pouce droit</dt><dd>Glisser pour viser ; le bouton de tir se glisse aussi</dd>
+        <dt>Boutons</dt><dd>Tir, Viser, Saut, Accroupi, Recharger</dd>
+        <dt>Icônes 1 2 3</dt><dd>Compétences (touchez l'icône)</dd>
+        <dt>Invite</dt><dd>Touchez « Monter dans… » pour prendre un véhicule</dd>
       </dl>
       <p class="note">Dans le char : la souris oriente la tourelle, clic gauche pour tirer un obus. La jeep écrase les ennemis à pleine vitesse !</p>
     </div>
@@ -256,6 +264,18 @@ export class UI {
 
   bindGame() {
     const g = this.game;
+    if (g.touch) {
+      g.touch.onPause = () => {
+        if (g.state !== 'playing') return;
+        g.setPaused(true);
+        this.show('pause', false);
+      };
+      g.touch.onScores = () => {
+        const sb = this.$('#scoreboard');
+        if (!sb.classList.contains('on')) this.renderScoreboard();
+        sb.classList.toggle('on');
+      };
+    }
     g.on('deploy', ({ first }) => this.openDeploy(first));
     g.on('deployed', () => {
       this.hide('deploy');
@@ -303,6 +323,11 @@ export class UI {
         g.deployPlayer(this.deployClass, this.deploySpawn);
         return;
       case 'resume':
+        if (g.touch?.active) {
+          this.hide('pause');
+          g.setPaused(false);
+          return;
+        }
         g.input.requestLock();
         return;
       case 'pause-controls':

@@ -27,7 +27,7 @@ npm run build     # génère le dossier dist/
 npm run preview   # sert dist/ en local
 ```
 
-Le jeu se joue au **clavier et à la souris** (ordinateur). La fiche personnage fonctionne aussi sur mobile.
+Le jeu se joue au **clavier et à la souris** sur ordinateur, et **au doigt sur téléphone ou tablette** (mode paysage conseillé). La fiche personnage fonctionne partout.
 
 ### Mettre le jeu en ligne (GitHub Pages)
 
@@ -69,6 +69,8 @@ Tout est **procédural** : personnages, armes, véhicules, village, sons (Web Au
 | Véhicule (monter / descendre) | `E` |
 | Scores · Pause | `Tab` · `Échap` |
 
+**Sur écran tactile** : joystick flottant sous le pouce gauche (poussé à fond vers l'avant pour sprinter), glisser du pouce droit pour viser (le bouton de tir se glisse aussi), boutons Tir / Viser / Saut / Accroupi / Recharger, icônes des compétences à toucher, et invite « Monter dans… » à toucher pour prendre un véhicule. Une légère aide à la visée est active au tactile.
+
 ## Organisation du code
 
 ```
@@ -88,5 +90,5 @@ Pour équilibrer le jeu (dégâts, cadences, temps de recharge, vitesse des clas
 
 - Multijoueur en ligne (serveur WebSocket faisant autorité + interpolation côté client).
 - Nouvelles cartes et modes (match à mort par équipe, capture du drapeau).
-- Commandes tactiles / manette.
+- Support de la manette.
 - Progression : niveaux, déblocage de tenues et d'armes.

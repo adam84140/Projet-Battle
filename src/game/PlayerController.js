@@ -42,16 +42,22 @@ export class PlayerController {
     const input = game.input;
     const s = this.s;
     const cmd = this.cmd;
+    const t = game.touch && game.touch.active ? game.touch : null;
     const locked = input.locked;
-    const sens = 0.0022 * game.settings.sensitivity * (this.scoped ? 0.3 : s.aiming ? 0.7 : 1);
+    const zoom = this.scoped ? 0.3 : s.aiming ? 0.7 : 1;
+    const sens = 0.0022 * game.settings.sensitivity * zoom;
     if (locked) {
       this.yaw -= input.mouse.dx * sens;
       this.pitch -= input.mouse.dy * sens;
     }
-    this.pitch = Math.max(-1.2, Math.min(1.2, this.pitch));
+    if (t) {
+      const ts = 0.0048 * game.settings.sensitivity * zoom;
+      this.yaw -= t.lookDX * ts;
+      this.pitch -= t.lookDY * ts;
+    }
     // recul de l'arme
     if (s.recoilKick) {
-      this.pitch += s.recoilKick * 0.6;
+      this.pitch += s.recoilKick * (t ? 0.3 : 0.6);
       this.yaw += (Math.random() - 0.5) * s.recoilKick * 0.4;
       s.recoilKick = 0;
     }
@@ -71,6 +77,24 @@ export class PlayerController {
       if (input.hit('Digit2') || input.hit('Numpad2')) cmd.ability = 1;
       if (input.hit('Digit3') || input.hit('Numpad3')) cmd.ability = 2;
     }
+    let interact = locked && input.hit('KeyE');
+    if (t) {
+      cmd.mx = Math.max(-1, Math.min(1, cmd.mx + t.move.x));
+      cmd.mz = Math.max(-1, Math.min(1, cmd.mz + t.move.y));
+      cmd.sprint = cmd.sprint || t.sprint;
+      cmd.jump = cmd.jump || t.consume('jump');
+      cmd.crouch = cmd.crouch || t.crouch;
+      cmd.fire = cmd.fire || t.fire;
+      cmd.firePressed = cmd.firePressed || t.consume('firePressed');
+      cmd.aim = cmd.aim || t.aim;
+      cmd.reload = cmd.reload || t.consume('reload');
+      const ab = t.consumeAbility();
+      if (ab >= 0) cmd.ability = ab;
+      interact = interact || t.consume('interact');
+      if (cmd.fire || cmd.aim) this.aimAssist(dt);
+      t.endFrame();
+    }
+    this.pitch = Math.max(-1.2, Math.min(1.2, this.pitch));
     cmd.yaw = this.yaw;
     cmd.pitch = this.pitch;
     cmd.aimPoint = this.aimPoint;
@@ -87,9 +111,48 @@ export class PlayerController {
       vc.aimPitch = this.pitch;
       vc.aimPoint = this.aimPoint;
     }
-    if (locked && input.hit('KeyE') && s.alive) this.interact();
+    if (interact && s.alive) this.interact();
     return cmd;
   }
+
+  // Aide à la visée (tactile) : attire doucement le réticule vers un ennemi proche du centre
+  aimAssist(dt) {
+    const game = this.game;
+    const s = this.s;
+    if (!s.alive || s.vehicle) return;
+    const cam = game.camera.position;
+    let best = null;
+    let bestAng = 0.09;
+    let by = 0;
+    let bp = 0;
+    for (const e of game.soldiers) {
+      if (!e.alive || e.team === s.team || !e.isVisibleTo()) continue;
+      _dir.copy(e.body.pos);
+      _dir.y += e.crouching ? 0.9 : 1.25;
+      _dir.sub(cam);
+      const d = _dir.length();
+      if (d > 70 || d < 1) continue;
+      const yaw = Math.atan2(_dir.x, _dir.z);
+      const pitch = Math.atan2(_dir.y, Math.hypot(_dir.x, _dir.z));
+      const dy = Math.atan2(Math.sin(yaw - this.yaw), Math.cos(yaw - this.yaw));
+      const dp = pitch - this.pitch;
+      const ang = Math.hypot(dy, dp);
+      if (ang < bestAng) {
+        bestAng = ang;
+        best = e;
+        by = dy;
+        bp = dp;
+      }
+    }
+    if (!best) return;
+    _want.copy(best.body.pos);
+    _want.y += 1.2;
+    if (!game.physics.lineOfSight(cam, _want)) return;
+    const k = Math.min(1, dt * 4);
+    this.yaw += by * k;
+    this.pitch += bp * k * 0.6;
+  }
+
 
   interact() {
     const s = this.s;
@@ -120,7 +183,9 @@ export class PlayerController {
     const cp = Math.cos(this.pitch);
     _fwd.set(Math.sin(this.yaw) * cp, Math.sin(this.pitch), Math.cos(this.yaw) * cp);
     _right.set(-Math.cos(this.yaw), 0, Math.sin(this.yaw));
-    let fov = 70;
+    // écrans très larges (téléphones en paysage) : champ de vision un peu resserré
+    const baseFov = this.game.camera.aspect > 1.9 ? 62 : 70;
+    let fov = baseFov;
     let dist;
     let shoulder;
     this.scoped = false;
@@ -151,11 +216,11 @@ export class PlayerController {
         this.scoped = true;
         dist = -0.1;
         shoulder = 0;
-        fov = 70 / s.weapon.zoom;
+        fov = baseFov / s.weapon.zoom;
       } else {
         dist = aiming ? 1.8 : 3.3;
         shoulder = aiming ? 0.62 : 0.7;
-        fov = aiming ? 70 / s.weapon.zoom : 70;
+        fov = aiming ? baseFov / s.weapon.zoom : baseFov;
       }
     }
     // Position voulue + collision caméra

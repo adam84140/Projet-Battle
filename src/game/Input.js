@@ -12,21 +12,27 @@ export class Input {
     this.locked = this.forceLocked;
     this.enabled = true;
     this.onLockChange = null;
+    this.touchMode = false; // écran tactile : la souris et le verrouillage ne servent plus
+    this.freeMouse = false; // verrouillage refusé : on vise avec la souris libre
 
     this._down = (e) => {
       if (!this.enabled) return;
+      if (e.code === 'Escape' && this.freeMouse && this.locked) {
+        this.setFreeLocked(false);
+        return;
+      }
       if (['Tab', 'Space', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
       if (!this.keys.has(e.code)) this.pressed.add(e.code);
       this.keys.add(e.code);
     };
     this._up = (e) => this.keys.delete(e.code);
     this._move = (e) => {
-      if (!this.locked) return;
+      if (!this.locked || this.touchMode) return;
       this.mouse.dx += e.movementX || 0;
       this.mouse.dy += e.movementY || 0;
     };
     this._mdown = (e) => {
-      if (!this.enabled) return;
+      if (!this.enabled || this.touchMode) return;
       if (!this.locked) return;
       if (e.button === 0) {
         this.mouse.left = true;
@@ -42,6 +48,7 @@ export class Input {
       this.mouse.wheel += Math.sign(e.deltaY);
     };
     this._lock = () => {
+      if (document.pointerLockElement === this.el) this.freeMouse = false;
       this.locked = this.forceLocked || document.pointerLockElement === this.el;
       if (!this.locked) {
         this.mouse.left = false;
@@ -63,21 +70,46 @@ export class Input {
     window.addEventListener('wheel', this._wheel, { passive: true });
     window.addEventListener('blur', this._blur);
     document.addEventListener('pointerlockchange', this._lock);
+    // Verrouillage impossible (cadre restreint, navigateur) : repli sur la souris libre
+    this._lockError = () => {
+      if (this.touchMode || this.locked) return;
+      this.freeMouse = true;
+      this.setFreeLocked(true);
+    };
+    document.addEventListener('pointerlockerror', this._lockError);
     element.addEventListener('contextmenu', (e) => e.preventDefault());
   }
 
   requestLock() {
-    if (this.forceLocked) return;
+    if (this.forceLocked || this.touchMode) return;
+    if (!this.el.requestPointerLock) return this._lockError();
     try {
-      const p = this.el.requestPointerLock?.();
-      if (p && p.catch) p.catch(() => {});
+      const p = this.el.requestPointerLock();
+      if (p && p.catch) p.catch(() => this._lockError());
     } catch {
-      /* ignoré */
+      this._lockError();
     }
+  }
+
+  setFreeLocked(v) {
+    if (this.locked === v) return;
+    this.locked = v;
+    if (!v) {
+      this.mouse.left = false;
+      this.mouse.right = false;
+      this.keys.clear();
+    }
+    this.onLockChange?.(v);
   }
 
   exitLock() {
     if (document.pointerLockElement) document.exitPointerLock();
+    else if (this.freeMouse && this.locked) {
+      this.locked = false;
+      this.keys.clear();
+      this.mouse.left = false;
+      this.mouse.right = false;
+    }
   }
 
   down(code) {

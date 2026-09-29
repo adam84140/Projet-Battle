@@ -2,6 +2,7 @@ import { loadSettings, saveSettings } from './config.js';
 import { Game } from './game/Game.js';
 import { HUD } from './ui/HUD.js';
 import { UI } from './ui/Screens.js';
+import { TouchControls } from './ui/TouchControls.js';
 
 // Point d'entrée : chargement du monde, puis menu principal.
 
@@ -21,6 +22,7 @@ requestAnimationFrame(() =>
       const game = new Game(document.getElementById('app'), settings);
       const hud = new HUD(game, document.getElementById('hud'));
       game.hud = hud;
+      game.touch = new TouchControls(game, document.getElementById('touch'));
       const ui = new UI(game, document.getElementById('ui'), settings, () => saveSettings(settings));
       document.getElementById('loading').classList.remove('on');
       ui.show('menu');

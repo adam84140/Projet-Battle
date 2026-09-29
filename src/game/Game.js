@@ -35,7 +35,10 @@ export class Game {
 
     // Rendu
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, settings.quality === 'low' ? 1 : 1.5));
+    // Mobiles : résolution et ombres réduites pour rester fluide
+    const coarse = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+    this.mobile = coarse;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, settings.quality === 'low' ? 1 : coarse ? 1.25 : 1.5));
     renderer.setSize(container.clientWidth || window.innerWidth, container.clientHeight || window.innerHeight);
     renderer.shadowMap.enabled = settings.quality !== 'low';
     renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -54,7 +57,7 @@ export class Game {
     scene.add(new THREE.HemisphereLight(0xcfe6ff, 0x7a6a50, 1.25));
     const sun = new THREE.DirectionalLight(0xfff1d6, 2.7);
     sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.mapSize.set(coarse ? 1024 : 2048, coarse ? 1024 : 2048);
     const sc = sun.shadow.camera;
     sc.left = -48;
     sc.right = 48;
@@ -316,6 +319,7 @@ export class Game {
 
   update(realDt) {
     const dt = realDt * this.timeScale;
+    this.touch?.update();
     this.world.update(dt, this.time);
     if (this.state === 'menu') {
       this.menuAngle += realDt * 0.08;
