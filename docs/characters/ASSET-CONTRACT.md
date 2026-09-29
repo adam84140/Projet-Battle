@@ -1,8 +1,8 @@
 # Contrat d'asset — Master Assault (remise à l'artiste)
 
-**Contrat `M2-0.1`, étape M2 ([audit](MASTER-ASSAULT-AUDIT.md)). NON GELÉ** : le squelette et les noms peuvent encore changer jusqu'à la validation GOLD du vrai Master Assault (M7, [DECISIONS](../DECISIONS.md) D-003 et D-018). Toute évolution passe par [`src/character/rigContract.js`](../../src/character/rigContract.js) (source unique lue par le jeu et par le validateur), puis par ce document, dans le même commit.
+**Contrat `M3-0.2` (étapes M2 et M3, [audit](MASTER-ASSAULT-AUDIT.md)). NON GELÉ** : le squelette et les noms peuvent encore changer jusqu'à la validation GOLD du vrai Master Assault (M7, [DECISIONS](../DECISIONS.md) D-003, D-018 et D-019). Toute évolution passe par [`src/character/rigContract.js`](../../src/character/rigContract.js) (source unique lue par le jeu et par le validateur), puis par ce document, dans le même commit.
 
-Ce document dit **exactement** ce qu'un artiste, ou une chaîne Blender automatisée, doit livrer pour le Master Assault (étape M4). L'apparence est fixée par la [spécification](MASTER-ASSAULT.md) et les images [01](../_attachments/ref-01-master-assault-turnaround.webp) et [02](../_attachments/ref-02-master-assault-production-sheet.webp) ; ce contrat fixe **tout le reste** : repère, squelette, points d'attache, maillages, pondération, matériau, masque d'équipe, expressions, clips, export. Un fichier conforme passe le validateur (§ 13) sans erreur.
+Ce document dit **exactement** ce qu'un artiste, ou une chaîne Blender automatisée, doit livrer pour le Master Assault (étape M4). Version courte pour démarrer la production : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md). L'apparence est fixée par la [spécification](MASTER-ASSAULT.md) et les images [01](../_attachments/ref-01-master-assault-turnaround.webp) et [02](../_attachments/ref-02-master-assault-production-sheet.webp) ; ce contrat fixe **tout le reste** : repère, squelette, points d'attache, maillages, pondération, matériau, masque d'équipe, expressions, clips, export. Un fichier conforme passe le validateur (§ 13) sans erreur.
 
 Le jeu ne remplace pas son squelette de gameplay : l'asset en est une **peau** qui le suit (§ 14). Les hitboxes, le support d'arme, la bouche du canon et la logique de visée ne dépendent **pas** de l'asset.
 
@@ -133,31 +133,41 @@ Objets **non déformants**, enfants directs de l'os indiqué. Deux formes accept
 - Zones à soigner (vérifiées à l'essai `--fit`, § 13) : **épaules et aisselles** (le bras monte jusqu'à l'horizontale en visée et au-dessus de la tête au lancer), coudes (jusqu'à ~110° de pliage), hanches et genoux (accroupi, course), cou et buste (visée vers le haut et vers le bas), poignets. Les bras suivent l'IK : **aucun os de torsion d'avant-bras** dans ce contrat ; la pondération du poignet doit supporter la rotation de la main imposée par la prise de l'arme.
 - La **colonne** reçoit en M2 toute la rotation du buste sur `spine` (`spine1` et `chest` suivent rigidement) : pondérer le ventre et la poitrine de façon progressive entre `hips`, `spine`, `spine1` et `chest`. Le partage de la rotation sur les trois os est un réglage du jeu (`spineWeights`), ajustable sans réexport.
 
-## 7. Matériau et textures (contrat remis à M3)
+## 7. Matériau et textures
 
 - **Un seul matériau, nommé `M_body`**, pour le corps et les accessoires (2 au plus toléré, avec avertissement). L'arme est un asset séparé.
 - **Opaque** (pas de transparence : cheveux en volumes nets), **faces simples** (Backface Culling coché).
 - **Atlas de couleur de base** : PNG ou JPEG, **sRGB**, carré de côté en puissance de deux : **256 à 2 048** (**1 024 × 1 024 recommandé**). Usure légère peinte, pas de saleté photoréaliste ([MASTER-ASSAULT](MASTER-ASSAULT.md), § 1).
-- Carte de rugosité ou de normales : **facultatives**, dans le même matériau et à la même taille ; le rendu stylisé n'en dépend pas (à confirmer en M3).
+- **Zones colorables** (chemise, teinte sombre d'équipe, peau, cheveux ; § 8) : peintes dans l'atlas en **gris neutre**. Le **gris de référence `#CCCCCC`** (204) rend **exactement** la couleur choisie par le jeu ; plus sombre (plis, ombres peintes, usure) l'assombrit, plus clair l'éclaircit, dans le même rapport. Aucune teinte dans ces zones : un gris coloré fausserait les deux équipes.
+- **Zones neutres** (tout le reste : gilet noir, cuir, pantalon, bottes, gants, revers gris clair, métal, yeux, lèvres) : peintes dans leurs **couleurs finales**, identiques pour les deux équipes.
+- Carte de rugosité ou de normales : **facultatives**, dans le même matériau et à la même taille ; le jeu les conserve telles quelles (non vérifié sur un vrai asset).
 - Pas de texture propre à une équipe : bleu et rouge viennent du masque (§ 8).
-- **Ce que M3 fera (hors de ce contrat)** : le matériau stylisé partagé du jeu (couleurs d'équipe, emblèmes, teint et cheveux par paramètres), qui remplacera `M_body` au chargement. Le fichier livre les **données** (atlas, masque, UV) ; il ne définit pas le rendu final.
+- Au chargement, le jeu remplace `M_body` par son **matériau d'équipe** (`src/character/teamMaterial.js`, étape M3) construit sur les textures livrées : l'atlas, la rugosité et les normales de l'asset sont gardés, partagés entre tous les soldats ; seules les couleurs de teinte et l'emblème changent.
 
-## 8. Masque d'équipe (contrat remis à M3)
+## 8. Masque d'équipe
 
-Un seul modèle et une seule texture pour les deux équipes ([DECISIONS](../DECISIONS.md) D-016). Le masque est un **attribut de couleur** de `body_LOD0`, `body_LOD1` et `body_LOD2` (Blender : Color Attribute nommé `teamMask`, exporté en `COLOR_0`) :
+Un seul modèle et une seule texture pour les deux équipes ([DECISIONS](../DECISIONS.md) D-016, D-019). Le masque est un **attribut de couleur** de chaque maillage du corps et des accessoires (`body_LOD0`, `body_LOD1`, `body_LOD2`, `acc_*`) : Blender, Color Attribute nommé **`teamMask`**, domaine **Face Corner** (coin de face, pour des bords nets), type **Byte Color**, exporté en `COLOR_0`. Il se peint avec **huit couleurs pures seulement** :
 
-| Canal | Valeur 1 = | Zones (image 01) |
-| --- | --- | --- |
-| **R** | couleur d'équipe **principale** | chemise, manches |
-| **G** | couleur d'équipe **secondaire** | revers des manches, bandes ; sac et accessoires d'équipe s'il y en a |
-| **B** | **emblème** | poitrine, les deux manches, grand emblème du dos sur le harnais |
-| A | réservé (laisser à 1) | usage décidé en M3 (teint ou cheveux) |
+| Couleur à peindre (R G B) | Zone | Rendu en jeu | Où (images 01 et 02) |
+| --- | --- | --- | --- |
+| **noir** (0 0 0) | neutre | couleur de l'atlas | gilet noir, poches, cuir, ceinture, pantalon olive, genouillères, gants, bottes, **revers gris clair des manches**, métal, yeux, lèvres |
+| **rouge** (1 0 0) | couleur d'équipe **principale** | gris × bleu `#2F5BB7` / rouge `#B2382C` | chemise, manches, col |
+| **vert** (0 1 0) | **teinte sombre** d'équipe (secondaire) | gris × bleu nuit `#29344A` / brun-rouge `#4A2C27` | **panneau du dos** qui porte le grand emblème, casquette (image 02) |
+| **bleu** (0 0 1) | emblème sur zone neutre | atlas + emblème blanc | (réservé, peu utile) |
+| **magenta** (1 0 1) | emblème sur la chemise | principale + emblème blanc | emblèmes des **deux manches** ; emblème de poitrine s'il est sur la chemise |
+| **cyan** (0 1 1) | emblème sur la teinte sombre | secondaire + emblème blanc | **grand emblème du dos** (panneau) |
+| **jaune** (1 1 0) | **peau** | gris × teint choisi (6 teints du jeu) | visage, oreilles, cou, bras, doigts nus des gants |
+| **blanc** (1 1 1) | **cheveux** | gris × couleur de cheveux choisie (6 couleurs) | cheveux, sourcils |
+| — (canal A) | réservé | — | laisser à 1 |
 
-- Valeurs **0 ou 1** (bords nets ; une rangée de sommets de transition au plus), entre 0 et 1 dans tous les cas.
-- Dans l'atlas, les zones R et G sont peintes en **gris clair neutre** (plis, ombres et usure en valeurs de gris) : le jeu y multiplie la couleur d'équipe (bleu `#2F5BB7` / rouge `#B2382C` aujourd'hui, harmonisation en M3).
-- Les **emblèmes ne sont pas peints** dans l'atlas : ce sont des décalques interchangeables (aigle ailé pour Les Aigles, étoile pour La Légion, D-011). Chaque zone B reçoit une **deuxième carte UV nommée `emblem`** (exportée en `TEXCOORD_1`) où la zone couvre tout le carré UV [0 ; 1], **à l'endroit** dans l'éditeur UV de Blender (haut de l'emblème en haut ; l'exportateur gère l'inversion de V).
-- Première carte UV (`TEXCOORD_0`) : l'atlas de couleur.
-- Le jeu **ne multiplie pas** la couleur de base par `COLOR_0` : c'est une donnée, pas une couleur affichée.
+- **Valeurs 0 ou 1 seulement** : pas de dégradé, pas de pinceau doux. Les valeurs pures ne sont pas modifiées par la conversion de couleurs de l'exportateur. Les valeurs intermédiaires sont signalées par le validateur (`MASQUE_NUANCES`) et arrondies par le jeu.
+- **Teinte sombre d'équipe (vert)** : le gilet de l'image 01 est « très sombre » ; il peut rester **noir neutre** (même gilet pour les deux équipes) ou passer en vert pour prendre la teinte d'équipe. Le **panneau du dos** qui porte l'emblème doit être en vert ou cyan : sinon, la Légion porterait un panneau bleu nuit sous son étoile (image 03 : dos lu depuis la caméra).
+- **Pantalon, revers des manches, gilet neutre** : identiques pour les deux équipes (le pantalon rouge actuel, gris-vert, deviendra olive comme l'image 01 ; à valider au test bleu / rouge, M5).
+- Les **emblèmes ne sont pas peints** dans l'atlas : ce sont des décalques interchangeables générés par le jeu (aigle ailé pour Les Aigles, étoile pour La Légion, D-011, **blancs**). Une zone d'emblème est un **carré** (ou rectangle légèrement courbé) placé là où l'emblème doit apparaître, dont les sommets sont peints en magenta ou cyan ; sa **deuxième carte UV nommée `emblem`** (exportée en `TEXCOORD_1`) couvre tout le carré UV [0 ; 1], **à l'endroit** dans l'éditeur UV de Blender (haut de l'emblème en haut ; l'exportateur gère l'inversion de V). L'emblème occupe tout le carré : prévoir la zone un peu plus grande que l'emblème voulu. Autour de l'emblème, le carré garde la teinte de sa zone.
+- Dans l'atlas, la zone d'emblème est peinte comme la zone qui la porte (gris de référence pour magenta et cyan).
+- Première carte UV (`TEXCOORD_0`) : l'atlas de couleur. Sur les sommets hors emblème, la carte `emblem` est libre (tout à 0 convient).
+- Le jeu **n'affiche jamais** `COLOR_0` comme couleur : au chargement, l'attribut est renommé en masque (le chargeur glTF de Three.js l'afficherait sinon, et rendrait la zone neutre noire).
+- Contrôle visuel : `npm run check:glb -- fichier.glb --fit` écrit `…-essai-masque.png` (zones en couleurs pures, sans éclairage), `…-essai.png` (bleu) et `…-essai-rouge.png` (rouge, même fichier).
 
 ## 9. Expressions (shape keys → morph targets)
 
@@ -238,7 +248,7 @@ Export (File > Export > glTF 2.0). Les libellés ci-dessous sont ceux de Blender
 | Format | **glTF Binary (.glb)** |
 | Include | objets sélectionnés (armature, `body_LOD*`, `acc_*`, points d'attache) ; pas de caméra ni de lumière |
 | Transform | **+Y Up** coché |
-| Mesh | Apply Modifiers, UVs, Normals ; Tangents non ; **Vertex Color : Active** (l'attribut `teamMask` doit être l'attribut actif) ; Loose Edges / Points non |
+| Mesh | Apply Modifiers, UVs, Normals ; Tangents non ; **Vertex Color : Active** (l'attribut `teamMask` doit être l'attribut de couleur actif, domaine Face Corner, Byte Color) ; Loose Edges / Points non |
 | Material | Export ; Images : Automatic (PNG ou JPEG) |
 | Shape Keys | oui (normales des shape keys facultatives) |
 | Compression | **non** (ni Draco, ni meshopt) |
@@ -256,8 +266,8 @@ npm run check:glb -- chemin/assaut.glb --json              # rapport machine (ch
 ```
 
 - Lit le fichier sans aucun service externe ; code de sortie **0 = accepté, 1 = refusé**. Chaque problème a un **code**, un message et **la correction à faire dans Blender**. Les avertissements (⚠) n'empêchent pas l'acceptation.
-- Vérifie : version et extensions ; armature unique ; os requis, doublons, os de contrôle ou Rigify, os hors contrat ; hiérarchie ; **pose de repos = pose de liaison** ; racine, axe vertical, orientation, côtés ; A-pose et coudes ; positions et longueurs des articulations, symétrie ; points d'attache et leur parent ; noms des maillages ; triangulation ; influences, poids vides, normalisés, hors squelette, sur un point d'attache ; budgets de triangles par LOD ; unités, hauteur, origine, centrage ; masque d'équipe (présence, valeurs, zones R et B, UV d'emblème) ; UV ; expressions ; nombre de matériaux, transparence, double face, texture de couleur ; format et taille des textures ; clips (présence, durée, hors contrat, déplacement de la racine, échelle) ; taille du fichier.
-- **`--fit`** charge l'asset dans le jeu, le branche sur le squelette de gameplay par l'adaptateur et joue les **32 états** du banc de mesure (repos, visée, tir, course, accroupi, saut, réception, impacts, rechargement, lancer, soin, geste, poignard, jeep, 5 morts…). Erreurs : sommets invalides (`ESSAI_DEFORMATION`), mains à plus de 10 mm de l'arme dans une pose tenue (`ESSAI_MAINS`), squelette de gameplay modifié (`ESSAI_GAMEPLAY`) ; avertissement si la tête s'écarte de plus de 6 cm du centre de sa zone de touche debout (`ESSAI_TETE`). Capture de contrôle : `test-results/check-glb/<nom>-essai.png` (à regarder).
+- Vérifie : version et extensions ; armature unique ; os requis, doublons, os de contrôle ou Rigify, os hors contrat ; hiérarchie ; **pose de repos = pose de liaison** ; racine, axe vertical, orientation, côtés ; A-pose et coudes ; positions et longueurs des articulations, symétrie ; points d'attache et leur parent ; noms des maillages ; triangulation ; influences, poids vides, normalisés, hors squelette, sur un point d'attache ; budgets de triangles par LOD ; unités, hauteur, origine, centrage ; masque d'équipe (présence, valeurs pures, canal A, zones principale, emblème, peau et cheveux, UV d'emblème ; nombre de sommets par zone) ; UV ; expressions ; nombre de matériaux, transparence, double face, texture de couleur ; format et taille des textures ; clips (présence, durée, hors contrat, déplacement de la racine, échelle) ; taille du fichier.
+- **`--fit`** charge l'asset dans le jeu, le branche sur le squelette de gameplay par l'adaptateur et joue les **32 états** du banc de mesure (repos, visée, tir, course, accroupi, saut, réception, impacts, rechargement, lancer, soin, geste, poignard, jeep, 5 morts…). Erreurs : sommets invalides (`ESSAI_DEFORMATION`), mains à plus de 10 mm de l'arme dans une pose tenue (`ESSAI_MAINS`), squelette de gameplay modifié (`ESSAI_GAMEPLAY`) ; avertissement si la tête s'écarte de plus de 6 cm du centre de sa zone de touche debout (`ESSAI_TETE`). Captures de contrôle (à regarder) : `test-results/check-glb/<nom>-essai.png` (bleu), `<nom>-essai-rouge.png` (rouge, même fichier), `<nom>-essai-masque.png` (zones du masque).
 - La validation automatique ne juge **pas** la qualité artistique : conformité aux images 01 et 02 et comparaison A/B restent faites par le propriétaire ([MASTER-ASSAULT](MASTER-ASSAULT.md), § 5).
 
 ## 14. Comment le jeu utilise l'asset
@@ -267,11 +277,13 @@ npm run check:glb -- chemin/assaut.glb --json              # rapport machine (ch
 2. **À chaque image** : recopie des rotations du squelette de gameplay (repère du personnage) ; colonne répartie sur `spine` / `spine1` / `chest` ; hauteur du bassin mise à l'échelle des jambes de production ; clavicules, orteils, doigts et points d'attache suivent leur parent.
 3. **IK des mains** résolue sur les **vraies longueurs de bras** de l'asset vers les points de prise de l'arme, coude orienté comme celui du gameplay.
 
+4. **Matériau d'équipe** (`src/character/teamMaterial.js`, M3) : masque renommé (jamais affiché), teintes et emblème par soldat, un matériau partagé par aspect (équipe, teint, cheveux), le même pour tous les LOD et accessoires.
+
 Le squelette de gameplay n'est jamais modifié : hitboxes, support d'arme, bouche du canon, visée, bots et véhicules restent identiques. Conséquences pour l'artiste : des bras plus longs ou plus courts que la cible restent sur l'arme (l'IK s'adapte, dans la tolérance du § 3) ; des épaules trop larges ou trop hautes décalent le fusil par rapport au corps (l'arme ne bouge pas) ; une tête trop grande ou trop haute sort de sa zone de touche.
 
 ## 15. Ce qui n'est pas dans ce contrat
-- Rendu final (matériau stylisé, couleurs d'équipe, emblèmes, teint) : **M3**.
-- Chargement, préchargement, clonage, sélection des LOD, ombres, visage, mélange des clips, remplacement du personnage procédural en jeu, hauteur en jeu : **M5**.
+- Réglage des couleurs finales des équipes (harmonisation avec l'image 01, test bleu / rouge à 40 m) : avec l'asset réel (M5).
+- Chargement, préchargement, clonage, sélection des LOD, ombres, visage, mélange des clips, remplacement du personnage procédural en jeu, hauteur en jeu : **M5** (d'abord un aperçu jouable minimal, D-020).
 - Artilleur et Commando : même squelette, mêmes points d'attache, mêmes clips, après le GOLD du Master Assault.
 - Compression, streaming, personnalisation au-delà des accessoires existants.
 

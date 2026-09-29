@@ -1,6 +1,6 @@
 # Pipeline de production des personnages
 
-**Statut : pipeline cible, en préparation.** Aujourd'hui, les personnages en jeu sont entièrement procéduraux (primitives Three.js assemblées par le code, rendues en un SkinnedMesh depuis M1 ; voir [ANIMATION](../systems/ANIMATION.md)). Depuis M2, le côté code de la chaîne existe : **contrat d'asset** ([ASSET-CONTRACT](ASSET-CONTRACT.md)), **adaptateur de squelette** et **validateur** `npm run check:glb` ([MASTER-ASSAULT-M2](MASTER-ASSAULT-M2.md)). Ce document décrit le chemin prévu pour le [Master Assault](MASTER-ASSAULT.md) puis les autres classes.
+**Statut : pipeline cible, en préparation.** Aujourd'hui, les personnages en jeu sont entièrement procéduraux (primitives Three.js assemblées par le code, rendues en un SkinnedMesh depuis M1 ; voir [ANIMATION](../systems/ANIMATION.md)). Depuis M2 et M3, le côté code de la chaîne existe : **contrat d'asset** ([ASSET-CONTRACT](ASSET-CONTRACT.md)), **adaptateur de squelette** et **validateur** `npm run check:glb` ([MASTER-ASSAULT-M2](MASTER-ASSAULT-M2.md)), **matériau d'équipe** ([MASTER-ASSAULT-M3](MASTER-ASSAULT-M3.md)). Brief pour l'artiste : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md). Règle : **un aperçu jouable dès le premier GLB valide**, bien avant la validation finale (D-020). Ce document décrit le chemin prévu pour le [Master Assault](MASTER-ASSAULT.md) puis les autres classes.
 
 ## Constat
 Le personnage procédural a été poussé loin (proportions, visage, équipement, IK des mains), mais il a des limites structurelles : 24 maillages par soldat, pas de déformation de la peau aux articulations, formes limitées aux primitives, pas de textures peintes. **Un personnage de qualité production demande un vrai travail de modélisation 3D** (Blender ou équivalent). Le code seul ne doit pas prétendre remplacer cette étape.
@@ -29,7 +29,7 @@ concept / référence ──► modélisation ──► topologie ──► UV /
 
 ## Ce que Claude peut faire en toute sécurité (code)
 - Chargeur glTF (`GLTFLoader` de three/addons), mise en cache, un seul chargement par modèle, clonage des personnages (`SkeletonUtils.clone`).
-- Matériau stylisé partagé avec masque d'équipe (couleurs injectées par uniformes).
+- Matériau stylisé partagé avec masque d'équipe (**fait en M3**, `src/character/teamMaterial.js`) : 8 zones peintes en couleurs pures, teintes par uniformes, emblèmes en décalque, masque jamais affiché comme couleur.
 - Adaptateur de squelette (**fait en M2**, `src/character/rigAdapter.js`) : le squelette de production, aux noms canoniques de type Blender et en A-pose, suit le squelette de gameplay (rotations recopiées avec décalages calibrés, IK des mains sur les longueurs de bras de l'asset) ; mélange des clips par `AnimationMixer` sur le haut du corps en M5.
 - Sockets : rattacher arme, sac, casque aux objets nommés.
 - LOD : choix du niveau par distance, hystérésis, désactivation des ombres et du visage au loin.
@@ -55,6 +55,7 @@ Détaillé et chiffré dans [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (ét
 
 1. Figer la spécification ([MASTER-ASSAULT](MASTER-ASSAULT.md)) avec le propriétaire du projet.
 2. **Prototype d'intégration** : convertir le personnage procédural actuel en SkinnedMesh (un maillage, mêmes os) pour valider chargeur, animateur, sockets, IK, hitboxes et performance sans attendre l'art définitif. Il doit rester présenté comme un prototype. **Fait en M1** pour le corps, l'animateur, l'IK, les hitboxes et la performance ([MASTER-ASSAULT-M1](MASTER-ASSAULT-M1.md)) ; contrat, adaptateur, validateur et squelette d'essai faits en M2 ; chargement de l'asset et points d'attache en jeu relèvent de M5.
-3. Production de l'asset dans Blender selon le contrat.
-4. Intégration de l'asset, LOD, validation, comparaison A/B.
-5. Gel du squelette (D-003 passe à LOCKED), puis Artilleur et Commando.
+3. Production dans Blender selon le contrat : **d'abord un asset d'aperçu** ([brief](M4-BLENDER-BRIEF.md)).
+4. **Aperçu jouable** (M5a, D-020) : le propriétaire joue avec le personnage ; retours.
+5. Asset complet, intégration, LOD, validation, comparaison A/B.
+6. Validation GOLD (M7) et gel du squelette (D-003 passe à LOCKED), puis Artilleur et Commando (même règle d'aperçu jouable).

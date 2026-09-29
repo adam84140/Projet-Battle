@@ -38,8 +38,9 @@ npm run test:camera   # caméra jamais dans le décor
 npm run test:bots     # partie simulée 3 min : blocages, combats, captures
 npm run test:character # personnage : chemins de rendu legacy et M1 comparés, 16v16, mémoire, téléphone
 npm run test:rig      # squelette de production : adaptateur, GLB d'essai, validateur, partie 8v8
-npm test              # les six à la suite (chemin de rendu par défaut)
-RENDU=legacy npm test # les six sur le chemin de repli (tant que le chemin legacy existe)
+npm run test:material # matériau d'équipe : zones du masque, bleu/rouge, emblèmes, COLOR_0, partie 8v8
+npm test              # les sept à la suite (chemin de rendu par défaut)
+RENDU=legacy npm test # les sept sur le chemin de repli (tant que le chemin legacy existe)
 npm run check:glb -- <fichier.glb> [--fit]  # contrôle d'un asset de personnage (docs/characters/ASSET-CONTRACT.md)
 ```
 Si un changement touche un système non couvert : ajouter une vérification au test adapté. Procédure détaillée : skill `gameplay-regression`.

@@ -14,6 +14,7 @@ npm run test:camera    # caméra jamais dans un mur, un feuillage ou le sol
 npm run test:bots      # partie simulée 3 min
 npm run test:character # personnage : chemins legacy et M1 comparés, 16v16, mémoire, téléphone
 npm run test:rig       # squelette de production (adaptateur, GLB d'essai, validateur, partie 8v8)
+npm run test:material  # matériau d'équipe (zones du masque, bleu/rouge, emblèmes, COLOR_0, partie 8v8)
 RENDU=legacy npm test  # tout le parcours sur le chemin de rendu de repli (si le personnage ou le rendu a changé)
 ```
 Rendu logiciel (SwiftShader) : les tests avancent la simulation par pas fixes (`step()` dans `tests/lib.mjs`) ; ne pas attendre en temps réel.
@@ -34,6 +35,7 @@ Rendu logiciel (SwiftShader) : les tests avancent la simulation par pas fixes (`
 | Coût logique < 8 ms par image (test) ; objectif 16v16 < 4 ms | smoke, bots |
 | Personnage : 16 articulations, ≤ 18 maillages visibles par soldat, mains sur l'arme, tête / sphère de touche, arme / visée, bouche du canon, mémoire sans fuite, 16v16 chargé, planche A/B reproductible | character ([référence M0](../../../docs/characters/MASTER-ASSAULT-BASELINE.md)) |
 | Squelette de production : gameplay jamais modifié, articulations collées au gameplay (< 0,5 mm), mains sur l'arme, rendu = M1, GLB d'essai conforme puis rechargé, 13 fichiers fautifs refusés, partie 8v8 avec véhicules | rig ([M2](../../../docs/characters/MASTER-ASSAULT-M2.md)) |
+| Matériau d'équipe : chaque zone du masque à sa couleur exacte, bleu / rouge et personnalisation depuis un seul asset, emblèmes à l'endroit, COLOR_0 jamais affiché, un matériau par aspect, un programme de shader | material ([M3](../../../docs/characters/MASTER-ASSAULT-M3.md)) |
 | Aucune erreur console | tous |
 
 ## 3. Règles

@@ -8,10 +8,12 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 import { bakedMaterial } from '/src/character/parts.js';
+import { Character } from '/src/character/Character.js';
 import { M1_OPTIMIZED_RENDER_PATH } from '/src/character/renderPath.js';
 import { RigAdapter } from '/src/character/rigAdapter.js';
 import { IK_CHANNELS } from '/src/character/animation.js';
-import { REQUIRED_BONES, SOCKETS, runtimeName } from '/src/character/rigContract.js';
+import { REQUIRED_BONES, SOCKETS, TEAM_MASK, runtimeName } from '/src/character/rigContract.js';
+import { applyTeamLook, teamLook, TeamMaterialCache } from '/src/character/teamMaterial.js';
 import { freshCharacter, simulate, stage, LINEUP, POSES, EXTENT_POSES } from '/tests/character-probe.js';
 
 const V = () => new THREE.Vector3();
@@ -152,7 +154,8 @@ export function buildFixture(c, variantName = 'orientation', { forExport = false
   // géométrie : chaque sommet du corps M1 (gameplay au repos) passe en A-pose puis sur l'os de production
   const gBones = body.skeleton.bones;
   const gName = new Map(Object.entries(c.bones).map(([k, b]) => [b, k]));
-  const src = body.geometry;
+  // export (contrat M3) : les emblèmes deviennent des zones carrées avec UV d'emblème (décalques)
+  const src = forExport ? withEmblemPatches(c, body, rest) : body.geometry;
   const n = src.attributes.position.count;
   const positions = new Float32Array(n * 3);
   const normals = new Float32Array(n * 3);
@@ -201,6 +204,7 @@ export function buildFixture(c, variantName = 'orientation', { forExport = false
   geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geo.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
   geo.setAttribute('color', src.attributes.color.clone());
+  if (src.attributes.uv1) geo.setAttribute('uv1', src.attributes.uv1.clone());
   geo.setAttribute('skinIndex', new THREE.BufferAttribute(skinIndex, 4));
   geo.setAttribute('skinWeight', new THREE.BufferAttribute(skinWeight, 4));
   geo.setIndex(src.index.clone());
@@ -215,34 +219,116 @@ export function buildFixture(c, variantName = 'orientation', { forExport = false
   mesh.bind(new THREE.Skeleton(bones));
   mesh.frustumCulled = false;
   if (forExport) prepareExport(c, mesh);
-  return { rig, mesh, bones, headScale, positions: Object.fromEntries(Object.entries(pos).map(([k, p]) => [k, r3(p)])) };
+  return { rig, mesh, bones, headScale, emblemPatches: src.userData.emblemPatches || 0, positions: Object.fromEntries(Object.entries(pos).map(([k, p]) => [k, r3(p)])) };
 }
 
-// Version exportable conforme au contrat : couleur de base par texture (palette, TEXCOORD_0),
-// masque d'équipe dans COLOR_0 (R chemise, G revers, B emblèmes), UV d'emblème dans TEXCOORD_1
+// Couleurs repères des zones d'emblème ajoutées (valeurs de sommet impossibles ailleurs)
+const PATCH_ON_SECONDARY = [0.123, 0.456, 0.789];
+const PATCH_ON_PRIMARY = [0.789, 0.456, 0.123];
+
+// Remplace les emblèmes modélisés (polygones blancs) par des zones carrées, au même endroit et dans le
+// même plan, avec des UV d'emblème couvrant [0, 1] à l'endroit (convention glTF : v = 0 en haut).
+// C'est ce que le contrat demande à l'artiste : le jeu y pose l'aigle ou l'étoile selon l'équipe.
+function withEmblemPatches(c, body, rest) {
+  const g = body.geometry;
+  const bones = body.skeleton.bones;
+  const headIndex = bones.indexOf(c.bones.head);
+  const col = g.attributes.color;
+  const white = (i) => col.getX(i) > 0.999 && col.getY(i) > 0.999 && col.getZ(i) > 0.999 && g.attributes.skinIndex.getX(i) !== headIndex;
+  // emplacements des emblèmes : même personnage non fusionné (mêmes os, mêmes positions)
+  const ref = new Character({ team: c.teamId, classId: c.cls.id, custom: c.custom, weapon: false });
+  const emblems = [];
+  ref.root.traverse((o) => {
+    if (o.isMesh && o.geometry.type === 'ShapeGeometry' && o.material.color?.getHex() === 0xffffff && o.parent?.userData.bone && o.parent !== ref.bones.head) emblems.push(o);
+  });
+  const n0 = g.attributes.position.count;
+  const n = n0 + emblems.length * 4;
+  const pos = new Float32Array(n * 3);
+  const nor = new Float32Array(n * 3);
+  const colors = new Float32Array(n * 3);
+  const skin = new Uint16Array(n * 4);
+  const uv1 = new Float32Array(n * 2);
+  pos.set(g.attributes.position.array.subarray(0, n0 * 3));
+  nor.set(g.attributes.normal.array.subarray(0, n0 * 3));
+  for (let i = 0; i < n0; i++) {
+    colors.set([col.getX(i), col.getY(i), col.getZ(i)], i * 3);
+    skin[i * 4] = g.attributes.skinIndex.getX(i);
+  }
+  const index = [];
+  const src = g.index.array;
+  for (let t = 0; t < src.length; t += 3) {
+    if (white(src[t]) && white(src[t + 1]) && white(src[t + 2])) continue; // emblème modélisé retiré
+    index.push(src[t], src[t + 1], src[t + 2]);
+  }
+  const v = new THREE.Vector3();
+  emblems.forEach((e, k) => {
+    const boneName = Object.keys(ref.bones).find((key) => ref.bones[key] === e.parent);
+    e.updateMatrix();
+    const m = rest[boneName].clone().multiply(e.matrix);
+    const nrm = new THREE.Vector3(0, 0, 1).applyMatrix3(new THREE.Matrix3().getNormalMatrix(m)).normalize();
+    const code = boneName === 'spine' ? PATCH_ON_SECONDARY : PATCH_ON_PRIMARY;
+    const base = n0 + k * 4;
+    [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([x, y], j) => {
+      v.set(x, y, 0).applyMatrix4(m);
+      pos.set([v.x, v.y, v.z], (base + j) * 3);
+      nor.set([nrm.x, nrm.y, nrm.z], (base + j) * 3);
+      colors.set(code, (base + j) * 3);
+      skin[(base + j) * 4] = bones.indexOf(c.bones[boneName]);
+      uv1.set([(x + 1) / 2, (1 - y) / 2], (base + j) * 2);
+    });
+    index.push(base, base + 1, base + 2, base, base + 2, base + 3);
+  });
+  ref.dispose();
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  out.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
+  out.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  out.setAttribute('skinIndex', new THREE.BufferAttribute(skin, 4));
+  out.setAttribute('uv1', new THREE.BufferAttribute(uv1, 2));
+  out.setIndex(index);
+  out.userData.emblemPatches = emblems.length;
+  return out;
+}
+
+// Version exportable conforme au contrat (M3) : couleur de base par texture (palette, TEXCOORD_0) où les
+// zones teintées sont au gris de référence, masque d'équipe COLOR_0 (8 codes du contrat), UV d'emblème
+// TEXCOORD_1. Un seul fichier pour bleu et rouge : ce qui n'est pas masqué garde les couleurs d'origine.
 function prepareExport(c, mesh) {
   const g = mesh.geometry;
   const col = g.attributes.color;
   const n = col.count;
   const T = c.team;
   const lin = (hex) => new THREE.Color(hex);
-  const near = (i, cc) => Math.abs(col.getX(i) - cc.r) + Math.abs(col.getY(i) - cc.g) + Math.abs(col.getZ(i) - cc.b) < 1e-4;
-  const shirt = lin(T.shirt);
-  const cuff = lin(T.cuff);
-  const white = lin(0xffffff);
-  const headIndex = mesh.skeleton.bones.findIndex((b) => b.name === 'head');
+  const near = (i, cc) => Math.abs(col.getX(i) - cc[0]) + Math.abs(col.getY(i) - cc[1]) + Math.abs(col.getZ(i) - cc[2]) < 1e-4;
+  const rgb = (hex) => lin(hex).toArray();
+  const code = (zone) => TEAM_MASK.codes.find((x) => x.zone === zone).rgb;
+  const zones = [
+    [rgb(T.shirt), code('principale')],
+    [rgb(T.vest), code('secondaire')],
+    [rgb(c.custom.skin), code('peau')],
+    [rgb(c.custom.hair), code('cheveux')],
+    [PATCH_ON_SECONDARY, code('embleme_secondaire')],
+    [PATCH_ON_PRIMARY, code('embleme_principale')],
+  ];
+  const grey = TEAM_MASK.referenceGrey;
+  const GREY = (grey << 16) | (grey << 8) | grey;
   const keys = new Map();
   const uv = new Float32Array(n * 2);
-  const uv1 = new Float32Array(n * 2);
   const mask = new Float32Array(n * 3);
+  const texel = new Int32Array(n);
   const c3 = new THREE.Color();
   for (let i = 0; i < n; i++) {
-    c3.setRGB(col.getX(i), col.getY(i), col.getZ(i));
-    const hex = c3.getHex();
+    const z = zones.find(([cc]) => near(i, cc));
+    let hex;
+    if (z) {
+      mask.set(z[1], i * 3);
+      hex = GREY; // zone teintée : gris de référence dans l'atlas
+    } else {
+      c3.setRGB(col.getX(i), col.getY(i), col.getZ(i));
+      hex = c3.getHex();
+    }
     if (!keys.has(hex)) keys.set(hex, keys.size);
-    const emblem = near(i, white) && g.attributes.skinIndex.getX(i) !== headIndex;
-    mask.set([near(i, shirt) ? 1 : 0, near(i, cuff) ? 1 : 0, emblem ? 1 : 0], i * 3);
-    if (emblem) uv1.set([(g.attributes.position.getX(i) * 7) % 1 + (g.attributes.position.getX(i) < 0 ? 1 : 0), (g.attributes.position.getY(i) * 7) % 1], i * 2);
+    texel[i] = keys.get(hex);
   }
   const W = keys.size * 4;
   const data = new Uint8Array(W * 4 * 4);
@@ -250,12 +336,9 @@ function prepareExport(c, mesh) {
     const r = (hex >> 16) & 255, gg = (hex >> 8) & 255, b = hex & 255;
     for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) data.set([r, gg, b, 255], ((y * W) + k * 4 + x) * 4);
   }
-  for (let i = 0; i < n; i++) {
-    c3.setRGB(col.getX(i), col.getY(i), col.getZ(i));
-    uv.set([(keys.get(c3.getHex()) * 4 + 2) / W, 0.5], i * 2);
-  }
+  for (let i = 0; i < n; i++) uv.set([(texel[i] * 4 + 2) / W, 0.5], i * 2);
   g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-  g.setAttribute('uv1', new THREE.BufferAttribute(uv1, 2));
+  if (!g.attributes.uv1) g.setAttribute('uv1', new THREE.BufferAttribute(new Float32Array(n * 2), 2));
   g.setAttribute('color', new THREE.BufferAttribute(mask, 3));
   // taille de texture en puissance de deux (contrat) : la palette est étirée sur 64 × 4 pixels minimum
   const pot = Math.max(64, 2 ** Math.ceil(Math.log2(W)));
@@ -289,7 +372,7 @@ export async function exportFixture(classId = 'assaut', team = 'blue', variantNa
   const bytes = new Uint8Array(glb);
   let s = '';
   for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  return { base64: btoa(s), bytes: bytes.length, headScale: fx.headScale, positions: fx.positions, palette: fx.mesh.userData.paletteColors };
+  return { base64: btoa(s), bytes: bytes.length, headScale: fx.headScale, positions: fx.positions, palette: fx.mesh.userData.paletteColors, emblemPatches: fx.emblemPatches };
 }
 
 function b64ToBuffer(b64) {
@@ -299,20 +382,17 @@ function b64ToBuffer(b64) {
   return out.buffer;
 }
 
-// Chargement d'un GLB du contrat. COLOR_0 y est le masque d'équipe (contrat remis à M3), pas une couleur :
-// le GLTFLoader active les couleurs de sommets dès qu'il le voit, on les désactive (sauf pour visualiser le masque).
-export function loadGlb(b64, { showMask = false } = {}) {
+// Chargement d'un GLB du contrat, habillé par le matériau d'équipe de M3 (src/character/teamMaterial.js) :
+// COLOR_0 est le masque d'équipe, jamais une couleur. debugMask : affiche les zones du masque.
+const materialCache = new TeamMaterialCache();
+export function loadGlb(b64, { team = 'blue', custom = {}, debugMask = false } = {}) {
   return new Promise((resolve, reject) =>
     new GLTFLoader().parse(
       b64ToBuffer(b64),
       '',
       (gltf) => {
-        gltf.scene.traverse((o) => {
-          if (o.material && !showMask) {
-            o.material.vertexColors = false;
-            o.material.needsUpdate = true;
-          }
-        });
+        applyTeamLook(gltf.scene, teamLook(team, custom), materialCache, { debugMask });
+        gltf.scene.traverse((o) => o.isMesh && (o.castShadow = true)); // comme le fera l'intégration (M5)
         resolve(gltf);
       },
       reject,
@@ -358,7 +438,7 @@ const TRANSIENT = new Set(['land', 'throw']);
 export async function measureRig(classId = 'assaut', team = 'blue', source = { variant: 'orientation' }, options = {}) {
   const rows = [];
   let gltfScene = null;
-  if (source.glb) gltfScene = (await loadGlb(source.glb)).scene;
+  if (source.glb) gltfScene = (await loadGlb(source.glb, { team })).scene;
   const joints = ['hips', 'spine', 'neck', 'head', ...['L', 'R'].flatMap((s) => [`upperArm.${s}`, `lowerArm.${s}`, `hand.${s}`, `thigh.${s}`, `calf.${s}`, `foot.${s}`])];
   let perf = null;
   for (const [pose, prep] of ALL_POSES) {
@@ -468,7 +548,7 @@ export async function renderRigLineup(classId = 'assaut', team = 'blue', source 
   out.width = W * LINEUP.length;
   out.height = H;
   const ctx = out.getContext('2d');
-  const gltf = source.glb ? await loadGlb(source.glb, { showMask: !!source.showMask }) : null;
+  const gltf = source.glb ? await loadGlb(source.glb, { team, custom: source.custom, debugMask: !!source.showMask }) : null;
   for (const [i, [, yaw, pose]] of LINEUP.entries()) {
     const c = freshCharacter({ team, classId, bake: true, custom: { backpack: source.backpack ?? true }, renderPath: M1_OPTIMIZED_RENDER_PATH });
     const rig = gltf ? cloneSkinned(gltf.scene) : buildFixture(c, source.variant).rig;

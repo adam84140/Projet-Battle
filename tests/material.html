@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sonde matériau d'équipe</title>
+  </head>
+  <body style="margin: 0; background: #1b2638">
+    <script type="module">
+      // Page de mesure de l'étape M3 : expose les sondes à tests/material.mjs.
+      import * as material from '/tests/material-probe.js';
+      import * as rig from '/tests/rig-probe.js';
+      import * as probe from '/tests/character-probe.js';
+      window.__mat = material;
+      window.__rig = rig;
+      window.__probe = probe;
+      window.__ready = true;
+    </script>
+  </body>
+</html>

@@ -115,7 +115,7 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Conséquences :** le squelette de gameplay (16 `Group` animés) reste la source des hitboxes, du support d'arme, de la bouche du canon et de l'IK ; le futur adaptateur (D-015, M2) s'y branchera. Le chemin legacy ne sera retiré qu'avec l'accord du propriétaire.
 
 ## D-018 — SQUELETTE DE PRODUCTION ET CONTRAT D'ASSET (ÉTAPE M2)
-- **Statut :** PENDING (implémenté et validé par les tests le 2026-09-29 ; acceptation du propriétaire attendue). **Non gelé** : le gel reste soumis à D-003, après la validation GOLD du vrai Master Assault (M7).
+- **Statut :** LOCKED comme contrat de travail (M2 acceptée par le propriétaire le 2026-09-29). **Non gelé** : le gel reste soumis à D-003, après la validation GOLD du vrai Master Assault (M7). Masque d'équipe précisé par D-019 (contrat `M3-0.2`).
 - **Décision :**
   - le squelette de **production** a ses propres noms canoniques, de type Blender : `root`, `hips`, `spine`, `spine1`, `chest`, `neck`, `head`, et par côté `clavicle`, `upperArm`, `lowerArm`, `hand`, `thigh`, `calf`, `foot`, `toe` suffixés `.L` / `.R` (23 os requis, doigts et visage facultatifs), en **A-pose**, 1,85 m ; `upperArm.L` devient `upperArmL` au chargement ;
   - ce squelette **suit** le squelette de gameplay (16 articulations, inchangé) par l'adaptateur `src/character/rigAdapter.js` (D-015) : rotations recopiées avec décalages calibrés, colonne répartie, bassin à l'échelle des jambes, IK des mains sur les longueurs de bras de l'asset. Le gameplay reste la seule source des hitboxes, du support d'arme, de la bouche du canon et de la visée ;
@@ -124,3 +124,21 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
   - le code garde locomotion, visée, recul, réactions et IK ; Blender fournit rechargement, lancer, geste, soin, poignard (facultatif), 3 morts, pose assise et 9 expressions ; événements fixés par le contrat en pourcentage.
 - **Raison :** un rig de production standard (Blender) ne peut pas porter les noms et repères du squelette procédural ; l'adaptateur évite de réécrire l'animateur, les hitboxes et l'IK ([MASTER-ASSAULT-M2](characters/MASTER-ASSAULT-M2.md)).
 - **Conséquences :** toute évolution du contrat modifie `rigContract.js`, [ASSET-CONTRACT](characters/ASSET-CONTRACT.md) et cette décision dans le même commit ; le matériau (M3) et l'intégration (M5 : chargement, LOD, clips, coût de l'adaptateur) ne sont pas décidés ici.
+
+## D-019 — MASQUE D'ÉQUIPE ET MATÉRIAU PARTAGÉ DES PERSONNAGES DE PRODUCTION (ÉTAPE M3)
+- **Statut :** PENDING (implémenté et validé par les tests le 2026-09-29 ; acceptation du propriétaire attendue). Non gelé (D-003).
+- **Décision :**
+  - le masque `COLOR_0` se peint avec **huit couleurs pures** (R, G, B à 0 ou 1 ; canal A réservé) : noir = neutre, rouge = couleur d'équipe principale, vert = teinte sombre d'équipe (secondaire), bleu / magenta / cyan = zone d'emblème posée sur neutre / principale / secondaire, jaune = peau, blanc = cheveux (`TEAM_MASK` et `decodeMask()` de `src/character/rigContract.js`, contrat `M3-0.2`) ;
+  - les zones colorables sont peintes dans l'atlas en gris ; le **gris de référence `#CCCCCC`** rend exactement la teinte ;
+  - teintes par équipe : principale = `TEAMS.shirt`, **secondaire = `TEAMS.vest`** (bleu nuit / brun-rouge : panneau du dos, casquette) ; peau et cheveux = personnalisation existante (6 teints, 6 couleurs) ; **les revers des manches deviennent neutres** (gris clair de l'image 01), ce qui remplace la proposition M2 « G = revers, bandes » ;
+  - emblèmes **en décalque** : texture générée depuis `emblems.js` (aigle / étoile, D-011), posée sur des zones carrées par la 2ᵉ carte UV (`TEXCOORD_1`) ;
+  - runtime `src/character/teamMaterial.js` : `COLOR_0` **renommé** au chargement (jamais affiché), attributs neutres si absents, **un matériau par aspect** (source, équipe, teint, cheveux) partagé par tous les LOD, accessoires et soldats de même aspect, un seul programme de shader, variante transparente pour le camouflage (un clone de matériau d'équipe reste un matériau d'équipe : le camouflage actuel fonctionne tel quel), visualisation du masque pour le contrôle ;
+  - rien n'est branché sur les soldats en jeu avant M5 ; le personnage procédural n'utilise pas ce matériau.
+- **Raison :** un seul asset et une seule texture pour bleu et rouge (D-016), sans ambiguïté de peinture ni perte à l'export ([MASTER-ASSAULT-M3](characters/MASTER-ASSAULT-M3.md)).
+- **Conséquences :** pantalon, revers et gilet neutre sont **identiques pour les deux équipes** (la Légion perd son pantalon gris-vert) : à confirmer par le propriétaire à l'aperçu bleu / rouge ; une teinte de pantalon par équipe demanderait d'étendre le masque. La couleur des yeux n'est plus tirée au hasard sur l'asset (peinte).
+
+## D-020 — APERÇU JOUABLE AVANT LA VALIDATION FINALE
+- **Statut :** LOCKED (règle du propriétaire, 2026-09-29)
+- **Décision :** le propriétaire doit **voir et essayer** le nouveau personnage bien avant la validation finale. Dès qu'un **premier GLB valide** existe (M4 : asset d'aperçu qui passe `npm run check:glb -- … --stade prototype --fit` sans erreur), le projet prévoit une **intégration minimale jouable (M5a)** : le personnage de production en partie réelle, caméra à la 3ᵉ personne et en visée, bleu et rouge, avec retour immédiat au personnage actuel par un réglage. Le propriétaire y valide silhouette, proportions, échelle générale, mains et arme, lisibilité à l'écran et sensation en jeu.
+- **Rôle des étapes :** **M4 = premier asset réel visible** ; **M5a = première intégration jouable** ; M5 = intégration complète ; **M7 = validation GOLD finale seulement**.
+- **Conséquences :** le plan de l'[audit](characters/MASTER-ASSAULT-AUDIT.md) et la [ROADMAP](ROADMAP.md) intègrent M5a juste après le premier GLB d'aperçu ; la même règle s'applique aux futurs personnages (Artilleur, Commando) : un aperçu jouable avant toute validation finale. Chaque étape reste soumise à l'autorisation explicite du propriétaire.

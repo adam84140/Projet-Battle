@@ -2,7 +2,7 @@
 
 Point d'entrée de la documentation du projet. Les règles permanentes de travail sont dans [CLAUDE.md](../CLAUDE.md) à la racine du dépôt.
 
-> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (M0, M1 et M2 faites : rendu optimisé du personnage actuel, adaptateur de squelette et contrat d'asset ; asset de production pas commencé).**
+> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (M0 à M3 faites : rendu optimisé du personnage actuel, adaptateur de squelette, contrat d'asset, matériau d'équipe ; asset de production pas commencé ; aperçu jouable dès le premier GLB, D-020).**
 > Point de contrôle stable : commit `05827b4807c67959e125c9681b5ffa953b113a29`.
 
 ## Commencer ici
@@ -21,8 +21,10 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | [MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md) | audit technique du personnage actuel, mesures, plan de migration M0 à M7, décisions du propriétaire |
 | [MASTER-ASSAULT-BASELINE](characters/MASTER-ASSAULT-BASELINE.md) | **référence M0** : tests `test:character`, mesures, captures A/B, surprises |
 | [MASTER-ASSAULT-M1](characters/MASTER-ASSAULT-M1.md) | **étape M1** : corps en un SkinnedMesh, chemins de rendu legacy / M1, mesures avant / après, différences expliquées |
-| [ASSET-CONTRACT](characters/ASSET-CONTRACT.md) | **remise à l'artiste** : ce que Blender doit livrer (repère, squelette, points d'attache, maillages, LOD, matériau, masque d'équipe, expressions, clips, export, validateur `check:glb`) |
+| [ASSET-CONTRACT](characters/ASSET-CONTRACT.md) | **contrat complet de l'asset** : ce que Blender doit livrer (repère, squelette, points d'attache, maillages, LOD, matériau, masque d'équipe, expressions, clips, export, validateur `check:glb`) |
 | [MASTER-ASSAULT-M2](characters/MASTER-ASSAULT-M2.md) | **étape M2** : adaptateur de squelette, squelette d'essai synthétique, résultats, risques |
+| [MASTER-ASSAULT-M3](characters/MASTER-ASSAULT-M3.md) | **étape M3** : matériau d'équipe (masque à 8 couleurs, emblèmes en décalque, bleu / rouge depuis un seul asset), résultats, risques |
+| [M4-BLENDER-BRIEF](characters/M4-BLENDER-BRIEF.md) | **brief court pour l'artiste** : asset d'aperçu obligatoire, ce qui peut attendre, contenu de l'aperçu jouable |
 
 ## Carte 1 — *Castelmare*
 | Document | Contenu |

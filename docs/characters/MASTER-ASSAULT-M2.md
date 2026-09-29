@@ -1,6 +1,6 @@
 # Master Assault — étape M2 : adaptateur de squelette et contrat d'asset
 
-**Statut : implémentée et validée par les tests, en attente d'acceptation par le propriétaire.** M3 et la production Blender ne sont pas autorisées. M2 est une étape **de code et de chaîne de production seulement** : l'apparence du personnage en jeu, le gameplay, les hitboxes, la hauteur en jeu et le chemin de rendu (M1 par défaut, legacy en repli) sont **inchangés**. Remise à l'artiste : [ASSET-CONTRACT](ASSET-CONTRACT.md). Étapes précédentes : [M0](MASTER-ASSAULT-BASELINE.md), [M1](MASTER-ASSAULT-M1.md). Plan : [audit](MASTER-ASSAULT-AUDIT.md).
+**Statut : acceptée par le propriétaire (D-018).** Étape suivante faite : [M3](MASTER-ASSAULT-M3.md) (le masque d'équipe du squelette d'essai y suit le contrat `M3-0.2`). M2 est une étape **de code et de chaîne de production seulement** : l'apparence du personnage en jeu, le gameplay, les hitboxes, la hauteur en jeu et le chemin de rendu (M1 par défaut, legacy en repli) sont **inchangés**. Remise à l'artiste : [ASSET-CONTRACT](ASSET-CONTRACT.md). Étapes précédentes : [M0](MASTER-ASSAULT-BASELINE.md), [M1](MASTER-ASSAULT-M1.md). Plan : [audit](MASTER-ASSAULT-AUDIT.md).
 
 ## 1. Architecture
 ```

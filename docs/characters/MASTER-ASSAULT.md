@@ -1,6 +1,6 @@
 # Master Character — Assaut
 
-**Statut : spécification ; l'asset n'existe pas encore.** Plan de migration : [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (M0, M1 et M2 faites). **Remise à l'artiste (contrat technique de l'asset) : [ASSET-CONTRACT](ASSET-CONTRACT.md)** ; en cas d'écart entre ce document et le contrat sur un point technique, le contrat fait foi. Le personnage en jeu est encore le personnage procédural décrit dans [CURRENT-STATE](../CURRENT-STATE.md) et [ANIMATION](../systems/ANIMATION.md).
+**Statut : spécification ; l'asset n'existe pas encore.** Plan de migration : [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (M0 à M3 faites ; ensuite asset d'aperçu M4 puis **aperçu jouable M5a**, D-020). Brief de production Blender : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md). **Remise à l'artiste (contrat technique de l'asset) : [ASSET-CONTRACT](ASSET-CONTRACT.md)** ; en cas d'écart entre ce document et le contrat sur un point technique, le contrat fait foi. Le personnage en jeu est encore le personnage procédural décrit dans [CURRENT-STATE](../CURRENT-STATE.md) et [ANIMATION](../systems/ANIMATION.md).
 
 Le Master Assault est le **personnage de référence de production** ([DECISIONS](../DECISIONS.md) D-002). Il fixe l'architecture que réutiliseront Artilleur, Commando, les skins et la personnalisation. Chemin de production : [CHARACTER-PIPELINE](CHARACTER-PIPELINE.md).
 
@@ -36,7 +36,7 @@ Le héros de la jaquette : l'Assaut bleu à l'aigle ailé des images 01 à 03. I
 ### Lisibilité d'équipe
 - Chemise aux couleurs d'équipe, dominante sur le haut du corps (manches retroussées à revers gris clair).
 - Emblème blanc, **identité canonique** (Aigles : emblème ailé ; Légion : étoile ; [DECISIONS](../DECISIONS.md) D-011) : **poitrine**, **les deux manches**, **grand emblème du dos** sur le panneau du harnais, visible de la caméra à la 3ᵉ personne (image 03).
-- Couleurs actuelles du jeu : bleu `#2F5BB7` / rouge `#B2382C` ; gilet `#29344A` / `#4A2C27` ; pantalon olive / gris-vert (voir [ART-DIRECTION](../product/ART-DIRECTION.md)). Palette relevée sur l'image 01 (bleu plus sombre `#32548F`, olive `#787752`, cuir `#493427`…) : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md). L'harmonisation se fait avec l'asset et se valide par le test bleu/rouge à 40 m.
+- Couleurs actuelles du jeu : bleu `#2F5BB7` / rouge `#B2382C` ; gilet `#29344A` / `#4A2C27` ; pantalon olive / gris-vert (voir [ART-DIRECTION](../product/ART-DIRECTION.md)). Palette relevée sur l'image 01 (bleu plus sombre `#32548F`, olive `#787752`, cuir `#493427`…) : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md). L'harmonisation se fait avec l'asset et se valide par le test bleu/rouge à 40 m. Sur l'asset de production, **pantalon, revers et gilet neutre sont communs aux deux équipes** (une seule texture) ; seules la chemise, la teinte sombre d'équipe (panneau du dos) et les emblèmes changent (D-019).
 
 ### Équipement (modèle de base, image 01)
 Chemise à col ouvert sur tee-shirt sombre ; gilet porte-chargeurs très sombre ouvert devant, poches à rabat sur la poitrine ; harnais de cuir brun (en Y dans le dos) ; ceinture de cuir brun à boucle métallique et poches brunes tout autour ; pantalon cargo olive rentré dans les bottes, sangles sur les deux cuisses ; étui de pistolet noir sur la cuisse droite, poche noire sur la cuisse gauche ; genouillères noires ; gants noirs mi-doigts ; bottes de cuir brun lacées à crochets. Pas d'accessoire qui masque le visage par défaut.
@@ -71,12 +71,12 @@ Référence actuelle : ~15 000 à 17 000 triangles par soldat procédural.
 
 ### Matériaux
 - **1 matériau pour le corps et les accessoires** (`M_body`), 1 pour l'arme ; au plus 3 matériaux par soldat.
-- Matériaux et textures **partagés entre tous les soldats** (instances de matériau par équipe seulement si le masque ne suffit pas).
+- Matériaux et textures **partagés entre tous les soldats** : un matériau d'équipe par aspect (équipe, teint, cheveux), même programme de shader, même atlas (`src/character/teamMaterial.js`, M3).
 
 ### Couleurs d'équipe (masque)
-- Un attribut de couleur de sommet (`COLOR_0`, contrat M2) indique les zones « couleur d'équipe primaire » (R : chemise), « secondaire » (G : revers, bandes, sac) et « emblème » (B, avec une 2ᵉ carte UV `TEXCOORD_1`) : [ASSET-CONTRACT](ASSET-CONTRACT.md), § 8. Le rendu (M3) n'est pas encore fait.
-- Le shader remplace ces zones par les couleurs de l'équipe : **un seul modèle et une seule texture** pour bleu et rouge.
-- Les emblèmes (aigle / étoile) sont des décalques interchangeables.
+- Un attribut de couleur de sommet (`COLOR_0`) peint avec **8 couleurs pures** indique les zones : chemise (couleur principale), teinte sombre d'équipe (panneau du dos), zones d'emblème, peau, cheveux, neutre ([ASSET-CONTRACT](ASSET-CONTRACT.md), § 8 ; D-019).
+- Le matériau d'équipe (M3, fait) teinte ces zones, peintes en gris dans l'atlas : **un seul modèle et une seule texture** pour bleu et rouge, teint et cheveux de la personnalisation.
+- Les emblèmes (aigle / étoile) sont des décalques interchangeables générés par le jeu, posés sur des zones carrées par une 2ᵉ carte UV.
 
 ### Squelette de production (contrat M2, non gelé : D-003, D-018)
 Deux squelettes coexistent ([MASTER-ASSAULT-M2](MASTER-ASSAULT-M2.md)) :
@@ -187,4 +187,4 @@ Le Master Assault est GOLD quand **tous** les points suivants sont vrais :
 5. Toutes les animations de la section 3 présentes ; mains sur l'arme à < 1 cm dans toutes les poses tenues.
 6. Hitboxes identiques à l'actuel ; `npm test` vert ; aucune erreur console.
 7. Squelette et points d'attache documentés dans [ASSET-CONTRACT](ASSET-CONTRACT.md), puis **gelés** (D-003 passe à LOCKED).
-8. Validation visuelle par le propriétaire du projet (comparaison A/B et conformité aux images 01 à 03).
+8. Validation visuelle par le propriétaire du projet (comparaison A/B et conformité aux images 01 à 03), **après un aperçu jouable** (M5a, D-020) où il a essayé le personnage en partie.

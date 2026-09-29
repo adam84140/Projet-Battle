@@ -55,6 +55,9 @@ L'objectif « ≤ 250 appels » est atteint dans la plupart des vues de référe
 ## Étape M2 (adaptateur de squelette, pas encore en jeu)
 Mesuré par `npm run test:rig` (conteneur, processeur seul) : **0,09 à 0,11 ms par soldat et par image** pour l'adaptateur (recopie des rotations de 23 os et plus, IK des deux bras). Pas encore branché en jeu : aucun effet sur les mesures ci-dessus. S'il était appliqué tel quel aux 32 soldats d'une partie 16v16 à chaque image, il ajouterait **~3 ms** de logique, pour un objectif total < 4 ms : à réduire en M5 (pas d'allocation par image, soldats hors champ ou lointains mis à jour moins souvent) et à mesurer avant intégration ([MASTER-ASSAULT-M2](../characters/MASTER-ASSAULT-M2.md), risque 1).
 
+## Étape M3 (matériau d'équipe, pas encore en jeu)
+Mesuré par `npm run test:material` (conteneur, rendu logiciel) : le matériau d'équipe **n'ajoute aucun appel de rendu** (le corps reste un seul maillage) ; **un seul programme de shader** pour toutes les équipes et tous les aspects (aucun programme de plus en ajoutant des aspects, en banc et en partie) ; **un matériau par aspect** (équipe, teint, cheveux), pas un par soldat : 2 par défaut, 14 pour 16 soldats aux personnalisations tirées au hasard ; atlas et géométrie partagés ; 2 textures d'emblème de 256² (aigle, étoile) pour tout le jeu. Coût GPU par pixel (une lecture de texture et quelques opérations) : **non mesuré** (pas de GPU dans le conteneur).
+
 ## Techniques en place
 - Décor statique fusionné en paquets de 1 500 maillages (`bakeStatic`) ; soldats : corps en un `SkinnedMesh` à peau rigide lié aux os existants, géométrie indexée (`bakeSkinned`, chemin M1 par défaut) ou fusion par os (`bakeHierarchy`, chemin legacy) ; arme fusionnée à part sous son support animé ; véhicules fusionnés par pièce mobile.
 - Matériaux en cache (`mat()`), géométries partagées marquées (`markShared`), libération par `disposeTree` (véhicules, drapeaux, projectiles, personnages).

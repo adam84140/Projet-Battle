@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { REQUIRED_BONES, OPTIONAL_BONES, SOCKETS, ASSET, ANIMATION_CONTRACT, MORPH_TARGETS, FPS, runtimeName, RIG_CONTRACT_VERSION } from '../src/character/rigContract.js';
+import { REQUIRED_BONES, OPTIONAL_BONES, SOCKETS, ASSET, ANIMATION_CONTRACT, MORPH_TARGETS, FPS, TEAM_MASK, decodeMask, runtimeName, RIG_CONTRACT_VERSION } from '../src/character/rigContract.js';
 
 const COMPONENTS = { SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT4: 16 };
 const TYPES = { 5120: ['getInt8', 1, 127], 5121: ['getUint8', 1, 255], 5122: ['getInt16', 2, 32767], 5123: ['getUint16', 2, 65535], 5125: ['getUint32', 4, 4294967295], 5126: ['getFloat32', 4, 1] };
@@ -311,29 +311,36 @@ export function validateAsset(asset, { stage = 'production', fileBytes = 0 } = {
     else if (Math.abs(h - ASSET.heightM) > ASSET.heightTolM) err('TAILLE', `Hauteur ${cm(h)} (attendu ${cm(ASSET.heightM)} ± ${cm(ASSET.heightTolM)}, sommet des cheveux).`, 'Mettre le personnage à 1,85 m, pieds au sol.');
     if (Math.abs(min[1]) > ASSET.originTolM) err('ORIGINE', `Les pieds sont à y = ${min[1].toFixed(3)} m (0 attendu).`, 'Poser les semelles sur le sol (z = 0 dans Blender).');
     if (Math.abs((min[0] + max[0]) / 2) > 0.05 || Math.abs((min[2] + max[2]) / 2) > 0.12) warn('CENTRAGE', `Personnage décentré (x ${((min[0] + max[0]) / 2).toFixed(2)}, z ${((min[2] + max[2]) / 2).toFixed(2)}).`, 'Centrer le personnage sur l’origine.');
-    // Masque d'équipe (contrat remis à M3)
+    // Masque d'équipe (contrat M3 : 8 couleurs pures, TEAM_MASK de rigContract.js)
+    const palette = TEAM_MASK.codes.map((c) => `${c.paint} = ${c.zone}`).join(', ');
     for (const prim of json.meshes[lod0[0].mesh].primitives) {
       const at = prim.attributes;
       if (at.COLOR_0 === undefined) {
-        staged('production', 'MASQUE_EQUIPE', 'body_LOD0 : masque d’équipe absent (attribut de couleur COLOR_0).', 'Peindre l’attribut de couleur « teamMask » (R équipe principale, G équipe secondaire, B emblèmes) et l’exporter (Vertex Color : Active).');
+        staged('production', 'MASQUE_EQUIPE', 'body_LOD0 : masque d’équipe absent (attribut de couleur COLOR_0).', `Peindre l’attribut de couleur « teamMask » avec les 8 couleurs pures du contrat (${palette}) et l’exporter (Vertex Color : Active).`);
         continue;
       }
       const cA = json.accessors[at.COLOR_0];
       const c = readAccessor(asset, at.COLOR_0);
       const n = COMPONENTS[cA.type];
-      let r = 0, g = 0, b = 0, out = 0;
+      const zones = Object.fromEntries(TEAM_MASK.codes.map((z) => [z.zone, 0]));
+      let out = 0, fuzzy = 0, alpha = 0;
       for (let v = 0; v < cA.count; v++) {
         const x = c[v * n], y = c[v * n + 1], z = c[v * n + 2];
-        if (x > 0.5) r++;
-        if (y > 0.5) g++;
-        if (z > 0.5) b++;
+        zones[decodeMask(x, y, z).zone]++;
         if ([x, y, z].some((q) => q < -1e-3 || q > 1 + 1e-3)) out++;
+        else if ([x, y, z].some((q) => q > 0.1 && q < 0.9)) fuzzy++;
+        if (n === 4 && c[v * n + 3] < 0.9) alpha++;
       }
-      info.teamMask = { primary: r, secondary: g, emblem: b, vertices: cA.count };
+      info.teamMask = { ...zones, vertices: cA.count };
+      const emblem = zones.embleme + zones.embleme_principale + zones.embleme_secondaire;
       if (out) err('MASQUE_VALEURS', `COLOR_0 : ${out} sommets hors de [0, 1].`, 'Réexporter le masque en couleurs normales (0 à 1).');
-      if (!r) staged('production', 'MASQUE_PRINCIPAL', 'Masque d’équipe : aucune zone de couleur principale (R).', 'Peindre la chemise en rouge pur dans l’attribut teamMask.');
-      if (!b) staged('production', 'MASQUE_EMBLEME', 'Masque d’équipe : aucune zone d’emblème (B).', 'Peindre les emplacements d’emblème (poitrine, deux manches, dos) en bleu pur.');
-      if (b && at.TEXCOORD_1 === undefined) err('UV_EMBLEME', 'Zones d’emblème sans UV dédiées (TEXCOORD_1).', 'Créer une 2ᵉ carte UV « emblem » : chaque zone d’emblème couvre le carré [0, 1].');
+      if (fuzzy) warn('MASQUE_NUANCES', `Masque d’équipe : ${fuzzy} sommets ont des valeurs intermédiaires (ni 0 ni 1) ; le jeu les arrondit.`, `Peindre seulement avec les 8 couleurs pures (${palette}), pinceau sans dégradé, de préférence par coin de face (Face Corner).`);
+      if (alpha) warn('MASQUE_ALPHA', `Masque d’équipe : canal A différent de 1 sur ${alpha} sommets (canal réservé).`, 'Laisser l’alpha de l’attribut teamMask à 1.');
+      if (!zones.principale && !zones.embleme_principale) staged('production', 'MASQUE_PRINCIPAL', 'Masque d’équipe : aucune zone de couleur principale (rouge pur).', 'Peindre la chemise et les manches en rouge pur dans l’attribut teamMask.');
+      if (!emblem) staged('production', 'MASQUE_EMBLEME', 'Masque d’équipe : aucune zone d’emblème (bleu, magenta ou cyan pur).', 'Peindre les emplacements d’emblème (poitrine, deux manches, dos) : cyan sur la teinte sombre d’équipe, magenta sur la chemise, bleu sur une zone neutre.');
+      if (!zones.peau) staged('production', 'MASQUE_PEAU', 'Masque d’équipe : aucune zone de peau (jaune pur) : le teint choisi par le joueur ne s’appliquerait pas.', 'Peindre la peau (visage, cou, bras, mains visibles) en jaune pur.');
+      if (!zones.cheveux) staged('production', 'MASQUE_CHEVEUX', 'Masque d’équipe : aucune zone de cheveux (blanc pur) : la couleur de cheveux choisie ne s’appliquerait pas.', 'Peindre les cheveux et les sourcils en blanc pur.');
+      if (emblem && at.TEXCOORD_1 === undefined) err('UV_EMBLEME', 'Zones d’emblème sans UV dédiées (TEXCOORD_1).', 'Créer une 2ᵉ carte UV « emblem » : chaque zone d’emblème couvre le carré [0, 1], à l’endroit.');
       if (at.TEXCOORD_0 === undefined) staged('production', 'UV', 'body_LOD0 sans UV (TEXCOORD_0).', 'Déplier le maillage sur l’atlas de couleur.');
     }
     // Expressions
@@ -405,6 +412,7 @@ export function formatReport(file, report) {
   for (const w of report.warnings) lines.push(`  ⚠ [${w.code}] ${w.message}\n      → ${w.fix}`);
   const i = report.info;
   lines.push(`  Mesures : hauteur ${i.heightM ?? '?'} m ; os ${i.bones ?? '?'} ; A-pose ${i.aPoseArmL ?? '?'}° / ${i.aPoseArmR ?? '?'}° ; LOD ${JSON.stringify(i.lods || {})} ; matériaux ${i.materials ?? '?'} ; textures ${(i.textures || []).join(', ') || 'aucune'} ; clips ${(i.clips || []).length} ; expressions ${i.morphTargets ?? 0}`);
+  if (i.teamMask) lines.push(`  Masque d’équipe (sommets par zone) : ${Object.entries(i.teamMask).map(([k, v]) => `${k} ${v}`).join(' ; ')}`);
   if (i.fit) lines.push(`  Essai en jeu : ${i.fit.summary}`);
   lines.push(`Résultat : ${report.errors.length ? 'REFUSÉ' : 'ACCEPTÉ'} (${report.errors.length} erreur(s), ${report.warnings.length} avertissement(s))`);
   return lines.join('\n');
@@ -423,17 +431,20 @@ export async function fitTest(bytes, name = 'asset') {
       const m = await window.__rig.measureRig('assaut', 'blue', { glb: b64 });
       return m;
     }, b64);
-    const img = await page.evaluate((b64) => window.__rig.renderRigLineup('assaut', 'blue', { glb: b64, backpack: false }), b64);
+    // captures : bleu, rouge (même fichier, matériau d'équipe de M3) et zones du masque
     const dir = fileURLToPath(new URL('../test-results/check-glb/', import.meta.url));
     mkdirSync(dir, { recursive: true });
-    writeFileSync(`${dir}${name}-essai.png`, Buffer.from(img.split(',')[1], 'base64'));
+    for (const [suffix, team, showMask] of [['essai', 'blue', false], ['essai-rouge', 'red', false], ['essai-masque', 'blue', true]]) {
+      const img = await page.evaluate(([b64, team, showMask]) => window.__rig.renderRigLineup('assaut', team, { glb: b64, backpack: false, showMask }), [b64, team, showMask]);
+      writeFileSync(`${dir}${name}-${suffix}.png`, Buffer.from(img.split(',')[1], 'base64'));
+    }
     const steady = res.rows.filter((r) => r.steady);
     const handMm = Math.max(...steady.map((r) => Math.max(r.handLMm, r.handRMm)));
     const nan = res.rows.reduce((a, r) => a + r.nan, 0);
     const untouched = res.rows.every((r) => r.untouched);
     const upright = res.rows.filter((r) => ['idle', 'aim', 'walk', 'jump', 'pivot'].includes(r.pose));
     const headCm = Math.max(...upright.map((r) => r.headCm));
-    return { handMm, nan, untouched, headCm, poses: res.rows.length, adapterMs: res.adapterMsPerUpdate, errors, image: `${dir}${name}-essai.png` };
+    return { handMm, nan, untouched, headCm, poses: res.rows.length, adapterMs: res.adapterMsPerUpdate, errors, image: `${dir}${name}-essai.png (+ -essai-rouge, -essai-masque)` };
   } finally {
     await browser.close();
     await server.close();

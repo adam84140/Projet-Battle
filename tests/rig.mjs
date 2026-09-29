@@ -9,7 +9,7 @@ import { startServer, launch, step, run, Checks } from './lib.mjs';
 import { parseAsset, validateAsset, trs, mul } from './check-glb.mjs';
 import { REQUIRED_BONES, OPTIONAL_BONES, SOCKETS, runtimeName } from '../src/character/rigContract.js';
 
-const C = new Checks('Squelette de production (M2)');
+const C = new Checks('Squelette de production (M2, masque M3)');
 const dir = fileURLToPath(new URL('../test-results/rig/', import.meta.url));
 mkdirSync(dir, { recursive: true });
 const savePng = (name, dataUrl) => writeFileSync(dir + name, Buffer.from(dataUrl.split(',')[1], 'base64'));
@@ -68,33 +68,33 @@ try {
   C.ok('[orientation] rendu = M1 (≤ 1 % de pixels différents, ≤ 0,05 % au-delà de 32 niveaux ; bleu, rouge, 3 classes)', lu.every(([, v]) => v.differingPct <= 1 && v.over32Pct <= 0.05), lu.map(([k, v]) => `${k} ${v.differingPct} %`).join(' · '));
 
   // ---------- 3. Variante « proportions » : export GLB, validation, rechargement, essai ----------
-  metrics.proportions = {};
-  for (const team of ['blue', 'red']) {
-    const ex = await rig('exportFixture', 'assaut', team, 'proportions');
-    const bytes = Buffer.from(ex.base64, 'base64');
-    writeFileSync(`${dir}fixture-assaut-${team}.glb`, bytes);
-    const asset = parseAsset(bytes);
-    const proto = validateAsset(asset, { stage: 'prototype', fileBytes: bytes.length });
-    const prod = validateAsset(asset, { stage: 'production', fileBytes: bytes.length });
-    const prodCodes = [...new Set(prod.errors.map((e) => e.code))].sort();
-    metrics.proportions[team] = { bytes: bytes.length, headScale: ex.headScale, proto: proto.errors, prodCodes, info: proto.info };
-    C.ok(`[GLB ${team}] export conforme au contrat au stade prototype (0 erreur)`, proto.errors.length === 0, proto.errors.map((e) => e.code).join(', ') || `hauteur ${proto.info.heightM} m, ${proto.info.bones} os, LOD0 ${proto.info.lods.body_LOD0} triangles, ${proto.info.materials} matériau`);
-    C.ok(`[GLB ${team}] au stade production, refusé seulement pour ce qu'une donnée de test ne contient pas (LOD, expressions, clips)`, prodCodes.join() === ['CLIP_MANQUANT', 'EXPRESSIONS', 'LOD_MANQUANT'].sort().join(), prodCodes.join(', '));
-    if (team === 'blue') {
-      const m = (metrics.proportions.fit = await rig('measureRig', 'assaut', 'blue', { glb: ex.base64 }));
-      const rows = m.rows;
-      const held = rows.filter((r) => r.steady);
-      const upright = rows.filter((r) => ['idle', 'aim', 'walk', 'jump', 'pivot', 'stand'].includes(r.pose));
-      const idle = rows.find((r) => r.pose === 'idle');
-      C.ok('[GLB rechargé] noms Blender « .L / .R » convertis, adaptateur branché, 32 états exécutés sans sommet invalide', rows.length === 32 && rows.every((r) => r.nan === 0), `proportions ${JSON.stringify(idle.proportions)}`);
-      C.ok('[GLB rechargé] gameplay intact dans toutes les poses (hitbox, support d\'arme, bouche du canon)', rows.every((r) => r.untouched));
-      C.ok('[GLB rechargé] mains sur l\'arme avec les bras de production (+5 %) dans les poses stables (< 10 mm)', max(held.map((r) => Math.max(r.handLMm, r.handRMm))) < 10, `${held.length} poses, ${max(held.map((r) => Math.max(r.handLMm, r.handRMm)))} mm`);
-      C.ok('[GLB rechargé] tête de production dans sa zone de touche, debout (centre < 6 cm, couverture ≥ 80 %)', max(upright.map((r) => r.headCm)) < 6 && Math.min(...upright.map((r) => r.headCoverage)) >= 0.8, `${max(upright.map((r) => r.headCm))} cm, ${Math.min(...upright.map((r) => r.headCoverage))}`);
-      C.ok('[GLB rechargé] pieds au sol au repos (± 3 cm) et corps dans la sphère englobante de M1 (toutes poses)', Math.abs(idle.minY) < 0.03 && max(rows.map((r) => r.farthest)) < 2.1, `sol ${idle.minY} m, sommet le plus loin ${max(rows.map((r) => r.farthest))} m`);
-    }
-    savePng(`lineup-proportions-${team}.png`, await page.evaluate(([t, b]) => window.__rig.renderRigLineup('assaut', t, { glb: b, backpack: false }), [team, ex.base64]));
-    savePng(`lineup-proportions-${team}-masque.png`, await page.evaluate(([t, b]) => window.__rig.renderRigLineup('assaut', t, { glb: b, backpack: false, showMask: true }), [team, ex.base64]));
+  // Un seul fichier pour les deux équipes (contrat M3) : zones d'équipe au gris de référence, masque, emblèmes en décalque
+  const ex = await rig('exportFixture', 'assaut', 'blue', 'proportions');
+  const bytes = Buffer.from(ex.base64, 'base64');
+  writeFileSync(`${dir}fixture-assaut.glb`, bytes);
+  const asset = parseAsset(bytes);
+  const proto = validateAsset(asset, { stage: 'prototype', fileBytes: bytes.length });
+  const prod = validateAsset(asset, { stage: 'production', fileBytes: bytes.length });
+  const prodCodes = [...new Set(prod.errors.map((e) => e.code))].sort();
+  metrics.proportions = { bytes: bytes.length, headScale: ex.headScale, emblemPatches: ex.emblemPatches, proto: proto.errors, protoWarnings: proto.warnings.map((w) => w.code), prodCodes, info: proto.info };
+  C.ok('[GLB] export conforme au contrat au stade prototype (0 erreur)', proto.errors.length === 0, proto.errors.map((e) => e.code).join(', ') || `hauteur ${proto.info.heightM} m, ${proto.info.bones} os, LOD0 ${proto.info.lods.body_LOD0} triangles, ${proto.info.materials} matériau, ${ex.emblemPatches} zones d'emblème`);
+  C.ok('[GLB] au stade production, refusé seulement pour ce qu\'une donnée de test ne contient pas (LOD, expressions, clips)', prodCodes.join() === ['CLIP_MANQUANT', 'EXPRESSIONS', 'LOD_MANQUANT'].sort().join(), prodCodes.join(', '));
+  const tm = proto.info.teamMask || {};
+  C.ok('[GLB] masque d\'équipe du contrat M3 : chemise, teinte sombre, peau, cheveux et 3 zones d\'emblème, valeurs pures', tm.principale > 0 && tm.secondaire > 0 && tm.peau > 0 && tm.cheveux > 0 && tm.embleme_principale === 4 && tm.embleme_secondaire === 8 && !proto.warnings.some((w) => w.code.startsWith('MASQUE')), JSON.stringify(tm));
+  {
+    const m = (metrics.proportions.fit = await rig('measureRig', 'assaut', 'blue', { glb: ex.base64 }));
+    const rows = m.rows;
+    const held = rows.filter((r) => r.steady);
+    const upright = rows.filter((r) => ['idle', 'aim', 'walk', 'jump', 'pivot', 'stand'].includes(r.pose));
+    const idle = rows.find((r) => r.pose === 'idle');
+    C.ok('[GLB rechargé] noms Blender « .L / .R » convertis, adaptateur branché, 32 états exécutés sans sommet invalide', rows.length === 32 && rows.every((r) => r.nan === 0), `proportions ${JSON.stringify(idle.proportions)}`);
+    C.ok('[GLB rechargé] gameplay intact dans toutes les poses (hitbox, support d\'arme, bouche du canon)', rows.every((r) => r.untouched));
+    C.ok('[GLB rechargé] mains sur l\'arme avec les bras de production (+5 %) dans les poses stables (< 10 mm)', max(held.map((r) => Math.max(r.handLMm, r.handRMm))) < 10, `${held.length} poses, ${max(held.map((r) => Math.max(r.handLMm, r.handRMm)))} mm`);
+    C.ok('[GLB rechargé] tête de production dans sa zone de touche, debout (centre < 6 cm, couverture ≥ 80 %)', max(upright.map((r) => r.headCm)) < 6 && Math.min(...upright.map((r) => r.headCoverage)) >= 0.8, `${max(upright.map((r) => r.headCm))} cm, ${Math.min(...upright.map((r) => r.headCoverage))}`);
+    C.ok('[GLB rechargé] pieds au sol au repos (± 3 cm) et corps dans la sphère englobante de M1 (toutes poses)', Math.abs(idle.minY) < 0.03 && max(rows.map((r) => r.farthest)) < 2.1, `sol ${idle.minY} m, sommet le plus loin ${max(rows.map((r) => r.farthest))} m`);
   }
+  for (const team of ['blue', 'red']) savePng(`lineup-proportions-${team}.png`, await page.evaluate(([t, b]) => window.__rig.renderRigLineup('assaut', t, { glb: b, backpack: false }), [team, ex.base64]));
+  savePng('lineup-proportions-masque.png', await page.evaluate((b) => window.__rig.renderRigLineup('assaut', 'blue', { glb: b, backpack: false, showMask: true }), ex.base64));
 
   // ---------- 4. Validateur : fichiers volontairement fautifs ----------
   const good = parseAsset(Buffer.from((await rig('exportFixture', 'assaut', 'blue', 'proportions')).base64, 'base64'));

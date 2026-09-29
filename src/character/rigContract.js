@@ -4,7 +4,7 @@
 // NON GELÉ (D-003) : il le sera après la validation GOLD du vrai Master Assault (M7).
 // Repère : Y en haut, personnage face à +Z, sa gauche = +X (droite = −X), 1 unité = 1 m.
 
-export const RIG_CONTRACT_VERSION = 'M2-0.1';
+export const RIG_CONTRACT_VERSION = 'M3-0.2';
 
 // Nom vu par Three.js après chargement glTF (PropertyBinding.sanitizeNodeName) :
 // « upperArm.L » (nom Blender, compatible miroir) devient « upperArmL ».
@@ -93,10 +93,39 @@ export const ASSET = {
   textureSizes: [256, 512, 1024, 2048],
   maxTextureSize: 2048,
   maxInfluences: 4,
-  // Masque d'équipe (contrat remis à M3) : COLOR_0 du corps, R = couleur d'équipe principale,
-  // G = couleur d'équipe secondaire, B = zone d'emblème (UV dans TEXCOORD_1)
+  // Masque d'équipe : voir TEAM_MASK ci-dessous
   teamMask: { attribute: 'COLOR_0', emblemUv: 'TEXCOORD_1' },
 };
+
+// Masque d'équipe (étape M3, D-019) : attribut de couleur COLOR_0 de chaque maillage du corps et des
+// accessoires, peint avec HUIT couleurs pures seulement (valeurs 0 ou 1 : aucun problème d'espace de
+// couleur à l'export). Chaque code désigne une zone ; le jeu teinte les zones colorables et pose l'emblème.
+// Les zones teintées sont peintes dans l'atlas en gris neutre : le gris de référence donne exactement la
+// couleur de teinte, un gris plus sombre ou plus clair l'assombrit ou l'éclaircit (plis, usure).
+// Le canal A est réservé (laisser à 1).
+export const TEAM_MASK = {
+  attribute: 'COLOR_0',
+  emblemUv: 'TEXCOORD_1',
+  referenceGrey: 204, // gris de référence de l'atlas, sRGB 0-255 (#CCCCCC)
+  codes: [
+    { zone: 'neutre', rgb: [0, 0, 0], paint: 'noir', tint: null, use: 'tout ce qui garde la couleur de l’atlas : gilet noir, cuir, pantalon, bottes, gants, revers gris clair, métal' },
+    { zone: 'principale', rgb: [1, 0, 0], paint: 'rouge', tint: 'primary', use: 'chemise et manches (bleu / rouge)' },
+    { zone: 'secondaire', rgb: [0, 1, 0], paint: 'vert', tint: 'secondary', use: 'teinte sombre d’équipe : panneau du dos, gilet, casquette (bleu nuit / brun-rouge)' },
+    { zone: 'embleme', rgb: [0, 0, 1], paint: 'bleu', tint: null, emblem: true, use: 'emblème posé sur une zone neutre' },
+    { zone: 'embleme_principale', rgb: [1, 0, 1], paint: 'magenta', tint: 'primary', emblem: true, use: 'emblème sur la chemise (manches)' },
+    { zone: 'embleme_secondaire', rgb: [0, 1, 1], paint: 'cyan', tint: 'secondary', emblem: true, use: 'emblème sur la teinte sombre (poitrine, grand emblème du dos)' },
+    { zone: 'peau', rgb: [1, 1, 0], paint: 'jaune', tint: 'skin', use: 'peau (teint personnalisable)' },
+    { zone: 'cheveux', rgb: [1, 1, 1], paint: 'blanc', tint: 'hair', use: 'cheveux et sourcils (couleur personnalisable)' },
+  ],
+};
+
+// Zone d'un sommet d'après son masque (même règle que le shader de src/character/teamMaterial.js)
+export function decodeMask(r, g, b) {
+  const R = r > 0.5 ? 1 : 0;
+  const G = g > 0.5 ? 1 : 0;
+  const B = b > 0.5 ? 1 : 0;
+  return TEAM_MASK.codes.find((c) => c.rgb[0] === R && c.rgb[1] === G && c.rgb[2] === B);
+}
 
 // Clips (noms glTF). `code` : animé par le code (aucun clip requis) ; `clip` : fourni par Blender.
 // Durées alignées sur src/config.js et src/game/Soldier.js (30 images/s).
