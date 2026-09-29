@@ -58,6 +58,10 @@ export class Vehicle {
     this.fireCd = 0;
     this.wreckT = 0;
     this.lastDamager = null;
+    // suspension : tangage / roulis de la caisse (ressort amorti)
+    this.sus = { p: 0, vp: 0, r: 0, vr: 0 };
+    this.prevSpeed = 0;
+    this.prevYaw = d.yaw;
     this.root.visible = true;
     this.collider.active = true;
     this.model.traverse((o) => {
@@ -290,6 +294,12 @@ export class Vehicle {
     }
     if (bumped && Math.abs(this.speed) > 4) {
       if (Math.abs(this.speed) > 12) this.takeDamage(Math.abs(this.speed) * 1.5, null);
+      // choc : la caisse pique du nez, secousse et bruit sourd pour le conducteur
+      this.sus.vp += Math.sign(this.speed) * Math.min(1.6, Math.abs(this.speed) * 0.12);
+      if (this.driver?.isPlayer) {
+        game.effects.shake = Math.max(game.effects.shake, Math.min(0.6, Math.abs(this.speed) * 0.04));
+        game.audio.land(null, Math.min(1, Math.abs(this.speed) / 14));
+      }
       this.speed *= -0.25;
     }
     const b = MAP.bounds;
@@ -331,12 +341,37 @@ export class Vehicle {
         const dir = cmd.aimPoint ? cmd.aimPoint.clone().sub(muzzle).normalize() : new THREE.Vector3(0, 0, 1).transformDirection(this.barrel.matrixWorld);
         game.combat.fireShell(this, muzzle, dir);
         this.recoil = 1;
+        // la caisse encaisse le recul du canon (vers l'arrière de la tourelle)
+        this.sus.vp -= Math.cos(this.turretYaw) * 1.8;
+        this.sus.vr += Math.sin(this.turretYaw) * 1.8;
         if (this.driver?.isPlayer) game.effects.shake = Math.max(game.effects.shake, 0.4);
       }
       this.recoil = Math.max(0, (this.recoil || 0) - dt * 4);
     }
-    // Poussière
-    if (Math.abs(this.speed) > 6 && Math.random() < dt * 20) game.effects.dust(this.pos.clone().addScaledVector(new THREE.Vector3(fx, 0, fz), -this.radius));
+    // Suspension : l'accélération fait cabrer, le freinage plonger, le virage pencher
+    const acc = dt > 0 ? (this.speed - this.prevSpeed) / dt : 0;
+    let yawRate = dt > 0 ? this.yaw - this.prevYaw : 0;
+    yawRate = Math.atan2(Math.sin(yawRate), Math.cos(yawRate)) / Math.max(dt, 1e-4);
+    this.prevSpeed = this.speed;
+    this.prevYaw = this.yaw;
+    const heavy = this.type === 'tank';
+    const lat = this.speed * yawRate;
+    const tp = Math.max(-0.07, Math.min(0.07, -acc * (heavy ? 0.004 : 0.006)));
+    const tr = Math.max(-0.08, Math.min(0.08, lat * (heavy ? 0.002 : 0.005)));
+    const k = heavy ? 120 : 80;
+    const c = heavy ? 16 : 10;
+    const su = this.sus;
+    su.vp += (k * (tp - su.p) - c * su.vp) * dt;
+    su.vr += (k * (tr - su.r) - c * su.vr) * dt;
+    su.p = Math.max(-0.12, Math.min(0.12, su.p + su.vp * dt));
+    su.r = Math.max(-0.12, Math.min(0.12, su.r + su.vr * dt));
+    // Poussière (davantage en dérapage)
+    const dustRate = (Math.abs(this.speed) > 6 ? 20 : 0) + (Math.abs(lat) > 18 ? 25 : 0);
+    if (dustRate && Math.random() < dt * dustRate) game.effects.dust(this.pos.clone().addScaledVector(new THREE.Vector3(fx, 0, fz), -this.radius));
+    // Véhicule endommagé : il fume
+    if (this.health < this.cfg.health * 0.4 && Math.random() < dt * (this.health < this.cfg.health * 0.2 ? 10 : 4)) {
+      game.effects.smokeTrail(this.pos.clone().setY(this.pos.y + (heavy ? 2.2 : 1.4)).addScaledVector(new THREE.Vector3(fx, 0, fz), heavy ? -1.8 : 1.2));
+    }
     this.syncTransform(dt);
   }
 
@@ -360,12 +395,13 @@ export class Vehicle {
         w.spin.rotation.x += (this.speed * dt) / 0.43;
         if (w.front) w.group.rotation.y = this.steer;
       }
-      this.model.rotation.x = -Math.min(0.04, Math.max(-0.04, this.speed * 0.002));
     } else {
       this.turret.rotation.y = this.turretYaw;
       this.barrel.rotation.x = -this.barrelPitch;
       this.barrel.position.z = 1.3 - (this.recoil || 0) * 0.35;
     }
+    this.model.rotation.x = this.sus.p;
+    this.model.rotation.z = this.sus.r;
     // Collision dynamique (boîte englobante)
     const h = this.cfg.half;
     const ex = Math.abs(fx) * h[2] + Math.abs(fz) * h[0];
