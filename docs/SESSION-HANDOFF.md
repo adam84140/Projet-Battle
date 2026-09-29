@@ -8,16 +8,18 @@
 | Point de contrôle stable avant Master Character | `05827b4807c67959e125c9681b5ffa953b113a29` (D-004) |
 | Branche de travail | `claude/dazzling-cray-gn1bg5` (contient tout l'historique de `claude/similar-project-tn0j8l`, où a été créé `05827b4`) |
 | Jalon | **MAP 1 GOLD** |
-| Sous-jalon | **MASTER CHARACTER ASSAULT** — spécifié, **pas implémenté** |
+| Sous-jalon | **MASTER CHARACTER ASSAULT** — spécifié et audité, **pas implémenté** (plan en attente d'autorisation) |
 
 ## État Git (fin de la session du 2026-09-29, références visuelles)
 - `05827b4` : dernier commit de code du jeu (fin des phases 1 à 15).
-- Commits suivants : banc de test tolérant aux polices Google (`tests/lib.mjs`), préparation du contexte projet (`CLAUDE.md`, `docs/`, `.claude/skills/`), puis intégration des **références visuelles officielles** (`docs/_attachments/ref-0*.webp`, D-009). **Aucun code du jeu modifié après `05827b4`.**
+- Commits suivants : banc de test tolérant aux polices Google (`tests/lib.mjs`), préparation du contexte projet (`CLAUDE.md`, `docs/`, `.claude/skills/`), puis intégration des **références visuelles officielles** (`docs/_attachments/ref-0*.webp`, D-009), réponses du propriétaire (D-010 à D-013) et **audit du Master Assault**. **Aucun code du jeu modifié après `05827b4`.**
 - Pas de pull request, pas de merge vers `main`. Le tag `pre-master-character-v1` n'est pas sur GitHub (le proxy Cloud refuse les tags) ; le hash fait foi.
 
 ## Ce qui a été fait
 - Phases de finition 1 à 15 sur la tranche verticale de la carte 1 (résumé dans [CURRENT-STATE](CURRENT-STATE.md)).
 - Préparation du contexte : `CLAUDE.md` permanent, base de connaissances `docs/` (coffre Obsidian), 7 skills projet, spécification du Master Assault et du pipeline personnage.
+- **Audit technique du Master Assault** ([MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md)) : mesures du personnage actuel (18 maillages visibles, 16 800 triangles, 1,6 à 1,8 Mo non partagés, 73 à 98 ms de construction, 1,94 m), part des soldats dans le rendu 16v16 (762 à 806 appels sur 890 à 936 en scène de charge), dépendances, 15 constats, architecture cible (squelette de gameplay + adaptateur de peau), plan M0 à M7, 7 décisions demandées. **En attente d'autorisation.**
+- Réponses du propriétaire enregistrées : D-010 (Assaut par défaut sans sac, support du sac conservé), D-011 (emblèmes canoniques), D-012 (mer en décor de fond, passe environnement), D-013 (direction du HUD, règles de la conquête inchangées, chrono informatif seulement).
 - **Références visuelles officielles** fournies par le propriétaire : images 01 à 04 versionnées, lues et documentées dans [VISUAL-REFERENCES](product/VISUAL-REFERENCES.md) (rôle de chacune, palette relevée, écarts avec le jeu, questions ouvertes) ; décision D-009 ; spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) alignée sur l'image 01 (1,85 m, emblèmes poitrine / deux manches / dos, modèle de base sans sac à dos, usure légère peinte) ; skills `frontline-art-direction`, `character-production` et `visual-validation` pointent vers les références. L'image 05 (*Battlefield Heroes*) n'est pas versionnée (marques d'un tiers).
 
 ## Tests vérifiés
@@ -35,7 +37,7 @@ D-001 ONE MAP FIRST · D-002 MASTER CHARACTER FIRST · D-004 point de contrôle 
 
 ## Objectif exact de la prochaine session
 1. Démarrer selon la procédure de `CLAUDE.md` : vérifier Git, lire ce fichier, `npm install`, `npm run build`, `npm test`.
-2. **Étape 1 de la [ROADMAP](ROADMAP.md)** : petites corrections des problèmes connus, chacune avec son test (d'abord la réserve de modèles en 16v16).
-3. Puis **démarrer le Master Assault** par la revue de la spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) avec le propriétaire (proportions, squelette, sockets, budgets, critères GOLD) (les questions sur les références sont tranchées : D-010 à D-013), et proposer le **prototype d'intégration** décrit dans [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md) avant tout code.
+2. **Lire [MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md) et les réponses du propriétaire** aux décisions de sa section 7. **Aucune implémentation du Master Assault sans autorisation explicite** (M0 tests, M1 prototype à peau rigide, etc.).
+3. Si le propriétaire l'autorise : étape 1 de la [ROADMAP](ROADMAP.md) (petites corrections, d'abord la réserve de modèles en 16v16) puis l'étape M0 de l'audit, chacune avec son test.
 
 **Ne pas supposer que le Master Character existe** : au commit `05827b4`, tous les personnages sont encore procéduraux.

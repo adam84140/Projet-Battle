@@ -2,7 +2,7 @@
 
 Point d'entrée de la documentation du projet. Les règles permanentes de travail sont dans [CLAUDE.md](../CLAUDE.md) à la racine du dépôt.
 
-> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (spécifié, pas implémenté).**
+> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (spécifié et audité, pas implémenté).**
 > Point de contrôle stable : commit `05827b4807c67959e125c9681b5ffa953b113a29`.
 
 ## Commencer ici
@@ -18,6 +18,7 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | --- | --- |
 | [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) | spécification du personnage de référence : art, technique, animation, validation, critères GOLD |
 | [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md) | chaîne de production cible (Blender → glTF → Three.js), partage code / outil 3D |
+| [MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md) | audit technique du personnage actuel, mesures, plan de migration M0 à M7, décisions demandées |
 
 ## Carte 1 — *Castelmare*
 | Document | Contenu |

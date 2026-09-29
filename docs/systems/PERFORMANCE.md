@@ -19,6 +19,18 @@ Détail : maillages par soldat 24 ; par jeep 5 ; par char 3 ; décor statique fu
 
 **Lecture** : la logique est large (1,7 ms pour 4 ms d'objectif). Le rendu 16v16 est au-dessus de l'objectif, surtout à cause des 24 maillages par soldat (32 × 24 = 768 maillages potentiels) : c'est le levier principal du [Master Assault](../characters/MASTER-ASSAULT.md) (≤ 4 appels par soldat).
 
+## Mesures de l'audit Master Assault (2026-09-29, même code)
+Scène de charge 16v16 : 32 soldats vivants à moins de 18 m de la place B, 4 directions, ombres comprises. **Pas le scénario de référence** ci-dessus : c'est le pire cas pour les personnages.
+
+| Mesure | Valeur |
+| --- | --- |
+| Appels de rendu, total | 890 à 936 |
+| dont soldats | **762 à 806** (≈ 24 par soldat visible, couleur et ombre) |
+| Triangles des soldats | 653 000 à 668 000 |
+| Soldat fusionné | 24 maillages dont 18 visibles, ~16 800 triangles, 1,6 à 1,8 Mo de géométrie non partagée, 73 à 98 ms de construction |
+
+Détail et plan : [MASTER-ASSAULT-AUDIT](../characters/MASTER-ASSAULT-AUDIT.md).
+
 ## Techniques en place
 - Décor statique fusionné en paquets de 1 500 maillages (`bakeStatic`) ; personnages fusionnés par os, arme fusionnée à part sous son support animé (`bakeHierarchy`) ; véhicules fusionnés par pièce mobile.
 - Matériaux en cache (`mat()`), géométries partagées marquées (`markShared`), libération par `disposeTree` (véhicules, drapeaux, projectiles, personnages).

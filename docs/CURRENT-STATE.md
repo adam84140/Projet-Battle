@@ -2,7 +2,7 @@
 
 - **Référence :** commit `05827b4807c67959e125c9681b5ffa953b113a29` (point de contrôle D-004, créé sur la branche `claude/similar-project-tn0j8l`). Branche de travail actuelle : `claude/dazzling-cray-gn1bg5`, qui contient ce commit ; depuis, seuls la documentation, les skills et le banc de test ont changé.
 - **Vérifié le :** 2026-09-29, dans le conteneur Cloud (Chromium sans GPU), à nouveau en début de session sur `claude/dazzling-cray-gn1bg5`.
-- **Jalon :** MAP 1 GOLD — **sous-jalon :** MASTER CHARACTER ASSAULT (**pas commencé**).
+- **Jalon :** MAP 1 GOLD — **sous-jalon :** MASTER CHARACTER ASSAULT (**pas commencé** : audit technique et plan de migration rédigés, en attente d'autorisation).
 
 Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce qui n'a pas été vérifié est marqué comme tel.
 
@@ -16,7 +16,7 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
 | **Combat** | hitscan, atténuation par distance, tirs à la tête, recul propre à chaque arme, grenades, roquettes, obus, explosions avec ligne de vue, poignard |
 | **Bots** | 8v8 ou 16v16, 3 difficultés, rôles attaque / défense / contournement / soutien, abris, replis — [AI](systems/AI.md) |
 | **Véhicules** | jeep et char par équipe, suspension, destruction, réapparition ; conduits par le joueur seulement — [VEHICLES](systems/VEHICLES.md) |
-| **Personnages** | procéduraux (primitives Three.js fusionnées par os), 24 maillages par soldat, personnalisation (teint, cheveux, accessoires), planche de référence `fiche.html` |
+| **Personnages** | procéduraux (primitives Three.js fusionnées par os), 24 maillages par soldat dont 18 visibles, ~16 800 triangles, 1,6 à 1,8 Mo de géométrie non partagée, 1,94 m au sommet des cheveux ([audit](characters/MASTER-ASSAULT-AUDIT.md)), personnalisation (teint, cheveux, accessoires), planche de référence `fiche.html` |
 | **Références visuelles** | images officielles 01 à 04 versionnées dans `docs/_attachments/` ([VISUAL-REFERENCES](product/VISUAL-REFERENCES.md), D-009) ; **le jeu n'a pas encore été modifié** pour s'en rapprocher (écarts listés dans ce document) |
 | **Animation** | procédurale avec IK des mains, couches additives d'impact et de réception, 3 variantes de mort — [ANIMATION](systems/ANIMATION.md) |
 | **Caméra** | 3ᵉ personne sans traversée du décor ni des feuillages, visée décalée, champ élargi au sprint |
@@ -49,7 +49,7 @@ Voir [PERFORMANCE](systems/PERFORMANCE.md). En bref : logique 1,7 ms en 16v16 (l
 Vérifiés le 2026-09-29 sur `05827b4` :
 1. **Blocages temporaires des bots** : 1,2 % des échantillons en partie simulée (0,5 à 1,6 % selon les parties), 8 s au plus, surtout près des obstacles denses de la ferme (C).
 2. **Pic de 40 à 65 ms en 16v16** : environ une fois par 2 minutes, quand un bot réapparaît dans une classe dont la réserve de modèles est vide ; le modèle est alors construit en pleine partie. Absent en 8v8.
-3. **Rendu 16v16 lourd** : 455 à 709 appels de rendu en vue de jeu (24 maillages par soldat) ; sera traité par le Master Assault.
+3. **Rendu 16v16 lourd** : 455 à 709 appels de rendu en vue de jeu (24 maillages par soldat) ; dans une scène de charge (32 soldats visibles), les soldats font 762 à 806 des 890 à 936 appels ([audit](characters/MASTER-ASSAULT-AUDIT.md)) ; sera traité par le Master Assault.
 4. **Arme au-dessus du sol** : dans la mort « en vrille » avec chute vers l'avant, le fusil reste à hauteur du torse (17 à 33 cm au-dessus du sol) ; les autres variantes sont correctes.
 5. **Chevauchement forcé** : un soldat peut entrer dans un obstacle s'il est placé de force entre deux obstacles très proches (positions écartées par le test caméra) ; une seule occurrence (1 échantillon sur ~7 000) lors d'une session précédente, aucune lors de la dernière.
 6. **Bots** : ne conduisent pas les véhicules.

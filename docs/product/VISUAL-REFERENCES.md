@@ -119,7 +119,7 @@ Comparaison du 2026-09-29 entre les références et le jeu (code identique à `0
 ### Personnage → traité par le Master Assault
 | Élément | Référence (01, 03) | Jeu actuel |
 | --- | --- | --- |
-| Construction | modèle sculpté, 1,85 m | primitives Three.js, bâti sur 1,80 m (capsule physique `body.height`) |
+| Construction | modèle sculpté, 1,85 m | primitives Three.js ; **1,94 m** au sommet des cheveux en jeu (1,97 m au menu), capsule physique de 1,80 m (mesures de l'[audit](../characters/MASTER-ASSAULT-AUDIT.md)) |
 | Sac à dos | **absent** du modèle de base (D-010) ; accessoire de personnalisation seulement | présent par défaut (`DEFAULT_CUSTOM.backpack: true`) ; en visée, il masque la chemise et l'emblème du dos |
 | Emblème du dos | sur le panneau du harnais, visible de la caméra | sur le gilet, caché par le sac ; le sac porte son propre emblème |
 | Emblèmes de manche | deux manches | manche gauche seulement |

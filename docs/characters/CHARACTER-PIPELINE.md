@@ -62,6 +62,8 @@ Le contrat entre l'outil 3D et le code est le fichier `.glb` :
 Toute évolution du contrat est notée dans [DECISIONS](../DECISIONS.md).
 
 ## Ordre de travail recommandé pour le Master Assault
+Détaillé et chiffré dans [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (étapes M0 à M7).
+
 1. Figer la spécification ([MASTER-ASSAULT](MASTER-ASSAULT.md)) avec le propriétaire du projet.
 2. **Prototype d'intégration** : convertir le personnage procédural actuel en SkinnedMesh (un maillage, mêmes os) pour valider chargeur, animateur, sockets, IK, hitboxes et performance sans attendre l'art définitif. Il doit rester présenté comme un prototype.
 3. Production de l'asset dans Blender selon le contrat.
