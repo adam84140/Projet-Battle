@@ -332,6 +332,8 @@ export class Soldier {
     const w = this.weapon;
     this.ammo--;
     this.fireCd = 60 / (w.rpm * (this.effects.fureur > 0 ? 1.35 : 1));
+    // tirs rapprochés = rafale (le recul monte en tir soutenu)
+    this.burst = game.time - this.lastShotTime < 0.25 ? (this.burst || 0) + 1 : 0;
     this.lastShotTime = game.time;
     this.revealT = 2.5;
     if (this.effects.camouflage > 0) this.effects.camouflage = 0;
@@ -355,12 +357,12 @@ export class Soldier {
     }
     const res = game.combat.hitscan(this, origin, _dir, w.range, dmg, w);
     this.bloom = Math.min(0.08, this.bloom + w.recoil * (this.aiming ? 0.35 : 0.8));
-    this.char.anim.recoil = 1;
+    this.char.anim.recoil = w.feel.model;
     this.flashT = 0.05;
-    this.recoilKick = (this.recoilKick || 0) + w.recoil * (this.aiming ? 0.6 : 1);
+    this.recoilKick = (this.recoilKick || 0) + (this.aiming ? 0.65 : 1) * (this.crouching ? 0.8 : 1);
     // Traçante depuis la bouche du canon
     const muzzle = this.char.getMuzzleWorld(new THREE.Vector3());
-    if (this.isPlayer || Math.random() < 0.5) game.effects.tracer(muzzle, res.point, this.team === 'blue' ? 0xbfe0ff : 0xffe0a0);
+    if (this.isPlayer || Math.random() < 0.5) game.effects.tracer(muzzle, res.point, this.team === 'blue' ? 0xbfe0ff : 0xffe0a0, w.feel.tracer, w.feel.trail);
     if (this.isPlayer || game.player?.body.pos.distanceToSquared(this.body.pos) < 900) game.effects.muzzle(muzzle);
     game.audio.shot(w.sound, this.isPlayer ? null : this.body.pos);
   }

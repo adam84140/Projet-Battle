@@ -28,7 +28,7 @@ export class HUD {
       <div class="vignette"></div>
       <div class="dmgdir"></div>
       <div class="scope"><div class="scope-cross"></div></div>
-      <div class="crosshair"><i class="ch-t"></i><i class="ch-b"></i><i class="ch-l"></i><i class="ch-r"></i><b class="ch-dot"></b><div class="hitmarker"><i></i><i></i><i></i><i></i></div></div>
+      <div class="crosshair"><i class="ch-t"></i><i class="ch-b"></i><i class="ch-l"></i><i class="ch-r"></i><b class="ch-dot"></b><b class="ch-reload"></b><div class="hitmarker"><i></i><i></i><i></i><i></i></div></div>
       <div class="aim-name"></div>
       <div class="popups"></div>
       <div class="capture"><div class="cap-label"></div><div class="cap-bar"><i></i></div></div>
@@ -47,7 +47,7 @@ export class HUD {
       tkRed: $('.tk-red .tk-num'), tkRedBar: $('.tk-red .tk-bar i'),
       flags: $('.flags'), killfeed: $('.killfeed'), banners: $('.banners'), markers: $('.markers'),
       dmgnums: $('.dmgnums'), vignette: $('.vignette'), dmgdir: $('.dmgdir'), scope: $('.scope'),
-      crosshair: $('.crosshair'), hit: $('.hitmarker'), aimName: $('.aim-name'), popups: $('.popups'),
+      crosshair: $('.crosshair'), hit: $('.hitmarker'), chReload: $('.ch-reload'), aimName: $('.aim-name'), popups: $('.popups'),
       capture: $('.capture'), capLabel: $('.cap-label'), capBar: $('.cap-bar i'), prompt: $('.prompt'),
       badge: $('.class-badge'), hpName: $('.hp-name'), hpFill: $('.hp-fill'), hpGhost: $('.hp-ghost'), hpNum: $('.hp-num'),
       fx: $('.fx-list'), abilities: $('.abilities'), wName: $('.w-name'), wMag: $('.w-mag'), wRes: $('.w-res'), wHint: $('.w-hint'),
@@ -132,7 +132,10 @@ export class HUD {
 
   hitMarker(kill, head) {
     this.hitT = kill ? 0.45 : 0.18;
-    this.el.hit.className = `hitmarker on${kill ? ' kill' : ''}${head ? ' head' : ''}`;
+    const h = this.el.hit;
+    h.className = 'hitmarker';
+    void h.offsetWidth; // relance l'animation d'apparition à chaque touche
+    h.className = `hitmarker on${kill ? ' kill' : ''}${head ? ' head' : ''}`;
   }
 
   damageNumber(point, dmg, head, kill) {
@@ -249,6 +252,13 @@ export class HUD {
     el.chB.style.transform = `translate(-50%, ${px}px)`;
     el.chL.style.transform = `translate(${-px - 9}px, -50%)`;
     el.chR.style.transform = `translate(${px}px, -50%)`;
+    // anneau de rechargement autour du réticule
+    const reloading = !v && p.alive && p.reloadT >= 0;
+    if (reloading !== this.reloadOn) {
+      this.reloadOn = reloading;
+      el.chReload.classList.toggle('on', reloading);
+    }
+    if (reloading) el.chReload.style.setProperty('--p', `${Math.round(p.reloadT * 360)}deg`);
     const tgt = ctl.aimTarget;
     el.crosshair.classList.toggle('enemy', !!(tgt && tgt.team !== p.team));
     el.crosshair.classList.toggle('friend', !!(tgt && tgt.team === p.team));

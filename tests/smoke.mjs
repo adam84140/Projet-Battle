@@ -100,8 +100,21 @@ try {
   C.ok('tir consomme des munitions', ammo1 < ammo0, `${ammo0} → ${ammo1}`);
   C.ok('impacts et dégâts sur la cible', await get(page, '!window.__target.alive || window.__target.health < window.__target.maxHealth'));
   C.ok('élimination comptée', (await get(page, 'g.player.stats.kills')) > kills0, `PV cible : ${Math.round(await get(page, 'window.__target.health'))}`);
+  // recul : la vue monte pendant la rafale puis revient d'elle-même
+  const rc = await page.evaluate(() => {
+    const g = window.__game, c = g.controller;
+    c.pitch = 0; c.kickP = 0;
+    let peak = 0;
+    for (let i = 0; i < 10; i++) { g.input.mouse.left = true; g.update(1 / 30); g.input.endFrame(); peak = Math.max(peak, c.kickP); }
+    g.input.mouse.left = false;
+    for (let i = 0; i < 30; i++) { g.update(1 / 30); g.input.endFrame(); }
+    return { peak, rest: c.kickP, climb: c.pitch };
+  });
+  C.ok('recul : la vue monte en rafale puis revient', rc.peak > 0.005 && rc.rest < rc.peak * 0.1 && rc.climb > 0, `pic ${(rc.peak * 57.3).toFixed(2)}°, reste ${(rc.rest * 57.3).toFixed(2)}°`);
   await page.keyboard.press('KeyR');
-  await step(page, 2.2);
+  await step(page, 0.3);
+  C.ok('anneau de rechargement au réticule', await page.evaluate(() => document.querySelector('.ch-reload').classList.contains('on')));
+  await step(page, 1.9);
   C.ok('rechargement', (await get(page, 'g.player.ammo')) === (await get(page, 'g.player.weapon.mag')), `${await get(page, 'g.player.ammo')} balles`);
 
   // ---------- Compétences ----------

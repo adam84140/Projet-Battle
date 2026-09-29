@@ -20,6 +20,10 @@ export class PlayerController {
     this.vcmd = { throttle: 0, steer: 0, fire: false, aimYaw: 0, aimPitch: 0, aimPoint: null };
     this.yaw = 0;
     this.pitch = 0;
+    // recul : décalage temporaire de la vue (revient seul) + recul de la caméra
+    this.kickP = 0;
+    this.kickY = 0;
+    this.punch = 0;
     this.camPos = new THREE.Vector3();
     this.aimPoint = new THREE.Vector3();
     this.fov = 70;
@@ -39,6 +43,7 @@ export class PlayerController {
     this.s = soldier;
     this.yaw = soldier.yaw;
     this.pitch = 0;
+    this.kickP = this.kickY = this.punch = 0;
     this.cmd.yaw = this.yaw;
     this.cmd.pitch = 0;
     this.snap = true;
@@ -63,12 +68,21 @@ export class PlayerController {
       this.yaw -= t.lookDX * ts;
       this.pitch -= t.lookDY * ts;
     }
-    // recul de l'arme
+    // Recul propre à chaque arme : impulsion vers le haut (plus latérale pour la
+    // mitrailleuse), dont une petite part reste et le reste revient seul
+    const feel = s.weapon.feel;
     if (s.recoilKick) {
-      this.pitch += s.recoilKick * (t ? 0.3 : 0.6);
-      this.yaw += (Math.random() - 0.5) * s.recoilKick * 0.4;
+      const up = feel.kick * s.recoilKick * (t ? 0.5 : 1) * (1 + Math.min(s.burst || 0, 10) * feel.ramp);
+      this.pitch += up * feel.keep;
+      this.kickP += up * (1 - feel.keep);
+      this.kickY += (Math.random() - 0.5) * 2 * feel.side * up;
+      this.punch = Math.min(0.35, this.punch + feel.punch);
       s.recoilKick = 0;
     }
+    const rec = 1 - Math.exp(-dt * feel.recover);
+    this.kickP -= this.kickP * rec;
+    this.kickY -= this.kickY * rec;
+    this.punch -= this.punch * (1 - Math.exp(-dt * 14));
     const k = (c) => locked && input.down(c);
     cmd.mz = (k('KeyW') || k('ArrowUp') ? 1 : 0) - (k('KeyS') || k('ArrowDown') ? 1 : 0);
     cmd.mx = (k('KeyA') || k('ArrowLeft') ? 1 : 0) - (k('KeyD') || k('ArrowRight') ? 1 : 0);
@@ -103,8 +117,8 @@ export class PlayerController {
       t.endFrame();
     }
     this.pitch = Math.max(-1.2, Math.min(1.2, this.pitch));
-    cmd.yaw = this.yaw;
-    cmd.pitch = this.pitch;
+    cmd.yaw = this.yaw + this.kickY;
+    cmd.pitch = Math.max(-1.25, Math.min(1.25, this.pitch + this.kickP));
     cmd.aimPoint = this.aimPoint;
     cmd.throwPoint = null;
 
@@ -117,6 +131,7 @@ export class PlayerController {
       vc.fire = cmd.fire;
       vc.aimYaw = this.yaw;
       vc.aimPitch = this.pitch;
+      this.kickP = this.kickY = this.punch = 0;
       vc.aimPoint = this.aimPoint;
     }
     if (interact && s.alive) this.interact();
@@ -188,9 +203,12 @@ export class PlayerController {
     const game = this.game;
     const s = this.s;
     const phys = game.physics;
-    const cp = Math.cos(this.pitch);
-    _fwd.set(Math.sin(this.yaw) * cp, Math.sin(this.pitch), Math.cos(this.yaw) * cp);
-    _right.set(-Math.cos(this.yaw), 0, Math.sin(this.yaw));
+    // direction de vue = visée de base + décalage de recul
+    const vp = Math.max(-1.25, Math.min(1.25, this.pitch + this.kickP));
+    const vy = this.yaw + this.kickY;
+    const cp = Math.cos(vp);
+    _fwd.set(Math.sin(vy) * cp, Math.sin(vp), Math.cos(vy) * cp);
+    _right.set(-Math.cos(vy), 0, Math.sin(vy));
     // écrans très larges (téléphones en paysage) : champ de vision un peu resserré
     const baseFov = this.game.camera.aspect > 1.9 ? 62 : 70;
     let fov = baseFov;
@@ -275,14 +293,19 @@ export class PlayerController {
     else this.shoulderCol += (shoulderOk - this.shoulderCol) * (1 - Math.exp(-dt * 6));
     const base = _base.copy(ps).addScaledVector(_right, this.shoulderCol);
     const want = this.distCur;
+    // recul de la caméra au tir, dans la limite de la place libre (lunette : bref dézoom)
+    let punch = 0;
+    if (this.scoped) fov *= 1 + this.punch * 0.6;
     if (want > 0) {
       _dir.copy(_fwd).negate();
-      const t = phys.raycastCamera(base, _dir, want + 0.3, ignore);
-      const allowed = t === Infinity ? want : Math.max(0, t - 0.3);
+      const t = phys.raycastCamera(base, _dir, want + this.punch + 0.3, ignore);
+      const free = t === Infinity ? want + this.punch : Math.max(0, t - 0.3);
+      const allowed = Math.min(want, free);
       if (snap || allowed < this.colDist) this.colDist = allowed;
       else this.colDist += (allowed - this.colDist) * (1 - Math.exp(-dt * 6));
+      punch = Math.max(0, Math.min(this.punch, free - this.colDist));
     } else this.colDist = want;
-    this.camPos.copy(base).addScaledVector(_fwd, -this.colDist);
+    this.camPos.copy(base).addScaledVector(_fwd, -(this.colDist + punch));
     // Dernier garde-fou : jamais d'image prise depuis l'intérieur d'un mur
     if (want > 0 && phys.pointBlocked(this.camPos, 0.05)) {
       this.colDist = 0;

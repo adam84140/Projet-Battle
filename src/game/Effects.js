@@ -172,9 +172,11 @@ export class Effects {
     this.shake = 0;
   }
 
-  tracer(from, to, color) {
+  tracer(from, to, color, width = 1, trail = 5) {
     const t = this.tracers.find((x) => !x.active) || this.tracers[0];
     t.active = true;
+    t.width = width;
+    t.trail = trail;
     t.from = from.clone();
     t.to = to.clone();
     t.len = from.distanceTo(to);
@@ -334,10 +336,10 @@ export class Effects {
         t.mesh.visible = false;
         continue;
       }
-      const seg = Math.min(5, t.len - t.d, t.d + 1);
+      const seg = Math.min(t.trail, t.len - t.d, t.d + 1);
       const k = Math.min(1, t.d / t.len);
       t.mesh.position.lerpVectors(t.from, t.to, k);
-      t.mesh.scale.set(1, 1, seg);
+      t.mesh.scale.set(t.width, t.width, seg);
     }
     if (this.flashT > 0) {
       this.flashT -= dt;
