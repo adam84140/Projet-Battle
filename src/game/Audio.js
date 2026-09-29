@@ -6,6 +6,32 @@ export class Audio {
     this.volume = 0.6;
     this.listener = { x: 0, y: 0, z: 0, yaw: 0 };
     this.engine = null;
+    this.stats = {}; // nombre de sons joués par type (tests)
+    this.budgetT = 0;
+    this.budgetN = 0;
+    this.birdT = 3;
+    this.amb = null;
+  }
+
+  count(k) {
+    this.stats[k] = (this.stats[k] || 0) + 1;
+  }
+
+  // Limite de voix : au-delà de 10 sons en 0,1 s, les sources lointaines sont ignorées
+  budget(dist) {
+    const now = this.ctx.currentTime;
+    if (now - this.budgetT > 0.1) {
+      this.budgetT = now;
+      this.budgetN = 0;
+    }
+    if (this.budgetN >= 10 && dist > 20) return false;
+    this.budgetN++;
+    return true;
+  }
+
+  // légère variation de hauteur pour éviter la répétition
+  vary(f, amt = 0.05) {
+    return f * (1 - amt + Math.random() * amt * 2);
   }
 
   ensure() {
@@ -30,6 +56,7 @@ export class Audio {
 
   resume() {
     if (this.ensure() && this.ctx.state === 'suspended') this.ctx.resume();
+    if (this.ctx) this.startAmbience();
   }
 
   setVolume(v) {
@@ -54,17 +81,25 @@ export class Audio {
     const rx = -Math.cos(l.yaw);
     const rz = Math.sin(l.yaw);
     const pan = dist > 0.5 ? Math.max(-1, Math.min(1, (dx * rx + dz * rz) / dist)) * 0.8 : 0;
-    return { gain, pan };
+    return { gain, pan, dist };
   }
 
   out(sp) {
     const g = this.ctx.createGain();
     g.gain.value = sp.gain;
+    let tail = g;
+    // au loin, les aigus s'éteignent : un tir distant sonne étouffé
+    if (sp.dist > 12) {
+      const f = this.ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = Math.max(900, 16000 / (1 + (sp.dist - 12) * 0.07));
+      tail = tail.connect(f);
+    }
     if (this.ctx.createStereoPanner) {
       const p = this.ctx.createStereoPanner();
       p.pan.value = sp.pan;
-      g.connect(p).connect(this.master);
-    } else g.connect(this.master);
+      tail.connect(p).connect(this.master);
+    } else tail.connect(this.master);
     return g;
   }
 
@@ -105,21 +140,157 @@ export class Audio {
   shot(kind, pos) {
     if (!this.ctx) return;
     const sp = this.spatial(pos, 160);
-    if (!sp) return;
+    if (!sp || (pos && !this.budget(sp.dist))) return;
+    this.count('shot');
     const d = this.out(sp);
+    const v = (f) => this.vary(f, 0.04);
     if (kind === 'sniper') {
-      this.noiseBurst(d, { dur: 0.5, freq: 900, q: 0.5, vol: 1.2 });
-      this.tone(d, { freq: 140, to: 40, dur: 0.35, vol: 0.9 });
+      this.noiseBurst(d, { dur: 0.5, freq: v(900), q: 0.5, vol: 1.2 });
+      this.tone(d, { freq: v(140), to: 40, dur: 0.35, vol: 0.9 });
     } else if (kind === 'mg') {
-      this.noiseBurst(d, { dur: 0.13, freq: 700, q: 0.7, vol: 0.9 });
-      this.tone(d, { freq: 110, to: 50, dur: 0.1, vol: 0.6 });
+      this.noiseBurst(d, { dur: 0.13, freq: v(700), q: 0.7, vol: 0.9 });
+      this.tone(d, { freq: v(110), to: 50, dur: 0.1, vol: 0.6 });
     } else if (kind === 'tank') {
       this.noiseBurst(d, { dur: 0.9, freq: 300, q: 0.4, vol: 1.4, type: 'lowpass' });
-      this.tone(d, { freq: 90, to: 25, dur: 0.7, vol: 1.2 });
+      this.tone(d, { freq: v(90), to: 25, dur: 0.7, vol: 1.2 });
     } else {
-      this.noiseBurst(d, { dur: 0.11, freq: 1300, q: 0.9, vol: 0.9 });
-      this.tone(d, { freq: 160, to: 60, dur: 0.08, vol: 0.5 });
+      this.noiseBurst(d, { dur: 0.11, freq: v(1300), q: 0.9, vol: 0.9 });
+      this.tone(d, { freq: v(160), to: 60, dur: 0.08, vol: 0.5 });
     }
+  }
+
+  // Pas : doux pour le joueur, spatialisés pour les soldats proches
+  footstep(pos, loud = 1) {
+    if (!this.ctx) return;
+    const sp = this.spatial(pos, 22);
+    if (!sp) return;
+    this.count('step');
+    const d = this.out(pos ? { ...sp, gain: sp.gain * 0.55 } : { gain: 0.3, pan: 0, dist: 0 });
+    this.noiseBurst(d, { dur: 0.07, freq: this.vary(650, 0.2), q: 0.9, vol: 0.5 * loud, type: 'lowpass' });
+    this.tone(d, { freq: this.vary(95, 0.1), dur: 0.04, vol: 0.12 * loud });
+  }
+
+  jump() {
+    if (!this.ctx) return;
+    this.count('jump');
+    const d = this.out({ gain: 0.3, pan: 0, dist: 0 });
+    this.noiseBurst(d, { dur: 0.12, freq: 1500, q: 0.7, vol: 0.35 });
+  }
+
+  land(pos, amt = 0.5) {
+    if (!this.ctx) return;
+    const sp = this.spatial(pos, 25);
+    if (!sp) return;
+    this.count('land');
+    const d = this.out(sp);
+    this.noiseBurst(d, { dur: 0.16, freq: 420, q: 0.7, vol: 0.4 + amt * 0.5, type: 'lowpass' });
+    this.tone(d, { freq: 75, to: 45, dur: 0.12, vol: 0.3 + amt * 0.3 });
+  }
+
+  // Balle qui frôle le joueur (pan : -1 gauche, +1 droite)
+  whizz(pan = 0) {
+    if (!this.ctx) return;
+    this.count('whizz');
+    const c = this.ctx;
+    const d = this.out({ gain: 0.5, pan: pan * 0.8, dist: 0 });
+    const src = c.createBufferSource();
+    src.buffer = this.noise;
+    const f = c.createBiquadFilter();
+    f.type = 'bandpass';
+    f.Q.value = 4;
+    const now = c.currentTime;
+    f.frequency.setValueAtTime(this.vary(3400, 0.1), now);
+    f.frequency.exponentialRampToValueAtTime(1100, now + 0.16);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0, now);
+    g.gain.linearRampToValueAtTime(0.9, now + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+    src.connect(f).connect(g).connect(d);
+    src.start(now, Math.random());
+    src.stop(now + 0.22);
+  }
+
+  // Impact de balle dans le décor, près de l'auditeur
+  impact(pos) {
+    if (!this.ctx) return;
+    const sp = this.spatial(pos, 28);
+    if (!sp || !this.budget(sp.dist + 20)) return;
+    this.count('impact');
+    const d = this.out(sp);
+    this.noiseBurst(d, { dur: 0.05, freq: this.vary(2600, 0.2), q: 2, vol: 0.45 });
+    this.tone(d, { freq: this.vary(220, 0.15), to: 120, dur: 0.05, vol: 0.18 });
+  }
+
+  // Mise hors de combat (cartoon, sans cri)
+  death(pos) {
+    if (!this.ctx) return;
+    const sp = this.spatial(pos, 60);
+    if (!sp) return;
+    this.count('death');
+    const d = this.out(sp);
+    this.tone(d, { freq: this.vary(330, 0.08), to: 140, dur: 0.28, type: 'triangle', vol: 0.3 });
+    this.noiseBurst(d, { dur: 0.18, freq: 500, q: 0.8, vol: 0.35, type: 'lowpass', t: 0.05 });
+  }
+
+  matchStart() {
+    if (!this.ctx) return;
+    this.count('matchStart');
+    const d = this.out({ gain: 0.45, pan: 0, dist: 0 });
+    [392, 523, 659, 784].forEach((f, i) => this.tone(d, { freq: f, dur: i === 3 ? 0.5 : 0.16, type: 'triangle', vol: 0.35, t: i * 0.14 }));
+  }
+
+  matchEnd(win) {
+    if (!this.ctx) return;
+    this.count('matchEnd');
+    const d = this.out({ gain: 0.5, pan: 0, dist: 0 });
+    if (win) {
+      [523, 659, 784, 1046].forEach((f, i) => this.tone(d, { freq: f, dur: 0.2, type: 'triangle', vol: 0.35, t: i * 0.12 }));
+      [523, 659, 784].forEach((f) => this.tone(d, { freq: f, dur: 1.1, type: 'triangle', vol: 0.22, t: 0.55 }));
+    } else {
+      [440, 392, 349, 262].forEach((f, i) => this.tone(d, { freq: f, dur: i === 3 ? 0.9 : 0.28, type: 'triangle', vol: 0.32, t: i * 0.24 }));
+    }
+  }
+
+  // Ambiance : vent continu très discret + oiseaux de temps en temps
+  startAmbience() {
+    if (this.amb || !this.ctx) return;
+    const c = this.ctx;
+    const g = c.createGain();
+    g.gain.value = 0.05;
+    g.connect(this.master);
+    const src = c.createBufferSource();
+    src.buffer = this.noise;
+    src.loop = true;
+    src.playbackRate.value = 0.5;
+    const f = c.createBiquadFilter();
+    f.type = 'lowpass';
+    f.frequency.value = 420;
+    // rafales lentes
+    const lfo = c.createOscillator();
+    lfo.frequency.value = 0.07;
+    const depth = c.createGain();
+    depth.gain.value = 0.03;
+    lfo.connect(depth).connect(g.gain);
+    src.connect(f).connect(g);
+    src.start();
+    lfo.start();
+    this.amb = { g, src, lfo };
+  }
+
+  // Appelé à chaque image : oiseaux
+  update(dt) {
+    if (!this.amb) return;
+    this.birdT -= dt;
+    if (this.birdT > 0) return;
+    this.birdT = 4 + Math.random() * 7;
+    const d = this.out({ gain: 0.12 + Math.random() * 0.08, pan: Math.random() * 1.6 - 0.8, dist: 0 });
+    const base = 2600 + Math.random() * 1600;
+    const n = 2 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < n; i++) {
+      const f = base * (0.9 + Math.random() * 0.25);
+      this.tone(d, { freq: f, to: f * (Math.random() < 0.5 ? 1.3 : 0.75), dur: 0.07 + Math.random() * 0.05, vol: 0.25, t: i * (0.1 + Math.random() * 0.06) });
+    }
+    this.count('bird');
   }
 
   explosion(pos) {

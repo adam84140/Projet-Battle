@@ -76,6 +76,8 @@ try {
   await page.keyboard.press('Space');
   await step(page, 0.2);
   C.ok('saut mémorisé avant atterrissage', await get(page, '!g.player.body.grounded && g.player.body.vel.y > 0'));
+  const au = await get(page, '({ ctx: !!g.audio.ctx, ...g.audio.stats })');
+  C.ok('audio : pas, saut et réception', au.ctx && au.step > 3 && au.jump > 0 && au.land > 0, au);
   await step(page, 1.2);
   await page.keyboard.down('KeyC');
   await step(page, 0.3);
@@ -218,6 +220,8 @@ try {
   C.ok('les bots capturent des drapeaux', sim.owned > 0, `${sim.owned} drapeau(x) contrôlé(s)`);
   C.ok('les tickets diminuent', sim.tickets < sim.max, `${sim.tickets}/${sim.max}`);
   C.ok('bots vivants', sim.alive > 0);
+  const au2 = await get(page, '({ ...g.audio.stats })');
+  C.ok('audio : combat (tirs lointains, impacts, mises hors de combat)', au2.shot > 20 && au2.impact > 0 && au2.death > 0, au2);
   C.ok('coût logique par image < 8 ms', avgMs < 8, avgMs.toFixed(2) + ' ms');
 
   // ---------- Victoire, redémarrage, défaite ----------

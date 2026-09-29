@@ -108,6 +108,7 @@ export class Soldier {
     this.airT = 0;
     this.jumpBuf = 0;
     this.jumped = false;
+    this.stepDist = 0;
     const a = this.char.anim;
     a.mode = 'combat';
     a.reload = -1;
@@ -214,6 +215,7 @@ export class Soldier {
       body.grounded = false;
       this.jumpBuf = 0;
       this.jumped = true;
+      if (this.isPlayer) game.audio.jump();
     }
     body.height = this.crouching ? 1.25 : 1.8;
     body.landSpeed = 0;
@@ -223,6 +225,18 @@ export class Soldier {
       a.landT = 1;
       a.landAmt = Math.min(1, (body.landSpeed - 4) / 8);
       if (body.landSpeed > 8.5) game.effects.puff(body.pos, 4, 0.8);
+      game.audio.land(this.isPlayer ? null : body.pos, a.landAmt);
+    }
+    // Pas (plus espacés en sprint, discrets accroupi)
+    const hvNow = Math.hypot(body.vel.x, body.vel.z);
+    if (body.grounded && hvNow > 1) {
+      this.stepDist += hvNow * dt;
+      const stride = this.sprinting ? 2.4 : this.crouching ? 1.3 : 1.8;
+      if (this.stepDist >= stride) {
+        this.stepDist = 0;
+        const loud = this.sprinting ? 1.2 : this.crouching ? 0.4 : 0.8;
+        game.audio.footstep(this.isPlayer ? null : body.pos, loud);
+      }
     }
 
     // --- Arme
@@ -359,6 +373,7 @@ export class Soldier {
       this.precisionArmed = false;
     }
     const res = game.combat.hitscan(this, origin, _dir, w.range, dmg, w);
+    this.nearMiss(origin, res);
     this.bloom = Math.min(0.08, this.bloom + w.recoil * (this.aiming ? 0.35 : 0.8));
     this.char.anim.recoil = w.feel.model;
     this.flashT = 0.05;
@@ -372,6 +387,25 @@ export class Soldier {
       game.effects.casing(muzzle.addScaledVector(this.forward(_v2), -0.35), -Math.cos(this.yaw), Math.sin(this.yaw), this.body.pos.y + 0.03);
     }
     game.audio.shot(w.sound, this.isPlayer ? null : this.body.pos);
+  }
+
+  // Balle ennemie qui frôle le joueur sans le toucher : sifflement orienté
+  nearMiss(origin, res) {
+    const game = this.game;
+    const pl = game.player;
+    if (this.isPlayer || !pl || !pl.alive || pl.team === this.team || res.victim === pl) return;
+    const L = game.audio.listener;
+    const dx = res.point.x - origin.x, dy = res.point.y - origin.y, dz = res.point.z - origin.z;
+    const len2 = dx * dx + dy * dy + dz * dz;
+    if (len2 < 1) return;
+    const t = ((L.x - origin.x) * dx + (L.y - origin.y) * dy + (L.z - origin.z) * dz) / len2;
+    if (t < 0.05 || t > 0.98) return;
+    const cx = origin.x + dx * t - L.x, cy = origin.y + dy * t - L.y, cz = origin.z + dz * t - L.z;
+    const d = Math.hypot(cx, cy, cz);
+    if (d > 2.2 || game.time - (pl.lastWhizz || -9) < 0.12) return;
+    pl.lastWhizz = game.time;
+    const side = (cx * -Math.cos(L.yaw) + cz * Math.sin(L.yaw)) / Math.max(0.01, Math.hypot(cx, cz));
+    game.audio.whizz(Math.max(-1, Math.min(1, side)));
   }
 
   useAbility(index, cmd) {
@@ -507,6 +541,7 @@ export class Soldier {
     }
     a.deadDir = dir;
     a.deadVar = Math.floor(Math.random() * 3);
+    this.game.audio.death(this.isPlayer ? null : this.body.pos);
     this.char.setOpacity(1);
     if (this.char.weapon) this.char.weapon.flash.visible = false;
     this.game.onKill(attacker, this, info);

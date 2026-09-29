@@ -94,8 +94,10 @@ export class Combat {
       const v = worldBox.vehicle;
       if (v.team !== shooter.team) v.takeDamage(damage * (v.type === 'tank' ? 0.08 : 0.35), shooter);
       game.effects.impact(point, null, 'dust');
+      game.audio.impact(point);
     } else if (best < range) {
       game.effects.impact(point, worldTerrain ? { x: -dir.x * 0.3, y: 1, z: -dir.z * 0.3 } : { x: -dir.x, y: 0.3, z: -dir.z }, worldTerrain ? 'dirt' : 'dust');
+      game.audio.impact(point);
     }
     return { point, victim: null, head: false, t: best };
   }

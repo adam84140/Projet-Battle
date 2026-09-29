@@ -161,6 +161,7 @@ export class Game {
     }
     if (this.menuHero) this.menuHero.root.visible = false;
     this.state = 'deploy';
+    this.matchStarted = false;
     this.emit('deploy', { first: true });
   }
 
@@ -199,6 +200,10 @@ export class Game {
     this.controller.attach(p);
     this.state = 'playing';
     this.audio.resume();
+    if (!this.matchStarted) {
+      this.matchStarted = true;
+      this.audio.matchStart();
+    }
     this.input.requestLock();
     this.emit('deployed');
   }
@@ -240,7 +245,7 @@ export class Game {
     this.winner = winner;
     this.endT = 0;
     this.timeScale = 0.35;
-    this.audio.capture(winner === this.playerTeam);
+    this.audio.matchEnd(winner === this.playerTeam);
     this.emit('matchEnd', winner);
   }
 
@@ -409,6 +414,7 @@ export class Game {
     else if (p) this.overviewCamera(realDt);
     const lp = this.camera.position;
     this.audio.setListener(lp.x, lp.y, lp.z, this.controller.yaw);
+    this.audio.update(realDt);
     this.effects.update(dt, this.camera);
     this.followSun(p ? p.body.pos : this.camera.position);
     if (this.state === 'deploy' && p && !p.alive) this.deathT = (this.deathT || 0) + realDt;
