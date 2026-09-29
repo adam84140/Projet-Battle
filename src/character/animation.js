@@ -17,6 +17,8 @@ const O_IKL = O_WM + 6;
 const O_IKR = O_IKL + 1;
 const O_LH = O_IKR + 1; // décalage du poignet gauche (repère de l'arme)
 const N = O_LH + 3;
+// Lecture seule pour l'adaptateur de squelette de production (rigAdapter.js) : poids d'IK et décalage de la main gauche
+export const IK_CHANNELS = { left: O_IKL, right: O_IKR, leftOffset: O_LH };
 
 export const UPPER_ARM = 0.3;
 // Avant-bras un peu plus long (style héroïque) : la main gauche atteint le garde-main sans se détacher

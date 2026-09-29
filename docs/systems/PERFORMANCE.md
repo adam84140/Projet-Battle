@@ -52,6 +52,9 @@ Mesuré le 2026-09-29, même code de jeu ; détail : [MASTER-ASSAULT-M1](../char
 
 L'objectif « ≤ 250 appels » est atteint dans la plupart des vues de référence. Triangles envoyés : un peu plus nombreux en vue de jeu (+15 à +30 % environ : une sphère englobante par soldat au lieu d'une par os). FPS sur vrai GPU et téléphone : **non mesurés**.
 
+## Étape M2 (adaptateur de squelette, pas encore en jeu)
+Mesuré par `npm run test:rig` (conteneur, processeur seul) : **0,09 à 0,11 ms par soldat et par image** pour l'adaptateur (recopie des rotations de 23 os et plus, IK des deux bras). Pas encore branché en jeu : aucun effet sur les mesures ci-dessus. S'il était appliqué tel quel aux 32 soldats d'une partie 16v16 à chaque image, il ajouterait **~3 ms** de logique, pour un objectif total < 4 ms : à réduire en M5 (pas d'allocation par image, soldats hors champ ou lointains mis à jour moins souvent) et à mesurer avant intégration ([MASTER-ASSAULT-M2](../characters/MASTER-ASSAULT-M2.md), risque 1).
+
 ## Techniques en place
 - Décor statique fusionné en paquets de 1 500 maillages (`bakeStatic`) ; soldats : corps en un `SkinnedMesh` à peau rigide lié aux os existants, géométrie indexée (`bakeSkinned`, chemin M1 par défaut) ou fusion par os (`bakeHierarchy`, chemin legacy) ; arme fusionnée à part sous son support animé ; véhicules fusionnés par pièce mobile.
 - Matériaux en cache (`mat()`), géométries partagées marquées (`markShared`), libération par `disposeTree` (véhicules, drapeaux, projectiles, personnages).

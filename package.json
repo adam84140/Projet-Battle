@@ -13,8 +13,10 @@
     "test:camera": "node tests/camera.mjs",
     "test:bots": "node tests/bots.mjs",
     "test:character": "node tests/character.mjs",
-    "test": "node tests/smoke.mjs && node tests/touch.mjs && node tests/camera.mjs && node tests/bots.mjs && node tests/character.mjs",
-    "shots": "node tests/shots.mjs"
+    "test:rig": "node tests/rig.mjs",
+    "test": "node tests/smoke.mjs && node tests/touch.mjs && node tests/camera.mjs && node tests/bots.mjs && node tests/character.mjs && node tests/rig.mjs",
+    "shots": "node tests/shots.mjs",
+    "check:glb": "node tests/check-glb.mjs"
   },
   "dependencies": {
     "three": "^0.186.1"

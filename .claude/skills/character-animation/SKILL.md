@@ -28,7 +28,10 @@ Conventions : face +Z, droite −X ; `hitX` > 0 = tir venant de la gauche ; `hit
 - `tests/turntable.html?classe=…&equipe=…&bake=1` pour les vues fixes.
 - `npm run test:smoke` (tir, rechargement, compétences, mort, véhicules).
 
-## Futur (Master Assault)
-L'animateur écrit ses rotations sur les os du SkinnedMesh portant les mêmes noms ; `AnimationMixer` mélange les clips sur le haut du corps (au-dessus de `spine`) ; l'IK des mains est appliquée en dernier. Ne pas implémenter avant la validation de la spécification.
+## Squelette de production (M2) et futur (Master Assault)
+- L'animateur continue d'écrire sur le **squelette de gameplay** (16 groupes). Un asset Blender a ses propres os ; `src/character/rigAdapter.js` les fait suivre (après `Character.update()`), IK des mains refaite sur les longueurs de l'asset. Un changement de l'animateur est donc vu par l'asset sans travail supplémentaire ; le vérifier avec `npm run test:rig`.
+- Nouveau canal d'IK : l'adaptateur lit `IK_CHANNELS` (export de `animation.js`) ; le garder à jour.
+- Partage code / Blender (ce qui reste procédural, clips et événements) : [ASSET-CONTRACT](../../../docs/characters/ASSET-CONTRACT.md), § 10.
+- M5 (non autorisé) : `AnimationMixer` mélange les clips sur le haut du corps (à partir de `spine`) ; l'IK des mains est appliquée en dernier.
 
-Références : [ANIMATION](../../../docs/systems/ANIMATION.md) · [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md) (section Animation)
+Références : [ANIMATION](../../../docs/systems/ANIMATION.md) · [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md) (section Animation) · [ASSET-CONTRACT](../../../docs/characters/ASSET-CONTRACT.md)

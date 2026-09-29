@@ -1,8 +1,8 @@
 # État actuel du projet
 
-- **Référence :** commit `05827b4807c67959e125c9681b5ffa953b113a29` (point de contrôle D-004, créé sur la branche `claude/similar-project-tn0j8l`). Branche de travail actuelle : `claude/dazzling-cray-gn1bg5`, qui contient ce commit. Seul changement du code du jeu depuis : **l'étape M1** (`src/character/renderPath.js`, `bakeSkinned` / `bakeIndexed` dans `parts.js`, `Character.bake()` / `dispose()`).
+- **Référence :** commit `05827b4807c67959e125c9681b5ffa953b113a29` (point de contrôle D-004, créé sur la branche `claude/similar-project-tn0j8l`). Branche de travail actuelle : `claude/dazzling-cray-gn1bg5`, qui contient ce commit. Seuls changements du code du jeu depuis : **l'étape M1** (`src/character/renderPath.js`, `bakeSkinned` / `bakeIndexed` dans `parts.js`, `Character.bake()` / `dispose()`) et **l'étape M2** (deux modules **non branchés en jeu**, `src/character/rigContract.js` et `src/character/rigAdapter.js`, et un export en lecture seule `IK_CHANNELS` dans `animation.js`).
 - **Vérifié le :** 2026-09-29, dans le conteneur Cloud (Chromium sans GPU), à nouveau en début de session sur `claude/dazzling-cray-gn1bg5`.
-- **Jalon :** MAP 1 GOLD — **sous-jalon :** MASTER CHARACTER ASSAULT : M0 (tests de référence) et **M1 (rendu optimisé du personnage actuel)** faits ; M1 en attente d'acceptation ; asset de production pas commencé.
+- **Jalon :** MAP 1 GOLD — **sous-jalon :** MASTER CHARACTER ASSAULT : M0 (tests de référence), **M1 (rendu optimisé du personnage actuel, acceptée)** et **M2 (adaptateur de squelette de production, contrat d'asset, validateur ; en attente d'acceptation)** faites ; asset de production pas commencé ; M3 non autorisée.
 
 Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce qui n'a pas été vérifié est marqué comme tel.
 
@@ -16,7 +16,7 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
 | **Combat** | hitscan, atténuation par distance, tirs à la tête, recul propre à chaque arme, grenades, roquettes, obus, explosions avec ligne de vue, poignard |
 | **Bots** | 8v8 ou 16v16, 3 difficultés, rôles attaque / défense / contournement / soutien, abris, replis — [AI](systems/AI.md) |
 | **Véhicules** | jeep et char par équipe, suspension, destruction, réapparition ; conduits par le joueur seulement — [VEHICLES](systems/VEHICLES.md) |
-| **Personnages** | procéduraux (primitives Three.js) ; en jeu, **chemin de rendu M1 par défaut** : corps en un `SkinnedMesh` lié au squelette animé, 3 maillages visibles par soldat (arme et chargeur compris), ~16 800 triangles, 1,2 à 1,3 Mo de géométrie ; repli `LEGACY_RENDER_PATH` (fusion par os, 18 maillages visibles) disponible ([M1](characters/MASTER-ASSAULT-M1.md)) ; 1,94 m au sommet des cheveux ; personnalisation (teint, cheveux, accessoires), planche de référence `fiche.html` |
+| **Personnages** | procéduraux (primitives Three.js) ; en jeu, **chemin de rendu M1 par défaut** : corps en un `SkinnedMesh` lié au squelette animé, 3 maillages visibles par soldat (arme et chargeur compris), ~16 800 triangles, 1,2 à 1,3 Mo de géométrie ; repli `LEGACY_RENDER_PATH` (fusion par os, 18 maillages visibles) disponible ([M1](characters/MASTER-ASSAULT-M1.md)) ; 1,94 m au sommet des cheveux ; personnalisation (teint, cheveux, accessoires), planche de référence `fiche.html`. **Asset de production** : contrat prêt pour Blender ([ASSET-CONTRACT](characters/ASSET-CONTRACT.md)), adaptateur et validateur testés sur un squelette d'essai synthétique, **rien de branché en jeu** ([M2](characters/MASTER-ASSAULT-M2.md)) |
 | **Références visuelles** | images officielles 01 à 04 versionnées dans `docs/_attachments/` ([VISUAL-REFERENCES](product/VISUAL-REFERENCES.md), D-009) ; **le jeu n'a pas encore été modifié** pour s'en rapprocher (écarts listés dans ce document) |
 | **Animation** | procédurale avec IK des mains, couches additives d'impact et de réception, 3 variantes de mort — [ANIMATION](systems/ANIMATION.md) |
 | **Caméra** | 3ᵉ personne sans traversée du décor ni des feuillages, visée décalée, champ élargi au sprint |
@@ -30,22 +30,24 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
 1 personnage (proportions, silhouettes, IK à < 1 cm) · 2 animations (impacts, réception, foulée, pivots, morts ; correction de l'arme fusionnée dans le torse) · 3 caméra et déplacement · 4 armes · 5 effets · 6 couverts de la carte, mât de B déplacé, bots qui contournent les véhicules garés · 7 kit village · 8 éclairage · 9 HUD · 10 son · 11 IA · 12 véhicules · 13 tactile · 14 performances (fuites GPU, fusion des véhicules, réserve de modèles) · 15 finition (particules près de la caméra, tons harmonisés).
 Détail par commit : `git log --oneline 9011271^..05827b4`.
 
-## Tests (tous verts ; dernière exécution complète : étape M1, 2026-09-29, `claude/dazzling-cray-gn1bg5`, chemins M1 et legacy)
+## Tests (tous verts ; dernière exécution complète : étape M2, 2026-09-29, `claude/dazzling-cray-gn1bg5`, chemin M1 par défaut)
 | Commande | Résultat |
 | --- | --- |
 | `npm run build` | OK |
-| `npm run test:smoke` | 48/48, logique 1,54 ms par image |
+| `npm run test:smoke` | 48/48, logique 1,32 ms par image |
 | `npm run test:touch` | 12/12 |
 | `npm run test:camera` | 6/6 : 68 positions, 4 760 images, 0 dans un mur, 0 dans un feuillage, 0 sous le sol |
-| `npm run test:bots` | 8/8 : 60 éliminations et 7 captures en 3 min, blocages 0,9 %, 7 s au plus, logique 1,59 ms |
+| `npm run test:bots` | 8/8 : 49 éliminations et 3 captures en 3 min, blocages 0,6 %, 7 s au plus, logique 1,52 ms |
 | `npm run test:character` | 72/72 : les deux chemins de rendu comparés (coût, mains / arme, tête / hitbox, arme / visée, bouche du canon, planches au pixel, camouflage, bord de l'écran), 16v16, mémoire, téléphone — [M0](characters/MASTER-ASSAULT-BASELINE.md), [M1](characters/MASTER-ASSAULT-M1.md) |
-| `RENDU=legacy npm test` | 5 suites vertes sur le chemin de repli (48/48, 12/12, 6/6, 8/8, 72/72) |
+| `npm run test:rig` | 31/31 : contrat cohérent ; adaptateur sur un squelette d'essai aux repères différents (3 classes × 32 états : gameplay jamais modifié, articulations à 0 mm, mains identiques au gameplay, rendu = M1 à 0,004 % près) ; GLB d'essai 1,85 m exporté, validé et rechargé (mains 0 mm avec des bras +5 %, tête dans sa zone de touche) ; 13 fichiers fautifs refusés ; partie 8v8 avec véhicules, 0 exception — [M2](characters/MASTER-ASSAULT-M2.md) |
+| `npm run check:glb` | validateur d'asset (Node, sans service externe) ; accepte le GLB d'essai au stade prototype, le refuse au stade production pour LOD1/LOD2, expressions et clips absents seulement |
+| `RENDU=legacy npm test` | étape M1 : 5 suites vertes sur le chemin de repli (48/48, 12/12, 6/6, 8/8, 72/72) ; non relancé en M2 (aucun code de rendu touché) |
 | Session de 4 min (script ad hoc, session précédente, non relancée) | 102 apparitions, 6 772 échantillons : 0 dans le décor, 0 sous le sol, 0 caméra dans un mur, 0 erreur |
 
 Le banc de test abandonne les polices Google si elles ne répondent pas en 8 s (le réseau du conteneur peut les bloquer ; sans cela, la page ne finissait pas de charger).
 
 ## Performances
-Voir [PERFORMANCE](systems/PERFORMANCE.md). En bref : logique 1,7 ms en 16v16 (large) ; **rendu 16v16 au-dessus de l'objectif** (455 à 709 appels contre 250 visés) ; mémoire GPU stable sur 3 relances ; FPS réels jamais mesurés sur GPU.
+Voir [PERFORMANCE](systems/PERFORMANCE.md). En bref : logique 16v16 de 1,7 ms (mesure de référence) à 3,9 ms (juste après le déploiement) pour 4 ms visés ; **rendu 16v16 depuis M1 : 156 à 265 appels en vue de jeu** (objectif 250, atteint dans la plupart des vues ; 455 à 865 avant M1) ; mémoire GPU stable sur 3 relances ; FPS réels jamais mesurés sur GPU. Adaptateur M2 (non branché) : ≈ 0,1 ms par soldat et par image, à réduire avant l'intégration (M5).
 
 ## Problèmes connus
 Vérifiés le 2026-09-29 sur `05827b4` :

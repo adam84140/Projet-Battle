@@ -1,6 +1,6 @@
 # Master Character — Assaut
 
-**Statut : spécification. Rien n'est implémenté.** Audit du personnage actuel et plan de migration : [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (en attente d'autorisation). Le personnage en jeu est encore le personnage procédural décrit dans [CURRENT-STATE](../CURRENT-STATE.md) et [ANIMATION](../systems/ANIMATION.md).
+**Statut : spécification ; l'asset n'existe pas encore.** Plan de migration : [MASTER-ASSAULT-AUDIT](MASTER-ASSAULT-AUDIT.md) (M0, M1 et M2 faites). **Remise à l'artiste (contrat technique de l'asset) : [ASSET-CONTRACT](ASSET-CONTRACT.md)** ; en cas d'écart entre ce document et le contrat sur un point technique, le contrat fait foi. Le personnage en jeu est encore le personnage procédural décrit dans [CURRENT-STATE](../CURRENT-STATE.md) et [ANIMATION](../systems/ANIMATION.md).
 
 Le Master Assault est le **personnage de référence de production** ([DECISIONS](../DECISIONS.md) D-002). Il fixe l'architecture que réutiliseront Artilleur, Commando, les skins et la personnalisation. Chemin de production : [CHARACTER-PIPELINE](CHARACTER-PIPELINE.md).
 
@@ -64,56 +64,54 @@ Fusil d'assaut FL-4 : compact, épais, crosse et garde-main tan `#8B7A57`, viseu
 | LOD | Distance | Triangles corps | Triangles arme | Os animés |
 | --- | --- | --- | --- | --- |
 | LOD0 | < 15 m (et menu, fiche) | 12 000 à 18 000 | ≤ 3 000 | squelette complet |
-| LOD1 | 15 à 45 m | ≈ 5 000 | ≤ 1 000 | sans doigts ni visage |
-| LOD2 | > 45 m | ≈ 1 500 | ≤ 300 | squelette de base |
+| LOD1 | 15 à 45 m | 3 000 à 6 000 | ≤ 1 000 | sans doigts ni visage |
+| LOD2 | > 45 m | 800 à 2 000 | ≤ 300 | squelette de base |
 
 Référence actuelle : ~15 000 à 17 000 triangles par soldat procédural.
 
 ### Matériaux
-- **1 matériau pour le corps**, 1 pour l'arme ; au plus 3 matériaux par soldat avec accessoires.
+- **1 matériau pour le corps et les accessoires** (`M_body`), 1 pour l'arme ; au plus 3 matériaux par soldat.
 - Matériaux et textures **partagés entre tous les soldats** (instances de matériau par équipe seulement si le masque ne suffit pas).
 
 ### Couleurs d'équipe (masque)
-- Une texture masque (ou un canal d'attribut de sommet) indique les zones « couleur d'équipe primaire » (maillot), « secondaire » (bandes, sac) et « emblème ».
+- Un attribut de couleur de sommet (`COLOR_0`, contrat M2) indique les zones « couleur d'équipe primaire » (R : chemise), « secondaire » (G : revers, bandes, sac) et « emblème » (B, avec une 2ᵉ carte UV `TEXCOORD_1`) : [ASSET-CONTRACT](ASSET-CONTRACT.md), § 8. Le rendu (M3) n'est pas encore fait.
 - Le shader remplace ces zones par les couleurs de l'équipe : **un seul modèle et une seule texture** pour bleu et rouge.
 - Les emblèmes (aigle / étoile) sont des décalques interchangeables.
 
-### Squelette canonique (proposition, gel en attente : D-003)
-Reprend les 16 articulations actuelles pour garder la compatibilité avec l'animateur procédural, et ajoute ce qui manque pour la qualité de production :
+### Squelette de production (contrat M2, non gelé : D-003, D-018)
+Deux squelettes coexistent ([MASTER-ASSAULT-M2](MASTER-ASSAULT-M2.md)) :
+- le **squelette de gameplay** : les 16 articulations actuelles (`hips`, `spine`, `neck`, `head`, `shoulderX`, `elbowX`, `handX`, `legX`, `kneeX`, `ankleX`), animées par l'`Animator` ; il porte hitboxes, support d'arme, bouche du canon et IK, et **ne change pas** ;
+- le **squelette de production** de l'asset Blender, qui le suit par l'adaptateur (`src/character/rigAdapter.js`). Noms canoniques de type Blender, suffixe `.L` / `.R` (devenus `L` / `R` au chargement) :
 
-| Groupe | Os |
-| --- | --- |
-| Base | `root` (au sol, porte le déplacement), `hips` |
-| Colonne | `spine`, `spine1`, `chest`, `neck`, `head` |
-| Bras (×2, suffixe `L`/`R`) | `clavicleX`, `shoulderX` (bras), `elbowX` (avant-bras), `handX` |
-| Doigts (×2) | `thumb1-3X`, `index1-3X`, `fingers1-3X` (majeur, annulaire et auriculaire regroupés) |
-| Jambes (×2) | `legX` (cuisse), `kneeX` (tibia), `ankleX` (pied), `toeX` |
-| Visage | `jaw`, `eyeL`, `eyeR`, `browL`, `browR` (ou morph targets, voir plus bas) |
-
-Règles :
-- Noms en anglais, en camelCase, suffixe `L`/`R` : **ce sont les noms utilisés par le code**. Ne jamais les renommer après le gel.
-- Personnage face à +Z, droite = −X, Y vers le haut, 1 unité = 1 m, pose de liaison en A-pose.
-- Les os existants (`hips`, `spine`, `neck`, `head`, `shoulderX`, `elbowX`, `handX`, `legX`, `kneeX`, `ankleX`) gardent leur rôle actuel.
-
-### Sockets (os ou objets vides nommés)
-| Socket | Parent | Usage |
+| Groupe | Os requis (23) | Facultatifs |
 | --- | --- | --- |
-| `socket_weapon` | `chest` (ou `spine1`) | support d'arme animé par le code (remplace `weaponMount`) |
-| `socket_hand_R` / `socket_hand_L` | `handR` / `handL` | objets tenus (couteau, grenade, trousse) |
-| `socket_back` | `chest` | sac à dos, arme en bandoulière |
-| `socket_head` | `head` | casque, bonnet, casquette |
-| `socket_face` | `head` | lunettes |
-| `socket_hip_L` / `socket_hip_R` | `hips` | grenades, étui, gourde |
-| `socket_emblem_chest` / `socket_emblem_back` | `chest` | décalques d'équipe |
+| Base | `root` (au sol, jamais animé), `hips` | |
+| Colonne | `spine`, `spine1`, `chest`, `neck`, `head` | |
+| Bras (×2) | `clavicle.L`, `upperArm.L`, `lowerArm.L`, `hand.L` | `thumb1-3.L`, `index1-3.L`, `fingers1-3.L` (majeur, annulaire et auriculaire regroupés) |
+| Jambes (×2) | `thigh.L`, `calf.L`, `foot.L`, `toe.L` | |
+| Visage | | `jaw`, `eye.L/R`, `brow.L/R` (en plus des 9 expressions) |
 
-Chaque arme définit ses points de prise (`gripR`, `gripL`, `magazine`) et sa bouche (`muzzle`) dans son propre repère, comme aujourd'hui (`rightWrist`, `leftWrist`, `magWrist`, `muzzle` dans `src/character/weapons.js`).
+Positions de repos, tolérances, règles de nommage, A-pose et export : [ASSET-CONTRACT](ASSET-CONTRACT.md) (source machine : `src/character/rigContract.js`). Personnage face à +Z, gauche = +X, Y vers le haut, 1 unité = 1 m, pose de liaison en A-pose. **Ne jamais renommer un os après le gel.**
+
+### Points d'attache (sockets)
+| Point d'attache | Parent | Usage |
+| --- | --- | --- |
+| `socket_hand.R` / `socket_hand.L` | `hand.R` / `hand.L` | objets tenus (grenade, poignard, trousse ; chargeur au rechargement) |
+| `socket_back` | `chest` | sac à dos (accessoire facultatif), arme en bandoulière |
+| `socket_head` | `head` | casquette, casque, bonnet |
+| `socket_face` | `head` | lunettes |
+| `socket_hip.L` / `socket_hip.R` | `hips` | gourde, sacoches |
+| `socket_grenade` | `hips` | grenades de ceinture |
+| `socket_weapon` (facultatif) | `chest` | aperçu Blender seulement : **en jeu, l'arme reste sur le support animé par le code** (`weaponMount`) |
+
+Les emblèmes ne sont pas des points d'attache : ce sont des zones du masque d'équipe avec leur propre carte UV. Chaque arme garde ses points de prise (`rightWrist`, `leftWrist`, `magWrist`) et sa bouche (`muzzle`) dans son propre repère (`src/character/weapons.js`) ; un futur asset d'arme les reprend (`grip_R`, `grip_L`, `magazine`, `muzzle` ; [ASSET-CONTRACT](ASSET-CONTRACT.md), § 11), la bouche du canon du gameplay restant définie par le code.
 
 ### IK
-- **Mains (obligatoire)** : IK analytique à deux segments de l'épaule au poignet vers les points de prise de l'arme (conserver l'algorithme actuel `solveTwoBone`), avec coude orienté par un vecteur de pôle.
+- **Mains (obligatoire)** : IK analytique à deux segments de l'épaule au poignet vers les points de prise de l'arme (même algorithme que le gameplay), avec coude orienté par le coude du gameplay ; sur le squelette de production, résolue avec **ses** longueurs de bras (adaptateur M2).
 - **Pieds (optionnel)** : ajustement au relief par deux lancers de rayon et IK de jambe, seulement en LOD0 et à l'arrêt ou en marche lente.
 
 ### Animation du visage
-Morph targets (clignement, sourcils, bouche : 6 à 10 cibles) ou os du visage, pilotés par le code selon l'état (visée, douleur, K.-O.). Désactivée en LOD1 et LOD2.
+9 morph targets aux noms fixés par le contrat (`blink`, `expr_determined`, `expr_confident`, `expr_angry`, `expr_surprised`, `expr_smile`, `expr_focus`, `expr_pain`, `expr_ko`), os du visage en complément facultatif, pilotés par le code selon l'état (visée, douleur, K.-O.). Désactivée en LOD1 et LOD2.
 
 ### LOD
 Trois niveaux (voir le tableau des budgets). Changement de niveau avec hystérésis pour éviter le clignotement ; ombres portées seulement jusqu'au LOD1.
@@ -140,7 +138,7 @@ Le corps projette une ombre en LOD0 et LOD1 ; pas d'accessoires fins dans l'ombr
 | Début de saut, en l'air, réception | code | réception proportionnelle à la vitesse de chute |
 | Visée | code | tangage réparti bassin / buste / cou, IK des mains |
 | Tir, recul | code | recul additif du support d'arme et du buste, profil par arme |
-| Rechargement | **clip** (bras et mains) | le chargeur suit `socket_hand_L` pendant le clip |
+| Rechargement | **clip** (bras et mains) | le chargeur suit `socket_hand.L` pendant le clip |
 | Grenade | **clip** (haut du corps) | lâcher synchronisé avec l'événement `throw` |
 | Adrénaline (geste de compétence) | **clip court** ou code | ne doit pas annuler le rechargement |
 | Soin | **clip court** | |
@@ -188,5 +186,5 @@ Le Master Assault est GOLD quand **tous** les points suivants sont vrais :
 4. Bleu et rouge produits depuis un seul modèle et une seule texture (masque).
 5. Toutes les animations de la section 3 présentes ; mains sur l'arme à < 1 cm dans toutes les poses tenues.
 6. Hitboxes identiques à l'actuel ; `npm test` vert ; aucune erreur console.
-7. Squelette et sockets documentés ici, puis **gelés** (D-003 passe à LOCKED).
+7. Squelette et points d'attache documentés dans [ASSET-CONTRACT](ASSET-CONTRACT.md), puis **gelés** (D-003 passe à LOCKED).
 8. Validation visuelle par le propriétaire du projet (comparaison A/B et conformité aux images 01 à 03).

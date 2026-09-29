@@ -9,22 +9,19 @@ description: Produire ou intégrer un personnage de production pour Frontline Le
 
 **Cible visuelle** : l'[image 01](../../../docs/_attachments/ref-01-master-assault-turnaround.webp) fait autorité (proportions, silhouette, équipement, emblèmes, matériaux, palette), l'[image 02](../../../docs/_attachments/ref-02-master-assault-production-sheet.webp) complète ; lecture et écarts : [VISUAL-REFERENCES](../../../docs/product/VISUAL-REFERENCES.md) (D-009).
 
-## Règles du rig canonique (proposition, gel en attente : D-003)
-- 1 unité = 1 m, Y en haut, personnage face à +Z, droite = −X, pose de liaison en A-pose.
-- Noms d'os en camelCase, suffixe `L`/`R` ; les os actuels (`hips`, `spine`, `neck`, `head`, `shoulderX`, `elbowX`, `handX`, `legX`, `kneeX`, `ankleX`) gardent leur rôle ; ajouts listés dans [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md).
-- Ne jamais renommer un os après le gel.
+## Contrat de l'asset (étape M2, non gelé : D-003, D-018)
+- **Remise à l'artiste : [ASSET-CONTRACT](../../../docs/characters/ASSET-CONTRACT.md)** ; source machine unique : `src/character/rigContract.js` (os, points d'attache, budgets, masque, clips, expressions). Toute évolution modifie les deux, plus D-018, dans le même commit.
+- Squelette de **production** : noms de type Blender (`hips`, `spine`, `spine1`, `chest`, `upperArm.L`, `calf.R`…), A-pose, 1,85 m ; `upperArm.L` devient `upperArmL` au chargement (`runtimeName`). Squelette de **gameplay** : les 16 groupes actuels, inchangés, source des hitboxes, du support d'arme, de la bouche du canon et de l'IK.
+- `.glb` : `body_LOD0/1/2`, `acc_<nom>_LOD<n>`, points d'attache `socket_*` non déformants, un matériau `M_body`, masque d'équipe `COLOR_0` (R principale, G secondaire, B emblème) + UV d'emblème `TEXCOORD_1`, 9 expressions, clips du contrat ; pas de compression.
+- Contrôle : `npm run check:glb -- <fichier> [--stade prototype|production] [--fit] [--json]` (code de sortie 1 si refusé ; `--fit` = essai en jeu).
 
-## Contrat de l'asset (`.glb`)
-- `public/models/characters/<classe>.glb` ; corps = **un** `SkinnedMesh` ; accessoires `acc_*` ; sockets `socket_*` (arme, mains, dos, tête, visage, hanches, emblèmes).
-- 1 matériau corps + 1 arme (≤ 3 par soldat) ; atlas partagé ; **masque de couleurs d'équipe** : un seul modèle et une seule texture pour bleu et rouge.
-- LOD0 12 000 à 18 000 triangles, LOD1 ≈ 5 000, LOD2 ≈ 1 500 ; ≤ 4 appels de rendu par soldat en LOD0.
-
-## État (étape M1)
-Le personnage actuel est déjà rendu en un `SkinnedMesh` lié aux 16 groupes animés (chemin `M1_OPTIMIZED_RENDER_PATH`, `bakeSkinned` dans `parts.js`) ; le chemin `LEGACY_RENDER_PATH` reste le repli. Ces groupes sont le **squelette de gameplay** : hitboxes, support d'arme, bouche du canon, IK. Un asset de production s'y branchera par l'adaptateur de M2 (D-015). Voir [MASTER-ASSAULT-M1](../../../docs/characters/MASTER-ASSAULT-M1.md).
+## État (étapes M1 et M2)
+- M1 (acceptée, D-017) : le personnage actuel est rendu en un `SkinnedMesh` lié aux 16 groupes animés (`M1_OPTIMIZED_RENDER_PATH` par défaut, `LEGACY_RENDER_PATH` en repli).
+- M2 : `src/character/rigAdapter.js` fait suivre le squelette de gameplay par un squelette de production (décalages calibrés en A-pose, colonne répartie, bassin à l'échelle, IK des mains sur les longueurs de l'asset). **Pas encore branché en jeu** ; testé par `npm run test:rig` sur un squelette d'essai synthétique (donnée de test, jamais versionnée). Coût ≈ 0,1 ms par soldat : à réduire avant M5. Voir [MASTER-ASSAULT-M2](../../../docs/characters/MASTER-ASSAULT-M2.md).
 
 ## Intégration (ce que Claude fait dans le code)
 1. Charger une fois (`GLTFLoader`), cloner par soldat (`SkeletonUtils.clone`), partager matériaux et textures.
-2. Brancher l'`Animator` existant sur les os portant les mêmes noms ; garder l'IK des mains (`solveTwoBone`) et les points de prise de l'arme.
+2. Brancher le squelette de l'asset par `RigAdapter` (l'`Animator` et le squelette de gameplay ne changent pas) ; garder les points de prise de l'arme ; désactiver `vertexColors` (le masque `COLOR_0` n'est pas une couleur).
 3. Rattacher arme et équipement aux sockets ; conserver `getMuzzleWorld`, `headOffset` et les hitboxes (`Soldier.hitVolumes`) **identiques**.
 4. Garder le personnage procédural comme repli et référence A/B jusqu'au GOLD.
 5. Libérer les ressources (`disposeTree`) et garder la réserve de modèles de soldats.
@@ -35,4 +32,4 @@ Modélisation, topologie, UV, textures peintes, pondération, clips d'animation 
 ## Validation
 Skills `visual-validation`, `threejs-performance` et `gameplay-regression` ; critères GOLD : [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md), section 6.
 
-Références : [CHARACTER-PIPELINE](../../../docs/characters/CHARACTER-PIPELINE.md) · [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md) · [DECISIONS](../../../docs/DECISIONS.md) (D-002, D-003, D-007)
+Références : [ASSET-CONTRACT](../../../docs/characters/ASSET-CONTRACT.md) · [CHARACTER-PIPELINE](../../../docs/characters/CHARACTER-PIPELINE.md) · [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md) · [DECISIONS](../../../docs/DECISIONS.md) (D-002, D-003, D-007, D-015, D-018)

@@ -2,7 +2,7 @@
 
 Point d'entrée de la documentation du projet. Les règles permanentes de travail sont dans [CLAUDE.md](../CLAUDE.md) à la racine du dépôt.
 
-> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (M0 et M1 faits : rendu optimisé du personnage actuel ; asset de production pas commencé).**
+> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (M0, M1 et M2 faites : rendu optimisé du personnage actuel, adaptateur de squelette et contrat d'asset ; asset de production pas commencé).**
 > Point de contrôle stable : commit `05827b4807c67959e125c9681b5ffa953b113a29`.
 
 ## Commencer ici
@@ -21,6 +21,8 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | [MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md) | audit technique du personnage actuel, mesures, plan de migration M0 à M7, décisions du propriétaire |
 | [MASTER-ASSAULT-BASELINE](characters/MASTER-ASSAULT-BASELINE.md) | **référence M0** : tests `test:character`, mesures, captures A/B, surprises |
 | [MASTER-ASSAULT-M1](characters/MASTER-ASSAULT-M1.md) | **étape M1** : corps en un SkinnedMesh, chemins de rendu legacy / M1, mesures avant / après, différences expliquées |
+| [ASSET-CONTRACT](characters/ASSET-CONTRACT.md) | **remise à l'artiste** : ce que Blender doit livrer (repère, squelette, points d'attache, maillages, LOD, matériau, masque d'équipe, expressions, clips, export, validateur `check:glb`) |
+| [MASTER-ASSAULT-M2](characters/MASTER-ASSAULT-M2.md) | **étape M2** : adaptateur de squelette, squelette d'essai synthétique, résultats, risques |
 
 ## Carte 1 — *Castelmare*
 | Document | Contenu |

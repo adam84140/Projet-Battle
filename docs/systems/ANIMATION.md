@@ -24,6 +24,8 @@ Convention : le personnage regarde +Z ; sa droite est −X.
 
 Rendu en jeu (étape M1, [MASTER-ASSAULT-M1](../characters/MASTER-ASSAULT-M1.md)) : ces groupes restent le squelette animé ; le corps est un `SkinnedMesh` qui les suit (chemin `M1_OPTIMIZED_RENDER_PATH`, par défaut), ou des maillages fusionnés par os (chemin `LEGACY_RENDER_PATH`). L'animation est identique dans les deux cas.
 
+Squelette de production (étape M2, [MASTER-ASSAULT-M2](../characters/MASTER-ASSAULT-M2.md)) : un futur asset Blender aura ses propres os (`upperArm.L`, `calf.R`…, A-pose) ; `src/character/rigAdapter.js` les fait **suivre** ces groupes (rotations recopiées, IK des mains sur ses longueurs de bras) sans jamais modifier le squelette de gameplay. Pas encore branché en jeu (M5). Ce que Blender fournit et ce qui reste dans le code : [ASSET-CONTRACT](../characters/ASSET-CONTRACT.md), § 10.
+
 ## Couverture actuelle
 Repos combat, marche, course, sprint (arme portée), marche arrière, pas chassés (rotation des hanches), accroupi, pivot sur place (petits pas), saut (montée et chute continues), réception, visée, tir et recul, rechargement (chargeur retiré), lancer de grenade, poignard, soin, geste de compétence, réactions aux impacts, mort en deux temps (trois variantes), assis (jeep), A-pose (fiche).
 
@@ -35,6 +37,7 @@ Repos combat, marche, course, sprint (arme portée), marche arrière, pas chass�
 
 ## Outils d'inspection
 - `npm run test:character` : mesures et gardes du personnage (voir [MASTER-ASSAULT-BASELINE](../characters/MASTER-ASSAULT-BASELINE.md)), planches A/B reproductibles dans `test-results/character/`.
+- `npm run test:rig` : adaptateur de squelette sur un squelette d'essai synthétique (32 états par classe, GLB exporté et rechargé, partie 8v8), planches dans `test-results/rig/` ; `npm run check:glb -- <fichier> [--fit]` : contrôle d'un asset.
 - `tests/turntable.html?classe=…&equipe=…&bake=1` : 7 vues (face, 3/4, profil, dos, repos, visée, course).
 - `tests/poses.html` : planche de 18 états (saut, réception, impacts, pivot, morts…).
 - `npm run shots -- <étiquette> turn|poses`.

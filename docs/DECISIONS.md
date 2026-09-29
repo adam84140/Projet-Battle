@@ -22,7 +22,7 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Statut :** PENDING
 - **Décision :** le squelette définitif (noms d'os, hiérarchie, orientations, sockets) n'est gelé qu'après la validation technique **et** visuelle du Master Assault.
 - **Raison :** geler trop tôt obligerait à refaire le rig et les animations de toutes les classes.
-- **En attendant :** la proposition de squelette est dans [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) ; elle reprend les 16 articulations du personnage procédural actuel pour préserver la compatibilité avec le code d'animation.
+- **En attendant :** le squelette de **production** proposé est le contrat M2 (D-018, [ASSET-CONTRACT](characters/ASSET-CONTRACT.md), `src/character/rigContract.js`) : noms canoniques de type Blender, suivis par un adaptateur ; le squelette de **gameplay** (16 articulations du personnage procédural) reste celui du code d'animation. Le gel porte sur le contrat de production, après M7.
 
 ## D-004 — POINT DE CONTRÔLE STABLE AVANT MASTER CHARACTER
 - **Statut :** LOCKED
@@ -109,7 +109,18 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **En attente :** la stratégie « couleurs de sommets à grande distance » (LOD2) reste **provisoire** : elle ne sera verrouillée que si des mesures visuelles et de performance montrent un gain réel sans dégrader visiblement la cible officielle.
 
 ## D-017 — CHEMINS DE RENDU DES SOLDATS (ÉTAPE M1)
-- **Statut :** PENDING (implémenté et validé par les tests le 2026-09-29 ; acceptation du propriétaire attendue)
+- **Statut :** LOCKED (M1 acceptée par le propriétaire le 2026-09-29 : M1 reste le chemin par défaut, legacy reste disponible en repli pour l'instant ; pas d'optimisation spéculative supplémentaire de M1 — shader de peau, envoi de la texture des os, stratégie de découpage, rendu mobile — avant la validation sur de vrais appareils)
 - **Décision :** les soldats en jeu ont deux chemins de rendu, choisis dans `src/character/renderPath.js` : `LEGACY_RENDER_PATH` (fusion par os, référence M0, conservé intact) et `M1_OPTIMIZED_RENDER_PATH` (corps en un `SkinnedMesh` lié au squelette de gameplay existant, arme indexée). **M1 est le chemin par défaut**, legacy reste disponible (`?rendu=legacy`, `RENDU=legacy npm test`, ou une ligne à changer).
 - **Raison :** diviser par 3 à 4 les appels de rendu en 16v16 sans toucher au gameplay ([MASTER-ASSAULT-M1](characters/MASTER-ASSAULT-M1.md)).
 - **Conséquences :** le squelette de gameplay (16 `Group` animés) reste la source des hitboxes, du support d'arme, de la bouche du canon et de l'IK ; le futur adaptateur (D-015, M2) s'y branchera. Le chemin legacy ne sera retiré qu'avec l'accord du propriétaire.
+
+## D-018 — SQUELETTE DE PRODUCTION ET CONTRAT D'ASSET (ÉTAPE M2)
+- **Statut :** PENDING (implémenté et validé par les tests le 2026-09-29 ; acceptation du propriétaire attendue). **Non gelé** : le gel reste soumis à D-003, après la validation GOLD du vrai Master Assault (M7).
+- **Décision :**
+  - le squelette de **production** a ses propres noms canoniques, de type Blender : `root`, `hips`, `spine`, `spine1`, `chest`, `neck`, `head`, et par côté `clavicle`, `upperArm`, `lowerArm`, `hand`, `thigh`, `calf`, `foot`, `toe` suffixés `.L` / `.R` (23 os requis, doigts et visage facultatifs), en **A-pose**, 1,85 m ; `upperArm.L` devient `upperArmL` au chargement ;
+  - ce squelette **suit** le squelette de gameplay (16 articulations, inchangé) par l'adaptateur `src/character/rigAdapter.js` (D-015) : rotations recopiées avec décalages calibrés, colonne répartie, bassin à l'échelle des jambes, IK des mains sur les longueurs de bras de l'asset. Le gameplay reste la seule source des hitboxes, du support d'arme, de la bouche du canon et de la visée ;
+  - points d'attache : `socket_hand.R`, `socket_hand.L`, `socket_back`, `socket_head`, `socket_face`, `socket_hip.L`, `socket_hip.R`, `socket_grenade` (requis), `socket_weapon` (aperçu Blender seulement) ; ils remplacent la proposition `socket_hand_R`… de [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) ; l'arme reste sur le support animé par le code ;
+  - contrat d'asset complet (repère, maillages, LOD, pondération, matériau `M_body`, masque d'équipe `COLOR_0` + UV d'emblème `TEXCOORD_1`, expressions, clips, export) dans [ASSET-CONTRACT](characters/ASSET-CONTRACT.md), source machine `src/character/rigContract.js` (version `M2-0.1`), validé par `npm run check:glb` ;
+  - le code garde locomotion, visée, recul, réactions et IK ; Blender fournit rechargement, lancer, geste, soin, poignard (facultatif), 3 morts, pose assise et 9 expressions ; événements fixés par le contrat en pourcentage.
+- **Raison :** un rig de production standard (Blender) ne peut pas porter les noms et repères du squelette procédural ; l'adaptateur évite de réécrire l'animateur, les hitboxes et l'IK ([MASTER-ASSAULT-M2](characters/MASTER-ASSAULT-M2.md)).
+- **Conséquences :** toute évolution du contrat modifie `rigContract.js`, [ASSET-CONTRACT](characters/ASSET-CONTRACT.md) et cette décision dans le même commit ; le matériau (M3) et l'intégration (M5 : chargement, LOD, clips, coût de l'adaptateur) ne sont pas décidés ici.

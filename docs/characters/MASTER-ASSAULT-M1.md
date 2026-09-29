@@ -1,6 +1,6 @@
 # Master Assault — étape M1 : rendu optimisé du personnage actuel
 
-**Statut : implémentée et validée par les tests, en attente d'acceptation par le propriétaire.** M2 n'est pas autorisée. Ce n'est **pas** le Master Assault visuel : c'est le personnage procédural actuel, rendu moins cher, avec la même apparence et le même contrat de jeu. Référence de comparaison : [M0](MASTER-ASSAULT-BASELINE.md). Plan : [audit](MASTER-ASSAULT-AUDIT.md).
+**Statut : acceptée par le propriétaire (D-017) : M1 est le chemin par défaut, legacy reste le repli.** Étape suivante faite : [M2](MASTER-ASSAULT-M2.md). Ce n'est **pas** le Master Assault visuel : c'est le personnage procédural actuel, rendu moins cher, avec la même apparence et le même contrat de jeu. Référence de comparaison : [M0](MASTER-ASSAULT-BASELINE.md). Plan : [audit](MASTER-ASSAULT-AUDIT.md).
 
 ## 1. Architecture
 ```

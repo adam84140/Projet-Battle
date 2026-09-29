@@ -34,7 +34,7 @@ export function freshCharacter(opts) {
   return c;
 }
 
-function simulate(c, secs, fn) {
+export function simulate(c, secs, fn) {
   const n = Math.round(secs / DT);
   for (let i = 0; i < n; i++) {
     fn?.(c.anim);
@@ -281,7 +281,7 @@ export function measureAlignment(classId = 'assaut', team = 'blue', path) {
   return rows;
 }
 
-function stage(w, h) {
+export function stage(w, h) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(1);
   renderer.setSize(w, h);
@@ -363,7 +363,7 @@ export async function measureHeap(n = 8, path) {
 }
 
 // Planche déterministe pour la comparaison A/B (mêmes poses, même lumière, même caméra)
-const LINEUP = [
+export const LINEUP = [
   ['face', 0, 'stand'], ['3/4', 0.7, 'stand'], ['profil', Math.PI / 2, 'stand'], ['dos', Math.PI, 'stand'],
   ['repos', -0.6, 'idle'], ['visée', -0.9, 'aim'], ['course', -1.2, 'run'], ['accroupi', -0.9, 'crouch'],
 ];
@@ -448,7 +448,7 @@ export async function compareImages(a, b) {
 }
 
 // Poses extrêmes pour la sphère englobante (morts, assis, sprint, saut)
-const EXTENT_POSES = [
+export const EXTENT_POSES = [
   ...POSES,
   ['dead-front', (c) => { simulate(c, 0.3); Object.assign(c.anim, { mode: 'dead', deadDir: -1, deadVar: 0, deadT: 0 }); simulate(c, 2, (a) => { a.deadT += DT; }); }],
   ['dead-knees', (c) => { simulate(c, 0.3); Object.assign(c.anim, { mode: 'dead', deadDir: 1, deadVar: 1, deadT: 0 }); simulate(c, 2, (a) => { a.deadT += DT; }); }],
