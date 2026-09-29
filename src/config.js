@@ -269,9 +269,10 @@ export const MODES = {
 };
 
 export const DIFFICULTIES = {
-  recrue: { name: 'Recrue', accuracy: 0.45, reaction: 0.75, damageMult: 0.7 },
-  veteran: { name: 'Vétéran', accuracy: 0.65, reaction: 0.5, damageMult: 0.85 },
-  legende: { name: 'Légende', accuracy: 0.85, reaction: 0.3, damageMult: 1 },
+  // tactics : propension à se mettre à couvert, se replier et contourner
+  recrue: { name: 'Recrue', accuracy: 0.45, reaction: 0.75, damageMult: 0.7, tactics: 0.3 },
+  veteran: { name: 'Vétéran', accuracy: 0.65, reaction: 0.5, damageMult: 0.85, tactics: 0.6 },
+  legende: { name: 'Légende', accuracy: 0.85, reaction: 0.3, damageMult: 1, tactics: 0.9 },
 };
 
 // Personnalisation par défaut du héros du joueur

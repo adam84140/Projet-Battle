@@ -59,7 +59,9 @@ try {
     }
     const kills = g.soldiers.reduce((a, s) => a + s.stats.kills, 0);
     const caps = g.soldiers.reduce((a, s) => a + (s.stats.captures || 0), 0);
-    return { frames, avgMs: total / frames, samples, stuck, longest: longest + 5, where, kills, caps, tickets: { ...g.conquest.tickets }, winner: g.winner || null };
+    const roles = {};
+    for (const b of g.bots) roles[b.brain.role] = (roles[b.brain.role] || 0) + 1;
+    return { frames, avgMs: total / frames, samples, stuck, longest: longest + 5, where, kills, caps, tickets: { ...g.conquest.tickets }, winner: g.winner || null, ai: { ...(g.aiStats || {}) }, roles };
   }, SECS);
   const pct = r.samples ? (100 * r.stuck) / r.samples : 0;
   console.log('  ', JSON.stringify({ ...r, avgMs: +r.avgMs.toFixed(2), stuckPct: +pct.toFixed(1) }));
@@ -68,6 +70,7 @@ try {
   C.ok('les bots capturent', r.caps > 0, `${r.caps} captures`);
   C.ok('bots bloqués < 3 %', pct < 3, `${pct.toFixed(1)} % (${r.stuck}/${r.samples})`);
   C.ok('aucun bot bloqué plus de 20 s', r.longest <= 20 || r.stuck === 0, `${r.stuck ? r.longest : 0} s max`);
+  C.ok('tactique : abris, replis et contournements utilisés', (r.ai.cover || 0) > 0 && (r.ai.flank || 0) > 0, r.ai);
   C.ok('coût logique par image < 8 ms', r.avgMs < 8, `${r.avgMs.toFixed(2)} ms`);
   C.ok('aucune erreur console', errors.length === 0, errors.slice(0, 3).join(' | '));
 } catch (err) {

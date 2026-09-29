@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { emptyCommand } from './Soldier.js';
+import { MAP } from './map.js';
 
 // Intelligence artificielle des bots.
 
@@ -8,6 +9,9 @@ const _eye = new THREE.Vector3();
 const _tp = new THREE.Vector3();
 const _left = new THREE.Vector3();
 const _fwd = new THREE.Vector3();
+const _o = new THREE.Vector3();
+const _d = new THREE.Vector3();
+const _near = [];
 
 const wrap = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 
@@ -55,7 +59,15 @@ export class BotBrain {
     this.crouchT = 0;
     this.lookAtT = 0;
     this.lookAtPos = new THREE.Vector3();
-    this.role = Math.random() < 0.3 ? 'defend' : 'attack';
+    // rôles : attaque, défense, contournement (itinéraire décalé), soutien (suit l'équipe)
+    const r = Math.random();
+    this.role = r < 0.28 ? 'defend' : r < 0.48 ? 'flank' : r < 0.6 ? 'support' : 'attack';
+    this.via = null;
+    this.cover = null;
+    this.coverSince = 0;
+    this.nextCoverTry = 0;
+    this.retreatRoll = null;
+    this.retreating = false;
     this.jitter = Math.random() * 30;
     this.cmd.yaw = this.s.yaw;
     this.cmd.pitch = 0;
@@ -89,6 +101,7 @@ export class BotBrain {
       this.thinkT = 0.22 + Math.random() * 0.12;
       this.perceive();
       this.chooseObjective(false);
+      this.updateTactics();
       this.useAbilities();
     }
     this.objT -= dt;
@@ -162,7 +175,20 @@ export class BotBrain {
     const moveDir = _v.set(0, 0, 0);
     const wp = this.currentWaypoint();
     const inPoint = this.objective && this.objective.def && this.insidePoint(this.objective);
-    if (hasTarget && dist < this.engageRange()) {
+    if (hasTarget && dist < this.engageRange() && this.cover) {
+      // combat à couvert : rejoindre l'abri puis s'accroupir derrière
+      const dx = this.cover.x - s.body.pos.x;
+      const dz = this.cover.z - s.body.pos.z;
+      if (dx * dx + dz * dz > 0.36) moveDir.set(dx, 0, dz);
+      cmd.crouch = dx * dx + dz * dz <= 0.36;
+    } else if (hasTarget && dist < this.engageRange() && this.retreating) {
+      // repli : on recule en tirant, en zigzag
+      const tp = this.target.isVehicle ? this.target.pos : this.target.body.pos;
+      moveDir.set(s.body.pos.x - tp.x, 0, s.body.pos.z - tp.z).normalize();
+      _left.set(Math.cos(cmd.yaw), 0, -Math.sin(cmd.yaw));
+      moveDir.addScaledVector(_left, this.strafeDir * 0.5);
+      cmd.crouch = false;
+    } else if (hasTarget && dist < this.engageRange()) {
       // combat : mitraillage latéral
       this.strafeT -= dt;
       if (this.strafeT <= 0) {
@@ -216,8 +242,13 @@ export class BotBrain {
     if (this.repathT <= 0 && game.pathBudget > 0) {
       game.pathBudget--;
       this.repathT = 3 + Math.random() * 2;
-      this.path = game.nav.findPath(s.body.pos, this.objPos);
+      this.path = game.nav.findPath(s.body.pos, this.via || this.objPos);
       this.pathIdx = 0;
+    }
+    // point de passage du contournement atteint : on file vers l'objectif
+    if (this.via && Math.hypot(this.via.x - s.body.pos.x, this.via.z - s.body.pos.z) < 5) {
+      this.via = null;
+      this.repathT = 0;
     }
     // Anti-blocage
     this.stuckT += dt;
@@ -226,6 +257,8 @@ export class BotBrain {
       const wantMove = Math.abs(cmd.mx) + Math.abs(cmd.mz) > 0.3;
       if (wantMove && moved < 0.5) {
         cmd.jump = true;
+        this.cover = null;
+        if (this.via) this.via = null;
         this.repathT = 0;
         this.strafeDir *= -1;
         if (this.path && this.pathIdx < this.path.length - 1) this.pathIdx++;
@@ -308,13 +341,21 @@ export class BotBrain {
     const enemy = s.team === 'blue' ? 'red' : 'blue';
     let best = null;
     let bestScore = Infinity;
+    // soutien : rejoindre l'objectif visé par le plus d'équipiers
+    const mates = new Map();
+    if (this.role === 'support') {
+      for (const b of this.game.bots) if (b !== s && b.alive && b.team === s.team && b.brain.objective) mates.set(b.brain.objective, (mates.get(b.brain.objective) || 0) + 1);
+    }
     for (const p of pts) {
       const d = Math.hypot(p.pos.x - s.body.pos.x, p.pos.z - s.body.pos.z);
       let score = d + this.jitter * 1.5 + Math.random() * 25;
       const mine = p.owner === s.team && p.progress * (s.team === 'blue' ? 1 : -1) > 0.99;
-      if (this.role === 'attack') {
+      if (this.role === 'attack' || this.role === 'flank') {
         if (mine && p.counts[enemy] === 0) score += 150;
         if (!p.owner) score -= 20;
+      } else if (this.role === 'support') {
+        if (mine && p.counts[enemy] === 0) score += 120;
+        score -= (mates.get(p) || 0) * 15;
       } else {
         if (!mine) score += 30;
         if (p.counts[enemy] > 0) score -= 60;
@@ -337,7 +378,105 @@ export class BotBrain {
       }
       this.objPos.set(x, 0, z);
       this.repathT = 0;
+      this.planFlank(best);
     }
+  }
+
+  // Contournement : un point de passage décalé sur le côté de la ligne droite
+  planFlank(obj) {
+    this.via = null;
+    if (this.role !== 'flank') return;
+    const s = this.s;
+    const game = this.game;
+    if (Math.random() > 0.4 + 0.5 * game.difficulty.tactics) return;
+    const dx = obj.pos.x - s.body.pos.x;
+    const dz = obj.pos.z - s.body.pos.z;
+    const d = Math.hypot(dx, dz);
+    if (d < 35) return;
+    const side = Math.random() < 0.5 ? -1 : 1;
+    const b = MAP.bounds;
+    const vx = Math.max(b.minX + 8, Math.min(b.maxX - 8, s.body.pos.x + dx * 0.6 + (-dz / d) * side * 20));
+    const vz = Math.max(b.minZ + 8, Math.min(b.maxZ - 8, s.body.pos.z + dz * 0.6 + (dx / d) * side * 20));
+    if (game.nav.isBlockedWorld(vx, vz)) return;
+    this.via = new THREE.Vector3(vx, 0, vz);
+    this.repathT = 0;
+    this.stat('flank');
+  }
+
+  stat(k) {
+    const st = this.game.aiStats || (this.game.aiStats = {});
+    st[k] = (st[k] || 0) + 1;
+  }
+
+  // Décisions tactiques (à chaque réflexion) : se mettre à couvert, se replier
+  updateTactics() {
+    const s = this.s;
+    const game = this.game;
+    const tactics = game.difficulty.tactics ?? 0.5;
+    const t = this.targetVisible ? this.target : null;
+    if (!t) {
+      this.cover = null;
+      this.retreating = false;
+      return;
+    }
+    const low = s.health < s.maxHealth * 0.4;
+    if (s.health > s.maxHealth * 0.6) this.retreatRoll = null;
+    else if (low && this.retreatRoll === null) this.retreatRoll = Math.random() < tactics;
+    // sous le feu : chercher un abri proche, du côté opposé à l'ennemi
+    if (!this.cover && (low || game.time - s.lastHurt < 1.5) && game.time > this.nextCoverTry) {
+      this.nextCoverTry = game.time + 2.5;
+      if (Math.random() < tactics) {
+        this.cover = this.findCover(t);
+        if (this.cover) {
+          this.coverSince = game.time;
+          this.stat('cover');
+        }
+      }
+    }
+    // on quitte l'abri une fois soigné ou après un moment
+    if (this.cover && (game.time - this.coverSince > 9 || (!low && game.time - s.lastHurt > 4))) this.cover = null;
+    const was = this.retreating;
+    this.retreating = low && !this.cover && this.retreatRoll === true;
+    if (this.retreating && !was) this.stat('retreat');
+  }
+
+  findCover(target) {
+    const s = this.s;
+    const game = this.game;
+    const p = s.body.pos;
+    const tp = target.isVehicle ? target.pos : target.body.pos;
+    let best = null;
+    let bestD = Infinity;
+    for (const c of game.physics.query(p.x - 10, p.z - 10, p.x + 10, p.z + 10, _near)) {
+      const top = c.max.y - p.y;
+      if (top < 0.7 || top > 1.8) continue; // assez haut pour s'accroupir derrière, assez bas pour tirer
+      const cx = (c.min.x + c.max.x) / 2;
+      const cz = (c.min.z + c.max.z) / 2;
+      const hx = (c.max.x - c.min.x) / 2;
+      const hz = (c.max.z - c.min.z) / 2;
+      if (hx + hz < 0.6) continue;
+      // ne pas choisir un abri plus proche de l'ennemi que de nous
+      if (Math.hypot(cx - tp.x, cz - tp.z) < Math.hypot(cx - p.x, cz - p.z)) continue;
+      let ex = cx - tp.x;
+      let ez = cz - tp.z;
+      const el = Math.hypot(ex, ez) || 1;
+      ex /= el;
+      ez /= el;
+      const k = Math.min(hx / Math.max(1e-3, Math.abs(ex)), hz / Math.max(1e-3, Math.abs(ez)));
+      const sx = cx + ex * (k + 0.7);
+      const sz = cz + ez * (k + 0.7);
+      const d = Math.hypot(sx - p.x, sz - p.z);
+      if (d > 12 || d >= bestD) continue;
+      // l'emplacement doit être libre et atteignable en ligne droite
+      _o.set(sx, p.y, sz);
+      if (game.physics.pointBlocked(_o.setY(p.y + 0.5), 0.35)) continue;
+      _o.set(p.x, p.y + 0.5, p.z);
+      _d.set(sx - p.x, 0, sz - p.z);
+      if (d > 0.3 && game.physics.raycast(_o, _d.normalize(), d, null) !== Infinity) continue;
+      best = new THREE.Vector3(sx, p.y, sz);
+      bestD = d;
+    }
+    return best;
   }
 
   perceive() {
