@@ -20,6 +20,14 @@ export async function launch(options = {}) {
     args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info', '--js-flags=--expose-gc'],
   });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, ignoreHTTPSErrors: true, ...options });
+  // Polices Google : chargées si le réseau répond, abandonnées sinon (une police bloquée
+  // retiendrait l'événement "load" et ferait échouer le test sans rapport avec le jeu)
+  await context.route(/fonts\.(googleapis|gstatic)\.com/, (route) =>
+    route
+      .fetch({ timeout: 8000 })
+      .then((response) => route.fulfill({ response }))
+      .catch(() => route.abort()),
+  );
   const page = await context.newPage();
   const errors = [];
   page.on('console', (m) => {
