@@ -184,7 +184,7 @@ export class Vehicle {
         break;
       }
     }
-    s.body.vel.set(0, 0, 0);
+    s.body.vel.set(0, 3.2, 0); // petit saut de sortie
     s.body.grounded = false;
     s.yaw = this.yaw;
   }

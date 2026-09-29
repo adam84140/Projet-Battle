@@ -54,8 +54,25 @@ export function defaultAnimState() {
     actionT: 0,
     deadT: 0,
     deadDir: 1,
+    deadVar: 0,
+    // réactions ponctuelles (couches additives, non lissées)
+    hitT: 0,
+    hitX: 0,
+    hitZ: 1,
+    hitAmt: 0,
+    landT: 0,
+    landAmt: 0,
+    turnRate: 0,
   };
 }
+
+// Vitesse de lissage par canal : jambes vives, arme plus souple
+const RATES = new Float32Array(N).fill(16);
+for (const j of ['legL', 'legR', 'kneeL', 'kneeR', 'ankleL', 'ankleR']) RATES.fill(24, JI[j], JI[j] + 3);
+RATES.fill(20, JI.hips, JI.hips + 3);
+RATES[O_HIPSY] = 22;
+RATES.fill(13, O_WM, O_WM + 6);
+RATES[O_IKL] = RATES[O_IKR] = 12;
 
 const _q1 = new THREE.Quaternion();
 const _q2 = new THREE.Quaternion();
@@ -110,6 +127,7 @@ export class Animator {
     this.char = character;
     this.cur = new Float32Array(N);
     this.tgt = new Float32Array(N);
+    this.addv = new Float32Array(N);
     this.state = defaultAnimState();
     this.phase = 0;
     this.time = Math.random() * 10;
@@ -123,20 +141,57 @@ export class Animator {
   update(dt, snap = false) {
     const s = this.state;
     this.time += dt;
+    s.hitT = Math.max(0, s.hitT - dt / 0.38);
+    s.landT = Math.max(0, s.landT - dt / 0.34);
     const backward = Math.abs(s.moveAngle) > 1.75;
+    this.turning = s.speed <= 0.2 && s.grounded && !s.crouch && Math.abs(s.turnRate) > 1.6 && s.mode === 'combat';
     if (s.speed > 0.2) {
-      const freq = s.crouch ? 1.1 : 0.75 + s.speed * 0.2;
+      // fréquence de foulée liée à la vitesse (les pieds glissent moins)
+      const freq = s.crouch ? 1.1 : 0.85 + s.speed * 0.215;
       this.phase += dt * freq * Math.PI * 2 * (backward ? -1 : 1);
+    } else if (this.turning) {
+      // petits pas quand le personnage pivote sur place
+      this.phase += dt * 2.2 * Math.PI * 2;
     } else {
       // retour doux vers une position de repos du cycle
       this.phase = lerp(this.phase, Math.round(this.phase / Math.PI) * Math.PI, 1 - Math.exp(-dt * 6));
     }
     this.computeTarget(backward);
-    const k = snap || this.first ? 1 : 1 - Math.exp(-dt * 16);
-    this.first = false;
     const c = this.cur, t = this.tgt;
-    for (let i = 0; i < N; i++) c[i] += (t[i] - c[i]) * k;
+    if (snap || this.first) c.set(t);
+    else for (let i = 0; i < N; i++) c[i] += (t[i] - c[i]) * (1 - Math.exp(-dt * RATES[i]));
+    this.first = false;
+    this.computeAdditive();
     this.apply();
+  }
+
+  // Réactions vives superposées à la pose lissée : impact, réception
+  computeAdditive() {
+    const s = this.state;
+    const d = this.addv;
+    d.fill(0);
+    if (s.mode !== 'combat') return;
+    if (s.hitT > 0) {
+      const u = 1 - s.hitT; // 0 -> 1
+      const env = (u < 0.18 ? u / 0.18 : 1 - (u - 0.18) / 0.82) * s.hitAmt;
+      d[JI.spine] -= 0.24 * s.hitZ * env;
+      d[JI.spine + 2] += 0.16 * s.hitX * env;
+      d[JI.neck] -= 0.2 * s.hitZ * env;
+      d[JI.head + 1] += 0.18 * s.hitX * env;
+      d[O_HIPSY] -= 0.035 * env;
+      d[O_WM + 2] -= 0.05 * env;
+      d[O_WM + 3] += 0.12 * env;
+    }
+    if (s.landT > 0 && s.grounded) {
+      const u = 1 - s.landT;
+      const env = (u < 0.25 ? u / 0.25 : 1 - (u - 0.25) / 0.75) * s.landAmt;
+      d[O_HIPSY] -= 0.15 * env;
+      for (const k of ['kneeL', 'kneeR']) d[JI[k]] += 0.6 * env;
+      for (const k of ['legL', 'legR']) d[JI[k]] -= 0.32 * env;
+      for (const k of ['ankleL', 'ankleR']) d[JI[k]] -= 0.26 * env;
+      d[JI.spine] += 0.2 * env;
+      d[O_WM + 1] -= 0.04 * env;
+    }
   }
 
   // Pose figée (fiche personnage) : on simule quelques instants pour stabiliser le lissage
@@ -219,20 +274,31 @@ export class Animator {
 
   poseDead() {
     const s = this.state;
-    const f = smooth(0, 0.7, s.deadT);
+    // 1) les genoux cèdent  2) chute (avant, arrière ou en vrille)
+    const buckle = smooth(0, 0.22, s.deadT) * (1 - smooth(0.35, 0.8, s.deadT));
+    const f = smooth(0.12, 0.8, s.deadT);
     const dir = s.deadDir;
+    const twist = s.deadVar === 2 ? 1 : 0;
     const t = this.tgt;
-    t[O_HIPSY] = -0.8 * f;
-    this.set('hips', -1.48 * f * dir, 0, 0.1 * f);
-    this.set('legL', -0.25 * f, 0, 0.25 * f);
-    this.set('legR', 0.1 * f, 0, -0.2 * f);
-    this.set('kneeL', 0.5 * f, 0, 0);
-    this.set('kneeR', 0.2 * f, 0, 0);
-    this.set('shoulderL', -0.4 * f, 0, 1.3 * f);
-    this.set('shoulderR', -0.6 * f, 0, -1.1 * f);
-    this.set('elbowL', -0.5 * f, 0, 0);
-    this.set('elbowR', -0.3 * f, 0, 0);
-    this.set('neck', 0.35 * f * dir, 0.4 * f, 0);
+    t[O_HIPSY] = -0.8 * f - 0.18 * buckle;
+    this.set('hips', -1.48 * f * dir, 0.5 * twist * f, (0.1 + 0.35 * twist) * f);
+    this.set('spine', 0.25 * buckle, 0.3 * twist * f, 0);
+    this.set('legL', -0.25 * f - 0.4 * buckle, 0, 0.25 * f);
+    this.set('legR', 0.1 * f - 0.25 * buckle, 0, -0.2 * f);
+    this.set('kneeL', 0.5 * f + 0.9 * buckle, 0, 0);
+    this.set('kneeR', 0.2 * f + 0.7 * buckle, 0, 0);
+    this.set('shoulderL', -0.4 * f - 0.5 * buckle, 0, 1.3 * f);
+    this.set('shoulderR', -0.6 * f - 0.3 * buckle, 0, -1.1 * f);
+    this.set('elbowL', -0.5 * f - 0.6 * buckle, 0, 0);
+    this.set('elbowR', -0.3 * f - 0.8 * buckle, 0, 0);
+    this.set('neck', 0.35 * f * dir + 0.3 * buckle, 0.4 * f * (s.deadVar === 1 ? -1 : 1), 0);
+    // l'arme glisse le long du flanc droit et finit à plat au sol
+    t[O_WM] = -0.3;
+    t[O_WM + 1] = -0.02;
+    t[O_WM + 2] = 0.02 - 0.14 * twist;
+    t[O_WM + 3] = Math.PI / 2;
+    t[O_WM + 4] = -0.2;
+    t[O_WM + 5] = 0;
   }
 
   locomotion(backward) {
@@ -240,22 +306,24 @@ export class Animator {
     const t = this.tgt;
     const ph = this.phase;
     if (!s.grounded) {
-      const rising = s.vy > 0 ? 1 : 0;
-      this.set('legL', -0.8, 0, 0.05);
-      this.set('kneeL', 1.3, 0, 0);
-      this.set('ankleL', 0.3, 0, 0);
-      this.set('legR', lerp(0.1, -0.3, rising), 0, -0.05);
-      this.set('kneeR', lerp(0.4, 0.9, rising), 0, 0);
-      this.set('ankleR', 0.2, 0, 0);
+      // montée : jambes repliées ; chute : jambes tendues vers le sol pour la réception
+      const up = Math.max(-1, Math.min(1, s.vy / 6));
+      const tuck = smooth(-0.35, 0.8, up);
+      this.set('legL', lerp(-0.3, -0.85, tuck), 0, 0.06);
+      this.set('kneeL', lerp(0.35, 1.3, tuck), 0, 0);
+      this.set('ankleL', lerp(0.05, 0.3, tuck), 0, 0);
+      this.set('legR', lerp(0.12, -0.3, tuck), 0, -0.06);
+      this.set('kneeR', lerp(0.3, 0.95, tuck), 0, 0);
+      this.set('ankleR', lerp(0.0, 0.2, tuck), 0, 0);
       t[O_HIPSY] = 0.02;
-      this.set('spine', 0.08, 0, 0);
+      this.set('spine', 0.1 - 0.08 * up, 0, 0);
       return;
     }
     let hipYaw = 0;
     if (s.speed > 0.3) {
       let a = s.moveAngle;
       if (backward) a = a - Math.PI * Math.sign(a);
-      hipYaw = Math.max(-0.9, Math.min(0.9, a)) * 0.75;
+      hipYaw = Math.max(-1.2, Math.min(1.2, a)) * 0.85;
     }
     const spd = s.speed;
     if (s.crouch) {
@@ -269,6 +337,14 @@ export class Animator {
       this.set('ankleR', -0.75, 0, 0);
       this.set('hips', 0.05, hipYaw, 0);
       this.set('spine', 0.22, 0, 0);
+      return;
+    }
+    if (spd < 0.3 && this.turning) {
+      const ph2 = this.phase;
+      this.set('legL', -Math.sin(ph2) * 0.16, 0, 0.05);
+      this.set('legR', Math.sin(ph2) * 0.16, 0, -0.05);
+      this.set('kneeL', 0.1 + Math.max(0, Math.cos(ph2)) * 0.35, 0, 0);
+      this.set('kneeR', 0.1 + Math.max(0, -Math.cos(ph2)) * 0.35, 0, 0);
       return;
     }
     if (spd < 0.3) {
@@ -285,7 +361,8 @@ export class Animator {
       this.set('spine', br * 0.012, 0, -0.02);
       return;
     }
-    const amp = Math.min(0.95, 0.3 + spd * 0.1);
+    const freq = 0.85 + spd * 0.215;
+    const amp = Math.min(1.05, Math.max(0.3, Math.asin(Math.min(0.95, spd / (3.6 * freq)))));
     const sL = Math.sin(ph);
     const cL = Math.cos(ph);
     const thighL = -sL * amp;
@@ -360,6 +437,14 @@ export class Animator {
       this.set('handR', lerp(0, -0.4, stab), 0, 0);
       this.add('spine', 0.2 * stab, 0.35 * stab, 0);
       t[O_WM + 1] -= 0.06;
+    } else if (s.action === 'buff') {
+      // main gauche portée à la radio / au gilet
+      const a = s.actionT;
+      const up = smooth(0, 0.3, a) * (1 - smooth(0.65, 1, a));
+      t[O_IKL] = 1 - up;
+      this.set('shoulderL', -0.5 * up, -0.45 * up, 0.2 * up);
+      this.set('elbowL', -2.15 * up, 0, 0);
+      this.add('neck', 0.2 * up, 0.3 * up, 0);
     } else if (s.action === 'heal') {
       const a = s.actionT;
       const up = smooth(0, 0.3, a) * (1 - smooth(0.7, 1, a));
@@ -371,18 +456,19 @@ export class Animator {
 
   apply() {
     const c = this.cur;
+    const d = this.addv;
     const B = this.char.bones;
     for (let j = 0; j < JOINTS.length; j++) {
       const o = j * 3;
-      B[JOINTS[j]].rotation.set(c[o], c[o + 1], c[o + 2]);
+      B[JOINTS[j]].rotation.set(c[o] + d[o], c[o + 1] + d[o + 1], c[o + 2] + d[o + 2]);
     }
-    B.hips.position.y = this.char.hipsHeight + c[O_HIPSY];
+    B.hips.position.y = this.char.hipsHeight + c[O_HIPSY] + d[O_HIPSY];
     const wm = this.char.weaponMount;
     const w = this.char.weapon;
     const s = this.state;
     const rc = s.recoil;
-    wm.position.set(c[O_WM], c[O_WM + 1] + rc * 0.01, c[O_WM + 2] - rc * 0.07);
-    wm.rotation.set(c[O_WM + 3] - rc * 0.12, c[O_WM + 4], c[O_WM + 5]);
+    wm.position.set(c[O_WM] + d[O_WM], c[O_WM + 1] + d[O_WM + 1] + rc * 0.01, c[O_WM + 2] + d[O_WM + 2] - rc * 0.07);
+    wm.rotation.set(c[O_WM + 3] + d[O_WM + 3] - rc * 0.12, c[O_WM + 4] + d[O_WM + 4], c[O_WM + 5] + d[O_WM + 5]);
     if (!w || !w.group.visible || s.mode !== 'combat') return;
     this.solveArm('L', c[O_IKL], _v1.copy(w.leftWrist).set(w.leftWrist.x + c[O_LH], w.leftWrist.y + c[O_LH + 1], w.leftWrist.z + c[O_LH + 2]));
     this.solveArm('R', c[O_IKR], _v2.copy(w.rightWrist));

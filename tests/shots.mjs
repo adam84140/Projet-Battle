@@ -1,5 +1,5 @@
 // Captures de référence pour comparer l'avant / après d'une phase.
-// Usage : npm run shots -- <étiquette> [sheet|game|all]
+// Usage : npm run shots -- <étiquette> [turn|poses|sheet|game|all]
 // Résultat : test-results/shots/<étiquette>/*.png
 import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +19,16 @@ if (only === 'all' || only === 'turn') {
     await page.goto(`${url}/tests/turntable.html?classe=${cls}&equipe=${team}&bake=1`);
     await page.waitForFunction(() => window.__done === true, null, { timeout: 120000 });
     await page.screenshot({ path: `${dir}turn-${cls}-${team}.png` });
+  }
+  await page.setViewportSize({ width: 1280, height: 720 });
+}
+
+if (only === 'all' || only === 'poses') {
+  await page.setViewportSize({ width: 1540, height: 1230 });
+  for (const [cls, team] of [['assaut', 'blue'], ['artilleur', 'red']]) {
+    await page.goto(`${url}/tests/poses.html?classe=${cls}&equipe=${team}`);
+    await page.waitForFunction(() => window.__done === true, null, { timeout: 120000 });
+    await page.screenshot({ path: `${dir}poses-${cls}-${team}.png`, fullPage: true });
   }
   await page.setViewportSize({ width: 1280, height: 720 });
 }

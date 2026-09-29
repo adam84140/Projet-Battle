@@ -278,7 +278,7 @@ export class Character {
   update(dt) {
     const s = this.animator.state;
     if (this.weapon) {
-      this.weapon.group.visible = s.mode === 'combat' && !this.hideWeapon;
+      this.weapon.group.visible = (s.mode === 'combat' || s.mode === 'dead') && !this.hideWeapon;
       const r = s.reload;
       this.weapon.mag.visible = !(r > 0.3 && r < 0.62);
     }

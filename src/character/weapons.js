@@ -160,6 +160,7 @@ const BUILDERS = { fusil: rifle, mitrailleuse: machineGun, sniper };
 export function buildWeapon(id) {
   const group = new THREE.Group();
   group.name = 'weapon-' + id;
+  group.userData.bakeOwner = true; // fusionnée à part : elle suit son support animé
   const info = (BUILDERS[id] || rifle)(group);
   group.scale.setScalar(1.12); // armes légèrement surdimensionnées (style cartoon)
   const flash = addFlash(group, info.muzzle, info.flashSize);

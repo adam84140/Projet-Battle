@@ -167,6 +167,7 @@ export class Soldier {
     const body = this.body;
 
     // --- Orientation
+    const prevYaw = this.yaw;
     this.yaw = cmd.yaw;
     this.pitch = Math.max(-1.25, Math.min(1.25, cmd.pitch));
 
@@ -199,7 +200,13 @@ export class Soldier {
       body.grounded = false;
     }
     body.height = this.crouching ? 1.25 : 1.8;
+    body.landSpeed = 0;
     game.physics.moveBody(body, dt);
+    if (body.landSpeed > 5) {
+      // réception : amortie proportionnellement à la vitesse de chute
+      a.landT = 1;
+      a.landAmt = Math.min(1, (body.landSpeed - 4) / 8);
+    }
 
     // --- Arme
     this.fireCd -= dt;
@@ -264,6 +271,9 @@ export class Soldier {
     a.action = this.action;
     a.actionT = this.actionT;
     a.recoil = Math.max(0, a.recoil - dt * 9);
+    let dy = this.yaw - prevYaw;
+    dy -= Math.round(dy / (Math.PI * 2)) * Math.PI * 2;
+    a.turnRate += ((dt > 0 ? dy / dt : 0) - a.turnRate) * Math.min(1, dt * 12);
     this.char.root.position.copy(body.pos);
     this.char.root.rotation.y = this.yaw;
     const cam = this.effects.camouflage > 0;
@@ -354,6 +364,7 @@ export class Soldier {
         break;
       case 'adrenaline':
         this.effects.adrenaline = def.duration;
+        this.startAction('buff', 0.45);
         game.audio.ability('boost');
         break;
       case 'soin': {
@@ -374,20 +385,24 @@ export class Soldier {
         break;
       case 'blindage':
         this.effects.blindage = def.duration;
+        this.startAction('buff', 0.45);
         game.audio.ability('boost');
         break;
       case 'fureur':
         this.effects.fureur = def.duration;
         this.reloadT = -1;
         this.ammo = this.weapon.mag;
+        this.startAction('buff', 0.45);
         game.audio.ability('boost');
         break;
       case 'camouflage':
         this.effects.camouflage = def.duration;
+        this.startAction('buff', 0.45);
         game.audio.ability('boost');
         break;
       case 'precision':
         this.precisionArmed = true;
+        this.startAction('buff', 0.45);
         game.audio.ability('boost');
         break;
       case 'poignard':
@@ -406,7 +421,7 @@ export class Soldier {
     this.action = name;
     this.actionT = 0;
     this.actionDur = dur;
-    if (this.reloadT >= 0 && name !== 'heal') this.reloadT = -1;
+    if (this.reloadT >= 0 && name !== 'heal' && name !== 'buff') this.reloadT = -1;
   }
 
   takeDamage(amount, attacker, info = {}) {
@@ -422,9 +437,28 @@ export class Soldier {
       this.lastAttackerPos = attacker.body.pos.clone();
     }
     if (this.effects.camouflage > 0) this.effects.camouflage = 0;
+    this.flinch(amount, attacker);
     if (this.isPlayer) this.game.onPlayerHurt(amount, attacker, info);
     if (this.health <= 0.01) this.die(attacker, info);
     return amount;
+  }
+
+  // Réaction à l'impact, orientée selon la provenance du tir (repère local du soldat)
+  flinch(amount, attacker) {
+    const a = this.char.anim;
+    let hx = Math.random() * 2 - 1;
+    let hz = 1;
+    if (attacker && attacker !== this) {
+      const dx = attacker.body.pos.x - this.body.pos.x;
+      const dz = attacker.body.pos.z - this.body.pos.z;
+      const d = Math.hypot(dx, dz) || 1;
+      hz = (dx * Math.sin(this.yaw) + dz * Math.cos(this.yaw)) / d >= 0 ? 1 : -1;
+      hx = (dx * Math.cos(this.yaw) - dz * Math.sin(this.yaw)) / d;
+    }
+    a.hitT = 1;
+    a.hitX = hx;
+    a.hitZ = hz;
+    a.hitAmt = Math.min(1, 0.4 + amount / 40);
   }
 
   die(attacker, info = {}) {
@@ -449,6 +483,7 @@ export class Soldier {
       dir = f > 0 ? -1 : 1;
     }
     a.deadDir = dir;
+    a.deadVar = Math.floor(Math.random() * 3);
     this.char.setOpacity(1);
     if (this.char.weapon) this.char.weapon.flash.visible = false;
     this.game.onKill(attacker, this, info);

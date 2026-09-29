@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Planche de poses</title>
+    <style>
+      body { margin: 0; background: #1b2638; color: #e8eefc; font: 13px sans-serif; }
+      .grid { display: grid; grid-template-columns: repeat(6, 250px); gap: 4px; padding: 4px; }
+      figure { margin: 0; text-align: center; }
+      canvas { display: block; background: linear-gradient(#34496e, #1d2a44); }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      // Outil d'inspection : états d'animation ponctuels (saut, réception, impact, mort, gestes...).
+      // ?classe=assaut|artilleur|commando&equipe=blue|red
+      import * as THREE from 'three';
+      import { Character } from '/src/character/Character.js';
+      const q = new URLSearchParams(location.search);
+      const classId = q.get('classe') || 'assaut';
+      const team = q.get('equipe') || 'blue';
+      const W = 250, H = 380;
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer.setSize(W, H);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      const scene = new THREE.Scene();
+      scene.add(new THREE.HemisphereLight(0xe3eeff, 0x4a4030, 1.5));
+      const key = new THREE.DirectionalLight(0xfff0dc, 2.6);
+      key.position.set(2.5, 4, 5);
+      scene.add(key);
+      const rim = new THREE.DirectionalLight(0xa9c8ff, 2);
+      rim.position.set(-3, 3, -4);
+      scene.add(rim);
+      const floor = new THREE.Mesh(new THREE.CircleGeometry(1.4, 32), new THREE.MeshLambertMaterial({ color: 0x5a6a52 }));
+      floor.rotation.x = -Math.PI / 2;
+      scene.add(floor);
+      const cam = new THREE.PerspectiveCamera(24, W / H, 0.05, 50);
+      const run = (c, secs, fn) => { for (let t = 0; t < secs; t += 1 / 60) { fn?.(c.anim); c.update(1 / 60); } };
+      // [titre, angle de vue, préparation]
+      const poses = [
+        ['Repos combat', -0.6, (c) => run(c, 1)],
+        ['Saut (montée)', -1.3, (c) => run(c, 0.5, (a) => { a.grounded = false; a.vy = 7; })],
+        ['Chute', -1.3, (c) => run(c, 0.5, (a) => { a.grounded = false; a.vy = -9; })],
+        ['Réception', -1.3, (c) => { run(c, 0.5, (a) => { a.grounded = false; a.vy = -12; }); c.anim.grounded = true; c.anim.vy = 0; c.anim.landT = 1; c.anim.landAmt = 1; run(c, 0.09); }],
+        ['Impact (face)', -1.3, (c) => { run(c, 1); Object.assign(c.anim, { hitT: 1, hitX: 0, hitZ: 1, hitAmt: 1 }); run(c, 0.07); }],
+        ['Impact (gauche)', 0, (c) => { run(c, 1); Object.assign(c.anim, { hitT: 1, hitX: 1, hitZ: 1, hitAmt: 1 }); run(c, 0.07); }],
+        ['Pivot sur place', -0.6, (c) => run(c, 0.62, (a) => { a.turnRate = 3; })],
+        ['Marche arrière', -1.3, (c) => { run(c, 1, (a) => { a.speed = 3.2; a.moveAngle = Math.PI; }); }],
+        ['Pas chassé', 0, (c) => { run(c, 1.1, (a) => { a.speed = 3.2; a.moveAngle = Math.PI / 2; }); }],
+        ['Accroupi (marche)', -0.9, (c) => { run(c, 1, (a) => { a.crouch = true; a.speed = 2; }); }],
+        ['Sprint', -1.3, (c) => { run(c, 1.2, (a) => { a.sprint = true; a.speed = 8.4; }); }],
+        ['Rechargement', -0.6, (c) => run(c, 1, (a) => { a.reload = Math.min(0.5, (a.reload < 0 ? 0 : a.reload) + 1 / 60); })],
+        ['Grenade', -0.9, (c) => { run(c, 0.3, (a) => { a.action = 'throw'; a.actionT = Math.min(0.4, (a.actionT || 0) + 1 / 60 / 0.7); }); }],
+        ['Compétence (boost)', -0.6, (c) => { run(c, 0.25, (a) => { a.action = 'buff'; a.actionT = Math.min(0.5, (a.actionT || 0) + 1 / 60 / 0.45); }); }],
+        ['Soin', -0.6, (c) => { run(c, 0.3, (a) => { a.action = 'heal'; a.actionT = Math.min(0.5, (a.actionT || 0) + 1 / 60 / 0.6); }); }],
+        ['Mort : genoux', -1.3, (c) => { run(c, 0.3); c.anim.mode = 'dead'; c.anim.deadDir = 1; run(c, 0.2, (a) => { a.deadT = (a.deadT || 0) + 1 / 60; }); }],
+        ['Mort (arrière)', -1.3, (c) => { run(c, 0.3); Object.assign(c.anim, { mode: 'dead', deadDir: 1, deadVar: 0, deadT: 0 }); run(c, 2, (a) => { a.deadT += 1 / 60; }); }],
+        ['Mort (vrille)', -1.3, (c) => { run(c, 0.3); Object.assign(c.anim, { mode: 'dead', deadDir: -1, deadVar: 2, deadT: 0 }); run(c, 2, (a) => { a.deadT += 1 / 60; }); }],
+      ];
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      document.body.appendChild(grid);
+      for (const [label, yaw, prep] of poses) {
+        const c = new Character({ team, classId, bake: true, custom: { backpack: true } });
+        prep(c);
+        c.root.rotation.y = yaw;
+        scene.add(c.root);
+        c.root.updateMatrixWorld(true);
+        cam.position.set(0, 1.1, 5.6);
+        cam.lookAt(0, 0.85, 0);
+        renderer.render(scene, cam);
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        cv.getContext('2d').drawImage(renderer.domElement, 0, 0);
+        const f = document.createElement('figure');
+        f.appendChild(cv);
+        const cap = document.createElement('figcaption');
+        cap.textContent = label;
+        f.appendChild(cap);
+        grid.appendChild(f);
+        scene.remove(c.root);
+        c.dispose();
+      }
+      window.__done = true;
+    </script>
+  </body>
+</html>

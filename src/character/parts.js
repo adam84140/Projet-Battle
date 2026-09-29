@@ -104,12 +104,13 @@ function prepareGeometry(mesh, relMatrix) {
 
 // Fusionne tous les maillages statiques rattachés à chaque "os" (userData.bone)
 // en un seul maillage à couleurs de sommets : on passe d'une centaine
-// d'appels de rendu par personnage à une quinzaine.
+// d'appels de rendu par personnage à une quinzaine. Un groupe animé qui n'est pas
+// un os (l'arme sur son support) porte userData.bakeOwner et reçoit son propre maillage.
 export function bakeHierarchy(root, { material = bakedMaterial, shadow = true } = {}) {
   root.updateMatrixWorld(true);
   const owners = [root];
   root.traverse((o) => {
-    if (o !== root && o.userData.bone) owners.push(o);
+    if (o !== root && (o.userData.bone || o.userData.bakeOwner)) owners.push(o);
   });
   const inv = new THREE.Matrix4();
   const rel = new THREE.Matrix4();
@@ -117,7 +118,7 @@ export function bakeHierarchy(root, { material = bakedMaterial, shadow = true } 
     const meshes = [];
     const visit = (obj) => {
       for (const child of obj.children) {
-        if (child.userData.bone || child.userData.dynamic || child.userData.noBake) continue;
+        if (child.userData.bone || child.userData.bakeOwner || child.userData.dynamic || child.userData.noBake) continue;
         if (child.isMesh && child.visible) meshes.push(child);
         visit(child);
       }
