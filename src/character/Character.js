@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TEAMS, CLASSES, DEFAULT_CUSTOM } from '../config.js';
-import { part, rbox, cyl, capsule, box, SPHERE, shade, bakeHierarchy, bakedMaterial, setDetail } from './parts.js';
+import { part, rbox, cyl, capsule, box, SPHERE, shade, bakeHierarchy, bakedMaterial, setDetail, disposeTree } from './parts.js';
 import { emblemGeometry } from './emblems.js';
 import { Face } from './face.js';
 import { buildWeapon, buildKnife } from './weapons.js';
@@ -333,8 +333,7 @@ export class Character {
   }
 
   dispose() {
-    this.root.traverse((o) => {
-      if (o.isMesh && o.userData.baked) o.geometry.dispose();
-    });
+    disposeTree(this.root);
+    if (this._ghostMat) this._ghostMat.dispose();
   }
 }

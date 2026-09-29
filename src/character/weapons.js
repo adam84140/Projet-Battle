@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { part, rbox, cyl, box, SPHERE, mat, shade } from './parts.js';
+import { part, rbox, cyl, box, SPHERE, mat, shade, markShared } from './parts.js';
 
 // Armes modélisées le long de +Z (canon vers l'avant), poignée à l'origine.
 // Chaque arme expose les points de prise en main utilisés par la cinématique
@@ -26,7 +26,7 @@ function flashGeometry() {
   s.closePath();
   return new THREE.ShapeGeometry(s);
 }
-const FLASH_GEO = flashGeometry();
+const FLASH_GEO = markShared(flashGeometry());
 const FLASH_MAT = new THREE.MeshBasicMaterial({
   color: 0xffd27a,
   transparent: true,

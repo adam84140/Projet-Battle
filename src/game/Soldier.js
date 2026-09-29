@@ -59,19 +59,34 @@ export class Soldier {
   }
 
   setClass(classId) {
+    const game = this.game;
+    const prevClass = this.classId;
     this.classId = classId;
     this.cls = CLASSES[classId];
     this.weapon = WEAPONS[this.cls.weapon];
+    // Bots : le modèle quitté retourne dans la réserve, le nouveau en sort déjà construit
+    // (évite ~40 ms de construction en pleine partie)
+    const pooled = !this.isPlayer && game.charPool;
     if (this.char) {
-      this.game.scene.remove(this.char.root);
-      this.char.dispose();
+      if (pooled) game.returnPooledChar(this.team, prevClass, this.char);
+      else {
+        game.scene.remove(this.char.root);
+        this.char.dispose();
+      }
     }
-    this.char = new Character({ team: this.team, classId, custom: this.custom, bake: true, expression: 'determine' });
+    const reuse = pooled ? game.takePooledChar(this.team, classId) : null;
+    this.char = reuse || Soldier.buildChar(game, this.team, classId, this.custom);
     this.char.root.visible = false;
     this.char.root.traverse((o) => {
       if (o.isMesh) o.userData.soldier = this;
     });
-    this.game.scene.add(this.char.root);
+  }
+
+  static buildChar(game, team, classId, custom = randomCustom()) {
+    const c = new Character({ team, classId, custom, bake: true, expression: 'determine' });
+    c.root.visible = false;
+    game.scene.add(c.root);
+    return c;
   }
 
   spawn(pos, yaw) {

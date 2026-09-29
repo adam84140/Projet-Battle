@@ -25,6 +25,21 @@ export const SPHERE = new THREE.SphereGeometry(1, 20, 14);
 export const SPHERE_MED = new THREE.SphereGeometry(1, 12, 9);
 export const SPHERE_LOW = new THREE.SphereGeometry(1, 10, 8);
 
+// Géométries partagées entre objets : jamais libérées par disposeTree
+const SHARED = new Set([SPHERE, SPHERE_MED, SPHERE_LOW]);
+export function markShared(geo) {
+  SHARED.add(geo);
+  return geo;
+}
+
+// Libère la mémoire GPU propre à un objet retiré de la scène (géométries non
+// partagées). Les matériaux en cache (mat()) restent : ils sont réutilisés.
+export function disposeTree(root) {
+  root.traverse((o) => {
+    if (o.geometry && !SHARED.has(o.geometry)) o.geometry.dispose();
+  });
+}
+
 // Niveau de détail des constructions : 'high' (menu, fiche) ou 'low' (soldats en jeu)
 let DETAIL = 'high';
 export function setDetail(level) {
@@ -156,7 +171,7 @@ export function bakeStatic(group, { shadow = true, receive = true } = {}) {
   });
   const out = new THREE.Group();
   // Découpage par paquets pour ne pas dépasser les limites d'index
-  const CHUNK = 400;
+  const CHUNK = 1500;
   for (let i = 0; i < geos.length; i += CHUNK) {
     const merged = mergeGeometries(geos.slice(i, i + CHUNK), false);
     const m = new THREE.Mesh(merged, bakedMaterial);

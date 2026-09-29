@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { part, rbox, box, cyl, shade } from '../character/parts.js';
+import { part, rbox, box, cyl, shade, disposeTree, bakeHierarchy } from '../character/parts.js';
 import { emblemGeometry } from '../character/emblems.js';
 import { TEAMS } from '../config.js';
 import { terrainHeight, MAP } from './map.js';
@@ -31,6 +31,12 @@ export class Vehicle {
     this.wheels = [];
     if (this.type === 'jeep') this.buildJeep();
     else this.buildTank();
+    // Fusion par pièce mobile (caisse, tourelle, canon, roues) : ~40 maillages -> 3 à 5
+    this.model.userData.bakeOwner = true;
+    if (this.turret) this.turret.userData.bakeOwner = true;
+    if (this.barrel) this.barrel.userData.bakeOwner = true;
+    for (const w of this.wheels) w.spin.userData.bakeOwner = true;
+    bakeHierarchy(this.root);
     this.model.traverse((o) => {
       if (o.isMesh) {
         o.castShadow = true;
@@ -221,7 +227,7 @@ export class Vehicle {
     if (d) d.die(attacker || this.lastDamager, { weapon: 'explosion' });
     this.driver = null;
     if (attacker && attacker.team !== this.team) game.addScore(attacker, 150, `${this.name} détruit`);
-    const burnt = new THREE.MeshStandardMaterial({ color: 0x2a2826, roughness: 1 });
+    const burnt = this.burntMat || (this.burntMat = new THREE.MeshStandardMaterial({ color: 0x2a2826, roughness: 1 }));
     this.model.traverse((o) => {
       if (o.isMesh) o.material = burnt;
     });
@@ -412,6 +418,8 @@ export class Vehicle {
 
   dispose() {
     this.game.scene.remove(this.root);
+    disposeTree(this.root);
+    this.burntMat?.dispose();
     const i = this.game.physics.dynamic.indexOf(this.collider);
     if (i >= 0) this.game.physics.dynamic.splice(i, 1);
   }

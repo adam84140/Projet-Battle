@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { MAP, terrainHeight } from './map.js';
 import { TEAMS, otherTeam } from '../config.js';
-import { part, cyl, SPHERE_LOW } from '../character/parts.js';
+import { part, cyl, SPHERE_LOW, disposeTree } from '../character/parts.js';
 import { emblemGeometry } from '../character/emblems.js';
 
 // Mode Conquête : 3 drapeaux à capturer, des tickets de renfort par équipe.
@@ -78,6 +78,7 @@ export class Conquest {
       group: g,
       flag,
       flagMat,
+      emblemMat,
       flagBase: base,
       emblems,
       ringMat,
@@ -229,6 +230,10 @@ export class Conquest {
   }
 
   dispose() {
-    for (const p of this.points) this.game.scene.remove(p.group);
+    for (const p of this.points) {
+      this.game.scene.remove(p.group);
+      disposeTree(p.group);
+      for (const m of [p.flagMat, p.ringMat, p.discMat, p.emblemMat]) m?.dispose();
+    }
   }
 }

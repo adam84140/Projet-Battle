@@ -3,6 +3,7 @@ import { raySphere } from './physics.js';
 import { terrainHeight } from './map.js';
 import { buildGrenade } from '../character/accessories.js';
 import { buildRocket } from '../character/weapons.js';
+import { disposeTree } from '../character/parts.js';
 
 const _hit = { t: 0, box: null, terrain: false };
 const _p = new THREE.Vector3();
@@ -276,13 +277,17 @@ export class Combat {
           sourceVehicle: p.vehicle,
         });
         game.scene.remove(p.mesh);
+        disposeTree(p.mesh);
         list.splice(i, 1);
       }
     }
   }
 
   clear() {
-    for (const p of this.projectiles) this.game.scene.remove(p.mesh);
+    for (const p of this.projectiles) {
+      this.game.scene.remove(p.mesh);
+      disposeTree(p.mesh);
+    }
     this.projectiles.length = 0;
   }
 }

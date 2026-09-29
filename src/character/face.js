@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { part, rbox, cyl, SPHERE, mat, shade, isLowDetail } from './parts.js';
+import { part, rbox, cyl, SPHERE, mat, shade, isLowDetail, markShared } from './parts.js';
 import { emblemGeometry } from './emblems.js';
 
 // Paramètres des expressions faciales (voir la planche "Expressions faciales")
@@ -57,8 +57,8 @@ function buildHeadGeometry(ws = 40, hs = 30) {
   g.computeVertexNormals();
   return g;
 }
-const HEAD_GEO = buildHeadGeometry();
-const HEAD_GEO_LOW = buildHeadGeometry(22, 16);
+const HEAD_GEO = markShared(buildHeadGeometry());
+const HEAD_GEO_LOW = markShared(buildHeadGeometry(22, 16));
 const MOUTH_IN = 0x4a1616;
 
 export class Face {

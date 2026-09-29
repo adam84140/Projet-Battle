@@ -130,8 +130,38 @@ export class Game {
   }
 
   // ---------------- Partie ----------------
+  // ---------- Réserve de modèles de soldats (par équipe et classe) ----------
+  takePooledChar(team, classId) {
+    const list = this.charPool?.[team + classId];
+    return list && list.length ? list.pop() : null;
+  }
+
+  returnPooledChar(team, classId, char) {
+    char.root.visible = false;
+    (this.charPool[team + classId] ||= []).push(char);
+  }
+
+  // Remplissage progressif pendant l'écran de déploiement (une construction par image)
+  warmCharPool() {
+    if (!this.charPool) return;
+    const want = this.mobile ? 1 : 2;
+    for (const team of ['blue', 'red']) {
+      for (const classId of CLASS_ORDER) {
+        const k = team + classId;
+        const list = (this.charPool[k] ||= []);
+        if (list.length < want && !this.charPoolDone) {
+          list.push(Soldier.buildChar(this, team, classId));
+          return;
+        }
+      }
+    }
+    this.charPoolDone = true;
+  }
+
   startMatch() {
     this.clearMatch();
+    this.charPool = {};
+    this.charPoolDone = false;
     const s = this.settings;
     const mode = MODES[s.mode] || MODES['8v8'];
     this.difficulty = DIFFICULTIES[s.difficulty] || DIFFICULTIES.veteran;
@@ -176,6 +206,13 @@ export class Game {
     this.conquest = null;
     this.player = null;
     this.audio.setEngine(false);
+    for (const list of Object.values(this.charPool || {})) {
+      for (const c of list) {
+        this.scene.remove(c.root);
+        c.dispose();
+      }
+    }
+    this.charPool = null;
   }
 
   backToMenu() {
@@ -365,6 +402,7 @@ export class Game {
       return;
     }
     if (this.state === 'paused') return;
+    if (this.state === 'deploy') this.warmCharPool();
     this.time += dt;
     this.pathBudget = 3;
     const p = this.player;
