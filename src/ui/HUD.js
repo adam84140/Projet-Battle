@@ -82,6 +82,7 @@ export class HUD {
       const m = document.createElement('div');
       m.className = 'pmark';
       m.innerHTML = `<span class="pm-l">${p.id}</span><small class="pm-d"></small>`;
+      m._d = m.querySelector('.pm-d');
       this.el.markers.appendChild(m);
       this.pointMarkers[p.id] = m;
     }
@@ -317,26 +318,41 @@ export class HUD {
     const game = this.game;
     const p = game.player;
     const s = {};
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    // zone du fil des éliminations (à droite sur ordinateur, à gauche en tactile)
+    const touch = document.body.classList.contains('touch');
+    const kfN = this.el.killfeed.childElementCount;
+    const kfBottom = kfN ? (touch ? 108 + kfN * 24 : 204 + kfN * 30) + 22 : 0;
     for (const pt of game.conquest.points) {
       const m = this.pointMarkers[pt.id];
       _v.copy(pt.pos);
       _v.y += 9;
       this.project(_v, s);
       const d = p.body.pos.distanceTo(pt.pos);
-      const inside = game.conquest.inside(p, pt);
-      if (s.behind || inside) {
+      if (game.conquest.inside(p, pt)) {
         m.style.display = 'none';
         continue;
       }
       m.style.display = '';
-      const x = Math.max(30, Math.min(window.innerWidth - 30, s.x));
-      // pas sous la mini-carte (coin haut droit)
-      const minY = x > window.innerWidth - 215 ? 215 : 80;
-      const y = Math.max(minY, Math.min(window.innerHeight - 150, s.y));
+      let sx = s.x;
+      let sy = s.y;
+      // objectif derrière le joueur : indiqué sur le bord gauche ou droit
+      if (s.behind) {
+        sx = W - sx < W / 2 ? 30 : W - 30;
+        sy = H - sy;
+      }
+      const x = Math.max(30, Math.min(W - 30, sx));
+      // ni sous la mini-carte (coin haut droit) ni sur le fil des éliminations
+      let minY = x > W - 215 ? 215 : 80;
+      if (kfN && (touch ? x < 280 : x > W - 330)) minY = Math.max(minY, kfBottom);
+      const y = Math.max(minY, Math.min(H - 150, sy));
       m.style.transform = `translate(${x}px, ${y}px)`;
       m.dataset.owner = pt.owner || 'none';
       m.classList.toggle('contested', pt.contested);
-      m.querySelector('.pm-d').textContent = `${Math.round(d)} m`;
+      m.classList.toggle('off', s.behind);
+      const txt = `${Math.round(d)} m`;
+      if (m._d.textContent !== txt) m._d.textContent = txt;
     }
   }
 
@@ -357,10 +373,10 @@ export class HUD {
       if (!tag) {
         tag = document.createElement('div');
         tag.className = 'ntag';
+        tag.textContent = o.name;
         this.el.markers.appendChild(tag);
         this.nameTags.set(o, tag);
       }
-      tag.textContent = o.name;
       tag.style.transform = `translate(${s.x}px, ${s.y}px)`;
       tag.style.opacity = Math.min(1, (45 - d) / 10);
       seen.add(o);

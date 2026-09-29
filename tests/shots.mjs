@@ -1,5 +1,5 @@
 // Captures de référence pour comparer l'avant / après d'une phase.
-// Usage : npm run shots -- <étiquette> [turn|poses|sheet|game|fx|all]
+// Usage : npm run shots -- <étiquette> [turn|poses|sheet|game|fx|ui|all]
 // Résultat : test-results/shots/<étiquette>/*.png
 import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -110,6 +110,31 @@ if (only === 'all' || only === 'fx') {
   await run(page, `const pt = g.conquest.points[1]; g.effects.captureBurst(pt.pos, g.player.team);`);
   await step(page, 0.35);
   await page.screenshot({ path: dir + 'fx-capture.png' });
+}
+
+if (only === 'all' || only === 'ui') {
+  // Interface chargée : fil d'éliminations plein, capture en cours, bannière, objectif derrière
+  await page.setViewportSize({ width: 1280, height: 720 });
+  // horloge figée : les minuteries du HUD (fil, bannières) n'expirent pas pendant le rendu logiciel
+  await page.clock.install();
+  await page.goto(url + '/index.html?autotest');
+  await page.waitForSelector('#menu.on', { timeout: 120000 });
+  await page.click('[data-act="play"]');
+  await page.click('[data-act="start"]');
+  await page.waitForSelector('#deploy.on');
+  await page.click('[data-act="deploy"]');
+  await step(page, 1);
+  await run(page, `const p = g.player; p.spawnProtect = 999; for (const b of g.soldiers) if (b !== p) { b.alive = false; b.char.root.visible = false; b.respawnTimer = 1e9; }
+    const pt = g.conquest.points[1]; p.body.pos.set(pt.pos.x + 3, pt.pos.y + 1, pt.pos.z - 6); p.body.vel.set(0, 0, 0);
+    g.controller.yaw = 2.2; g.controller.pitch = -0.05; g.controller.snap = true;`);
+  await step(page, 0.8);
+  // le fil et les bannières s'effacent en temps réel : injectés juste avant la capture
+  await run(page, `const bs = g.bots; for (let i = 0; i < 5; i++) g.hud.feed(bs[i], bs[(i + 7) % bs.length], i % 2 ? 'fusil' : 'mitrailleuse', null, i === 2);
+    g.hud.banner('Nous avons capturé A — Le Moulin', 'good');`);
+  await step(page, 0.05);
+  await page.clock.runFor(400); // animations CSS d'apparition
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: dir + 'ui-hud.png' });
 }
 
 console.log(`Captures dans ${dir} — erreurs console : ${errors.length}`);

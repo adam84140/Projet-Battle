@@ -1296,7 +1296,7 @@ kbd {
 
 .banners {
   position: absolute;
-  top: 84px;
+  top: 132px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1372,6 +1372,10 @@ kbd {
 
 .pmark[data-owner='red'] .pm-l {
   background: #b2382c;
+}
+
+.pmark.off {
+  opacity: 0.7;
 }
 
 .pmark.contested .pm-l {
@@ -1657,7 +1661,7 @@ kbd {
 .capture {
   position: absolute;
   left: 50%;
-  bottom: 170px;
+  top: 76px;
   transform: translateX(-50%);
   width: 340px;
   display: none;
@@ -2293,6 +2297,7 @@ body.touch .prompt {
 }
 
 body.touch .capture {
+  top: auto;
   bottom: 110px;
   width: min(300px, 44vw);
 }
@@ -2316,6 +2321,10 @@ body.touch .popups {
 
 body.touch .banner {
   font-size: 22px;
+}
+
+body.touch .banners {
+  top: 84px;
 }
 
 @media (max-height: 420px) {

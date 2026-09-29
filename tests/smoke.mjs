@@ -131,6 +131,30 @@ try {
   C.ok('tableau des scores (Tab)', await page.isVisible('#scoreboard.on'));
   await page.keyboard.up('Tab');
 
+  // ---------- HUD : marqueurs d'objectifs lisibles ----------
+  const hudCheck = await page.evaluate(() => {
+    const g = window.__game;
+    const bs = g.bots;
+    for (let i = 0; i < 5; i++) g.hud.feed(bs[i], bs[(i + 3) % bs.length], 'fusil', null, false);
+    const inter = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    const mm = document.querySelector('.minimap').getBoundingClientRect();
+    const kf = document.querySelector('.killfeed').getBoundingClientRect();
+    let overlaps = 0, shown = 0;
+    for (let k = 0; k < 16; k++) {
+      g.controller.yaw += Math.PI / 8;
+      g.update(1 / 30);
+      g.input.endFrame();
+      for (const m of document.querySelectorAll('.pmark')) {
+        if (m.style.display === 'none') continue;
+        shown++;
+        const r = m.getBoundingClientRect();
+        if (inter(r, mm) > 4 || inter(r, kf) > 4) overlaps++;
+      }
+    }
+    return { overlaps, shown };
+  });
+  C.ok('HUD : objectifs toujours indiqués, hors mini-carte et fil des éliminations', hudCheck.overlaps === 0 && hudCheck.shown >= 16 * 2, hudCheck);
+
   // ---------- Pause ----------
   await run(page, 'g.input.onLockChange(false);');
   C.ok('pause', (await get(page, "g.state === 'paused'")) && (await page.isVisible('#pause.on')));
