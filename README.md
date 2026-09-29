@@ -29,6 +29,18 @@ npm run preview   # sert dist/ en local
 
 Le jeu se joue au **clavier et à la souris** sur ordinateur, et **au doigt sur téléphone ou tablette** (mode paysage conseillé). La fiche personnage fonctionne partout.
 
+### Tests de régression
+
+Des tests automatisés rejouent le parcours complet dans un navigateur (Playwright, rendu logiciel) :
+
+```bash
+npx playwright install chromium   # une seule fois
+npm run test:smoke   # desktop : menu, déploiement, déplacement, tir, dégâts, compétences, pause,
+                     # mort/respawn, changement de classe, jeep, char, partie simulée, victoire/défaite
+npm run test:touch   # téléphone émulé : joystick, visée, tir, compétences, saut, pause
+npm run shots -- mon-etiquette   # captures avant/après dans test-results/shots/
+```
+
 ### Mettre le jeu en ligne (GitHub Pages)
 
 Le workflow `.github/workflows/deploy.yml` construit et publie le jeu à chaque push sur `main`.
