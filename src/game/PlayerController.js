@@ -318,11 +318,14 @@ export class PlayerController {
     camera.fov = this.fov;
     camera.updateProjectionMatrix();
     camera.position.copy(this.camPos);
-    // tremblement
+    // tremblement : oscillation douce (pas de sautillement aléatoire), amortie
     const sh = game.effects.shake;
+    this.shakeT = (this.shakeT || 0) + dt;
     if (sh > 0) {
-      camera.position.x += (Math.random() - 0.5) * sh * 0.25;
-      camera.position.y += (Math.random() - 0.5) * sh * 0.25;
+      const a = Math.pow(sh, 1.5) * 0.08;
+      const t = this.shakeT;
+      camera.position.x += (Math.sin(t * 39.1) + 0.6 * Math.sin(t * 23.3 + 1.7)) * a;
+      camera.position.y += (Math.sin(t * 43.7 + 0.5) + 0.6 * Math.sin(t * 27.1 + 2.9)) * a;
     }
     camera.lookAt(_want.copy(camera.position).add(_fwd));
     // Personnage masqué en vue lunette, ou quand un obstacle colle la caméra contre lui

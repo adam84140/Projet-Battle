@@ -124,6 +124,8 @@ const COLORS = {
   smoke: C(0x555555),
   smokeLight: C(0x9a9a9a),
   heal: C(0x5cff7a),
+  brass: C(0xe0ae48),
+  muzzle: C(0xffd27a),
   hitStar: C(0xfff4c0),
   blue: C(0x6aa8ff),
   red: C(0xff6a5a),
@@ -227,6 +229,46 @@ export class Effects {
     }
   }
 
+  // Lueur de bouche : rend lisible, même de loin, qui est en train de tirer
+  muzzleGlow(p, size = 1) {
+    this.glow.spawn({ x: p.x, y: p.y, z: p.z, vx: 0, vy: 0, vz: 0, age: 0, life: 0.06, s0: 0.55 * size, s1: 0.3 * size, a0: 1, c0: COLORS.muzzle, fade: 1 });
+  }
+
+  // Douille éjectée sur la droite de l'arme ; elle rebondit sur le sol
+  casing(p, rx, rz, floor) {
+    this.soft.spawn({
+      x: p.x, y: p.y, z: p.z,
+      vx: rx * (1.6 + Math.random()) + (Math.random() - 0.5) * 0.6, vy: 2 + Math.random() * 1.2, vz: rz * (1.6 + Math.random()) + (Math.random() - 0.5) * 0.6,
+      gravity: 11, drag: 0.4, age: 0, life: 1.1, s0: 0.07, s1: 0.07, a0: 1, c0: COLORS.brass, floor, fade: 6,
+    });
+  }
+
+  // Petit nuage de poussière au sol (réception, chute d'un corps)
+  puff(p, n = 5, size = 1) {
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + Math.random();
+      this.soft.spawn({
+        x: p.x + Math.cos(a) * 0.3, y: p.y + 0.1, z: p.z + Math.sin(a) * 0.3,
+        vx: Math.cos(a) * 1.6, vy: 0.4 + Math.random() * 0.4, vz: Math.sin(a) * 1.6,
+        drag: 3, age: 0, life: 0.6 + Math.random() * 0.3, s0: 0.35 * size, s1: 1 * size, a0: 0.5, c0: COLORS.dust,
+      });
+    }
+  }
+
+  // Capture d'un drapeau : onde et étincelles aux couleurs de l'équipe
+  captureBurst(p, team) {
+    const c = team === 'red' ? COLORS.red : COLORS.blue;
+    this.ring(p, 16, team === 'red' ? 0xff6a5a : 0x6aa8ff, 0.9);
+    for (let i = 0; i < 30; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = 1 + Math.random() * 4;
+      this.glow.spawn({
+        x: p.x + Math.cos(a) * r, y: p.y + 0.3, z: p.z + Math.sin(a) * r,
+        vx: 0, vy: 2.5 + Math.random() * 2.5, vz: 0, drag: 0.8, age: 0, life: 1 + Math.random() * 0.4, s0: 0.35, s1: 0.08, a0: 1, c0: c,
+      });
+    }
+  }
+
   muzzle(p) {
     this.flash.position.copy(p);
     this.flash.intensity = Math.max(this.flash.intensity, 6);
@@ -262,8 +304,8 @@ export class Effects {
       this.soft.spawn({
         x: p.x + Math.cos(a) * radius * 0.3, y: p.y + 0.5 + Math.random(), z: p.z + Math.sin(a) * radius * 0.3,
         vx: Math.cos(a) * sp, vy: 2 + Math.random() * 4, vz: Math.sin(a) * sp,
-        gravity: -0.5, drag: 1.2, age: 0, life: 1.8 + Math.random() * 1.6, s0: radius * 0.5, s1: radius * 1.6, a0: 0.7,
-        c0: COLORS.smoke, c1: COLORS.smokeLight, cspeed: 1, fade: 1.2,
+        gravity: -0.5, drag: 1.2, age: 0, life: 1.6 + Math.random() * 1.1, s0: radius * 0.5, s1: radius * 1.5, a0: 0.62,
+        c0: COLORS.smoke, c1: COLORS.smokeLight, cspeed: 1.6, fade: 1.2,
       });
     }
     for (let i = 0; i < 14; i++) {

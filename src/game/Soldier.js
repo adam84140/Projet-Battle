@@ -149,6 +149,8 @@ export class Soldier {
     const game = this.game;
     const a = this.char.anim;
     if (!this.alive) {
+      // le corps touche le sol : petit nuage de poussière
+      if (this.deadT < 0.7 && this.deadT + dt >= 0.7 && !this.vehicle) game.effects.puff(this.body.pos, 6, 1.1);
       this.deadT += dt;
       a.deadT = this.deadT;
       if (this.deadT > 7) this.char.root.visible = false;
@@ -220,6 +222,7 @@ export class Soldier {
       // réception : amortie proportionnellement à la vitesse de chute
       a.landT = 1;
       a.landAmt = Math.min(1, (body.landSpeed - 4) / 8);
+      if (body.landSpeed > 8.5) game.effects.puff(body.pos, 4, 0.8);
     }
 
     // --- Arme
@@ -364,6 +367,10 @@ export class Soldier {
     const muzzle = this.char.getMuzzleWorld(new THREE.Vector3());
     if (this.isPlayer || Math.random() < 0.5) game.effects.tracer(muzzle, res.point, this.team === 'blue' ? 0xbfe0ff : 0xffe0a0, w.feel.tracer, w.feel.trail);
     if (this.isPlayer || game.player?.body.pos.distanceToSquared(this.body.pos) < 900) game.effects.muzzle(muzzle);
+    game.effects.muzzleGlow(muzzle, w.feel.tracer);
+    if (this.isPlayer || game.player?.body.pos.distanceToSquared(this.body.pos) < 400) {
+      game.effects.casing(muzzle.addScaledVector(this.forward(_v2), -0.35), -Math.cos(this.yaw), Math.sin(this.yaw), this.body.pos.y + 0.03);
+    }
     game.audio.shot(w.sound, this.isPlayer ? null : this.body.pos);
   }
 

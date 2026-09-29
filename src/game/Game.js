@@ -295,6 +295,7 @@ export class Game {
     const mine = this.playerTeam;
     if (type === 'captured') {
       this.hud?.banner(`${team === mine ? 'Nous avons capturé' : "L'ennemi a capturé"} ${p.id} — ${p.name}`, team === mine ? 'good' : 'bad');
+      this.effects.captureBurst(p.pos, team);
       this.audio.capture(team === mine);
     } else if (type === 'neutralized') {
       this.hud?.banner(`${p.id} neutralisé${lost === mine ? ' — contre-attaquez !' : ''}`, lost === mine ? 'bad' : 'good');

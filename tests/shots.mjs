@@ -1,5 +1,5 @@
 // Captures de référence pour comparer l'avant / après d'une phase.
-// Usage : npm run shots -- <étiquette> [turn|poses|sheet|game|all]
+// Usage : npm run shots -- <étiquette> [turn|poses|sheet|game|fx|all]
 // Résultat : test-results/shots/<étiquette>/*.png
 import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -82,6 +82,34 @@ if (only === 'all' || only === 'game') {
     j.pos.set(-2, 0, -40); j.yaw = 0.1; p.body.pos.set(0, 1, -40); j.enter(p); g.controller.yaw = 0.1; g.controller.pitch = -0.1; g.controller.snap = true;`);
   await step(page, 1);
   await page.screenshot({ path: dir + 'vehicle-jeep.png' });
+}
+
+if (only === 'all' || only === 'fx') {
+  // Effets : tir (douilles, lueur), explosion puis fumée, capture d'un drapeau
+  await page.goto(url + '/index.html?autotest');
+  await page.waitForSelector('#menu.on', { timeout: 120000 });
+  await page.click('[data-act="play"]');
+  await page.click('[data-act="start"]');
+  await page.waitForSelector('#deploy.on');
+  await page.click('[data-act="deploy"]');
+  await step(page, 1);
+  await run(page, `const p = g.player; p.spawnProtect = 999; for (const b of g.soldiers) if (b !== p) { b.alive = false; b.char.root.visible = false; b.respawnTimer = 1e9; }
+    p.body.pos.set(3, 1, -21); p.body.vel.set(0, 0, 0); g.controller.yaw = 0.08; g.controller.pitch = -0.05; g.controller.snap = true;`);
+  await step(page, 0.5);
+  await step(page, 0.25, 'g.input.mouse.left = true');
+  await page.screenshot({ path: dir + 'fx-tir.png' });
+  await run(page, 'g.input.mouse.left = false;');
+  await step(page, 0.5);
+  await run(page, `const p = g.player; const f = p.forward(p.body.pos.clone()); const at = p.body.pos.clone().addScaledVector(f, 12); g.combat.explode(at, 5, 0, null, {});`);
+  await step(page, 0.2);
+  await page.screenshot({ path: dir + 'fx-explosion.png' });
+  await step(page, 1.3);
+  await page.screenshot({ path: dir + 'fx-fumee.png' });
+  await run(page, `const pt = g.conquest.points[1]; const p = g.player; p.body.pos.set(pt.pos.x - 6, pt.pos.y + 1, pt.pos.z - 9); g.controller.yaw = Math.atan2(6, 9); g.controller.pitch = 0.05; g.controller.snap = true;`);
+  await step(page, 0.5);
+  await run(page, `const pt = g.conquest.points[1]; g.effects.captureBurst(pt.pos, g.player.team);`);
+  await step(page, 0.35);
+  await page.screenshot({ path: dir + 'fx-capture.png' });
 }
 
 console.log(`Captures dans ${dir} — erreurs console : ${errors.length}`);
