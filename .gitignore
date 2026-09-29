@@ -3,3 +3,10 @@ dist/
 .DS_Store
 *.log
 test-results/
+
+# Obsidian (docs/ est un coffre) : état de l'espace de travail propre à chaque machine
+docs/.obsidian/workspace.json
+docs/.obsidian/workspace-mobile.json
+docs/.obsidian/workspaces.json
+docs/.obsidian/cache
+docs/.trash/

@@ -5,11 +5,11 @@ deux équipes, trois classes avec compétences, capture de drapeaux, véhicules�
 
 > *Équipes. Territoires. Héros.*
 
-![Menu principal](docs/menu.jpg)
+![Menu principal](docs/_attachments/menu.jpg)
 
 | En jeu | Déploiement |
 | --- | --- |
-| ![En jeu](docs/jeu.jpg) | ![Écran de déploiement](docs/deploiement.jpg) |
+| ![En jeu](docs/_attachments/jeu.jpg) | ![Écran de déploiement](docs/_attachments/deploiement.jpg) |
 
 ## Lancer le jeu
 
@@ -40,6 +40,7 @@ npm run test:smoke   # desktop : menu, déploiement, déplacement, tir, dégâts
 npm run test:touch   # téléphone émulé : joystick, visée, tir, compétences, saut, pause
 npm run test:camera  # caméra : jamais dans un mur, un feuillage ou le sol, pas de recul brutal
 npm run test:bots    # partie simulée de 3 min : bots bloqués, combats, captures, coût logique
+npm test             # les quatre à la suite
 npm run shots -- mon-etiquette [turn|poses|sheet|game|fx|ui|all]   # captures avant/après dans test-results/shots/
 ```
 
@@ -70,7 +71,7 @@ Il suffit d'activer une fois **Settings → Pages → Source : GitHub Actions** 
 - **HUD complet** : tickets et drapeaux, mini-carte tournante, fil des éliminations, marqueurs d'objectifs, noms des alliés, dégâts flottants, indicateurs de direction des tirs, barre de compétences avec temps de recharge, lunette de sniper, tableau des scores (`Tab`).
 - **Fiche personnage** (`fiche.html`) : la planche de référence du héros, **rendue en direct depuis le modèle 3D du jeu** — vues face/profil/dos, détails du visage et de l'équipement, 6 expressions faciales, accessoires, palette, A-pose, 8 animations clés et échelle. Changez de classe ou d'équipe en un clic.
 
-![Fiche personnage](docs/fiche.jpg)
+![Fiche personnage](docs/_attachments/fiche.jpg)
 
 Tout est **procédural** : personnages, armes, véhicules, village, sons (Web Audio) — aucun fichier 3D, image ou son externe n'est nécessaire.
 
@@ -104,9 +105,8 @@ src/sheet/fiche.js          génération de la fiche personnage
 
 Pour équilibrer le jeu (dégâts, cadences, temps de recharge, vitesse des classes, tickets…), tout se règle dans `src/config.js`.
 
-## Pistes pour la suite
+## Documentation et suite du projet
 
-- Multijoueur en ligne (serveur WebSocket faisant autorité + interpolation côté client).
-- Nouvelles cartes et modes (match à mort par équipe, capture du drapeau).
-- Support de la manette.
-- Progression : niveaux, déblocage de tenues et d'armes.
+- **Base de connaissances : [`docs/INDEX.md`](docs/INDEX.md)** — état vérifié, feuille de route, décisions, carte 1, personnages, systèmes. Le dossier `docs/` s'ouvre aussi comme coffre Obsidian.
+- **Règles de travail avec Claude Code : [`CLAUDE.md`](CLAUDE.md)** ; procédures dans `.claude/skills/`.
+- Jalon en cours : **carte 1 au niveau GOLD**, en commençant par le personnage de référence Assaut ([feuille de route](docs/ROADMAP.md)). Nouvelles cartes, multijoueur et progression attendent que la carte 1 soit GOLD.
