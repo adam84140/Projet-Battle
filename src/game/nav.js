@@ -22,7 +22,28 @@ export class NavGrid {
     this.closed = new Uint32Array(n);
     this.search = 0;
     this.heap = new Int32Array(n);
+    this.dynCells = []; // cases bloquées temporairement (bit 2) : véhicules à l'arrêt
     this.build(physics);
+  }
+
+  // Obstacles temporaires (véhicules garés, épaves) : remplace l'ensemble précédent.
+  // Bit 1 = décor fixe, bit 2 = temporaire ; toutes les recherches testent les deux.
+  setDynamic(boxes, inflate = 0.55) {
+    const b = this.blocked;
+    for (const i of this.dynCells) b[i] &= ~2;
+    this.dynCells.length = 0;
+    for (const c of boxes) {
+      const x0 = this.toCellX(c.min.x - inflate), x1 = this.toCellX(c.max.x + inflate);
+      const z0 = this.toCellZ(c.min.z - inflate), z1 = this.toCellZ(c.max.z + inflate);
+      for (let cz = z0; cz <= z1; cz++) {
+        for (let cx = x0; cx <= x1; cx++) {
+          const i = cz * this.w + cx;
+          if (b[i] & 2) continue;
+          b[i] |= 2;
+          this.dynCells.push(i);
+        }
+      }
+    }
   }
 
   build(physics) {
@@ -67,8 +88,13 @@ export class NavGrid {
     return this.minZ + (cz + 0.5) * this.cell;
   }
 
+  // Décor fixe uniquement (sans les véhicules garés)
+  isStaticBlockedWorld(x, z) {
+    return (this.blocked[this.toCellZ(z) * this.w + this.toCellX(x)] & 1) !== 0;
+  }
+
   isBlockedWorld(x, z) {
-    return this.blocked[this.toCellZ(z) * this.w + this.toCellX(x)] === 1;
+    return this.blocked[this.toCellZ(z) * this.w + this.toCellX(x)] !== 0;
   }
 
   nearestFree(cx, cz) {

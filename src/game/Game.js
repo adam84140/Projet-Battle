@@ -240,6 +240,23 @@ export class Game {
     this.emit('matchEnd', winner);
   }
 
+  // Véhicules à l'arrêt (garés, épaves) : obstacles pour les chemins des bots
+  updateNavObstacles(dt) {
+    this.navDynT = (this.navDynT || 0) - dt;
+    if (this.navDynT > 0) return;
+    this.navDynT = 0.5;
+    let key = '';
+    const boxes = [];
+    for (const v of this.vehicles) {
+      if (!v.collider.active || v.driver || Math.abs(v.speed) > 0.3) continue;
+      key += `${Math.round(v.pos.x)},${Math.round(v.pos.z)},${v.yaw.toFixed(1)};`;
+      boxes.push(v.collider);
+    }
+    if (key === this.navDynKey) return;
+    this.navDynKey = key;
+    this.nav.setDynamic(boxes);
+  }
+
   // ---------------- Événements de jeu ----------------
   addScore(soldier, pts, label) {
     if (!soldier || pts <= 0) return;
@@ -371,6 +388,7 @@ export class Game {
       const cmd = drv && drv.isPlayer ? this.controller.vcmd : null;
       v.update(dt, cmd);
     }
+    this.updateNavObstacles(dt);
     if (p && p.vehicle && p.alive) {
       const v = p.vehicle;
       this.audio.setEngine(true, Math.min(1, Math.abs(v.speed) / v.cfg.maxSpeed), v.type === 'tank');

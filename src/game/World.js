@@ -32,6 +32,7 @@ export class World {
       this.buildBase('blue');
       this.buildBase('red');
       this.buildScatter();
+      this.buildCombatCover();
     } finally {
       setDetail(prevDetail);
     }
@@ -656,6 +657,25 @@ export class World {
     });
     g.userData.cloth = cloth;
     return g;
+  }
+
+  // Couverts autour des objectifs. Construits en dernier : la disposition existante,
+  // tirée d'un générateur à graine fixe, reste identique.
+  buildCombatCover() {
+    // A — Le Moulin : muret face au village, sacs de sable au nord-ouest et au sud
+    this.stoneWall(-61, -3.5, -61, 2.5);
+    this.sandbags(-73.5, -13, 3.6, 0.5);
+    this.sandbags(-64.8, 2.4, 3.6, 0);
+    // C — La Ferme : muret face à l'approche ouest, sacs de sable au sud
+    this.stoneWall(54, 2, 54, 7.5);
+    this.sandbags(65, -1.5, 4, 0);
+    // Mâts des drapeaux : obstacles fins (on ne les traverse plus)
+    for (const p of MAP.points) {
+      const [ox, oz] = p.pole || [0, 0];
+      const x = p.x + ox, z = p.z + oz;
+      const y = terrainHeight(x, z);
+      this.physics.addBox(x - 0.2, y, z - 0.2, x + 0.2, y + 8.2, z + 0.2);
+    }
   }
 
   buildScatter() {

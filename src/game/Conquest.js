@@ -27,16 +27,21 @@ export class Conquest {
     const g = new THREE.Group();
     g.position.set(def.x, y, def.z);
     scene.add(g);
-    part(g, cyl(0.09, 0.12, 8, 8), 0xdddddd, { p: [0, 4, 0], metal: 0.6, rough: 0.3 });
-    part(g, SPHERE_LOW, 0xd8b04a, { p: [0, 8.1, 0], s: 0.2, metal: 0.8 });
-    part(g, cyl(0.7, 0.9, 0.4, 12), 0xb8aa8c, { p: [0, 0.1, 0] });
+    // mât (éventuellement décalé du centre de la zone)
+    const [ox, oz] = def.pole || [0, 0];
+    const pg = new THREE.Group();
+    pg.position.set(ox, terrainHeight(def.x + ox, def.z + oz) - y, oz);
+    g.add(pg);
+    part(pg, cyl(0.09, 0.12, 8, 8), 0xdddddd, { p: [0, 4, 0], metal: 0.6, rough: 0.3 });
+    part(pg, SPHERE_LOW, 0xd8b04a, { p: [0, 8.1, 0], s: 0.2, metal: 0.8 });
+    part(pg, cyl(0.7, 0.9, 0.4, 12), 0xb8aa8c, { p: [0, 0.1, 0] });
     const flagGeo = new THREE.PlaneGeometry(2.2, 1.4, 10, 5);
     flagGeo.translate(1.1, 0, 0);
     const flagMat = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide, roughness: 0.9 });
     const flag = new THREE.Mesh(flagGeo, flagMat);
     flag.castShadow = true;
     flag.position.set(0.1, 7.2, 0);
-    g.add(flag);
+    pg.add(flag);
     const emblemMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true });
     const emblems = {};
     for (const t of ['blue', 'red']) {

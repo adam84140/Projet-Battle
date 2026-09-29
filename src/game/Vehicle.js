@@ -179,7 +179,7 @@ export class Vehicle {
     const tries = [left, left.clone().negate(), fwd.clone().negate(), fwd];
     for (const d of tries) {
       const p = this.pos.clone().addScaledVector(d, this.radius + 1.2);
-      if (!this.game.nav.isBlockedWorld(p.x, p.z)) {
+      if (!this.game.nav.isStaticBlockedWorld(p.x, p.z)) {
         s.body.pos.set(p.x, terrainHeight(p.x, p.z) + 0.3, p.z);
         break;
       }

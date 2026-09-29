@@ -9,7 +9,8 @@ export const MAP = {
   },
   points: [
     { id: 'A', name: 'Le Moulin', x: -68, z: -8, radius: 10 },
-    { id: 'B', name: 'Place du village', x: 0, z: 2, radius: 11 },
+    // pole : décalage du mât (le centre de B est occupé par la fontaine)
+    { id: 'B', name: 'Place du village', x: 0, z: 2, radius: 11, pole: [3.8, 0] },
     { id: 'C', name: 'La Ferme', x: 66, z: 12, radius: 11 },
   ],
   vehicles: [
