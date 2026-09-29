@@ -405,10 +405,14 @@ export class World {
     part(this.statics, cyl(0.18 * s, 0.32 * s, 2.2 * s, 7), 0x6e5a44, { p: [x, y + 1.1 * s, z], r: [this.r(-0.15, 0.15), 0, this.r(-0.15, 0.15)] });
     const leaf = this.pick([0x7f9150, 0x8a9a5b, 0x74874a]);
     for (let i = 0; i < 4; i++) {
-      part(this.statics, SPHERE_LOW, shade(leaf, 0.9 + this.rand() * 0.2), {
-        p: [x + this.r(-1, 1) * s, y + (2.4 + this.r(0, 0.9)) * s, z + this.r(-1, 1) * s],
-        s: [this.r(1.1, 1.6) * s, this.r(0.8, 1.1) * s, this.r(1.1, 1.6) * s],
-      });
+      // même ordre de tirages qu'avant (la disposition de la carte en dépend)
+      const color = shade(leaf, 0.9 + this.rand() * 0.2);
+      const p = [x + this.r(-1, 1) * s, y + (2.4 + this.r(0, 0.9)) * s, z + this.r(-1, 1) * s];
+      const sc = [this.r(1.1, 1.6) * s, this.r(0.8, 1.1) * s, this.r(1.1, 1.6) * s];
+      part(this.statics, SPHERE_LOW, color, { p, s: sc });
+      // la caméra ne doit pas entrer dans la ramure (boîte inscrite dans la sphère)
+      const k = 0.72;
+      this.physics.addCameraBox(p[0] - sc[0] * k, p[1] - sc[1] * k, p[2] - sc[2] * k, p[0] + sc[0] * k, p[1] + sc[1] * k, p[2] + sc[2] * k);
     }
     this.physics.addBox(x - 0.3, y, z - 0.3, x + 0.3, y + 2.4 * s, z + 0.3);
   }
@@ -417,6 +421,7 @@ export class World {
     const y = terrainHeight(x, z);
     part(this.statics, cyl(0.15, 0.2, 1.2, 6), 0x5a4633, { p: [x, y + 0.6, z] });
     part(this.statics, SPHERE_LOW, this.pick([0x3f5e2e, 0x355428, 0x4a6a34]), { p: [x, y + 4.2 * s, z], s: [0.95 * s, 3.8 * s, 0.95 * s] });
+    this.physics.addCameraBox(x - 0.68 * s, y + 1.6 * s, z - 0.68 * s, x + 0.68 * s, y + 6.8 * s, z + 0.68 * s);
     this.physics.addBox(x - 0.35, y, z - 0.35, x + 0.35, y + 6 * s, z + 0.35);
   }
 

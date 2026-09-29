@@ -17,6 +17,7 @@ export class Physics {
     this.cells = Array.from({ length: GRID * GRID }, () => []);
     this.stamp = 0;
     this.dynamic = []; // obstacles mobiles (véhicules)
+    this.cameraBoxes = []; // volumes qui n'arrêtent que la caméra (feuillages)
   }
 
   cellIndex(cx, cz) {
@@ -34,6 +35,42 @@ export class Physics {
       for (let cz = this.toCell(minZ); cz <= this.toCell(maxZ); cz++) this.cells[this.cellIndex(cx, cz)].push(c);
     }
     return c;
+  }
+
+  // Volume qui n'arrête que la caméra (aucun effet sur les déplacements ni les tirs)
+  addCameraBox(minX, minY, minZ, maxX, maxY, maxZ) {
+    const c = { min: new THREE.Vector3(minX, minY, minZ), max: new THREE.Vector3(maxX, maxY, maxZ) };
+    this.cameraBoxes.push(c);
+    return c;
+  }
+
+  // Rayon de la caméra : décor (clôtures comprises) + feuillages. Un feuillage qui
+  // contient déjà l'origine est ignoré (le personnage peut se tenir dedans).
+  raycastCamera(origin, dir, maxDist, ignore = null) {
+    let best = this.raycast(origin, dir, maxDist, null, ignore, true);
+    if (best === Infinity) best = maxDist;
+    // boîte englobante du segment : tri rapide avant le test exact
+    const o = origin;
+    const ex = o.x + dir.x * maxDist, ey = o.y + dir.y * maxDist, ez = o.z + dir.z * maxDist;
+    const x0 = Math.min(o.x, ex), x1 = Math.max(o.x, ex);
+    const y0 = Math.min(o.y, ey), y1 = Math.max(o.y, ey);
+    const z0 = Math.min(o.z, ez), z1 = Math.max(o.z, ez);
+    for (const c of this.cameraBoxes) {
+      if (c.max.x < x0 || c.min.x > x1 || c.max.z < z0 || c.min.z > z1 || c.max.y < y0 || c.min.y > y1) continue;
+      if (o.x > c.min.x && o.x < c.max.x && o.y > c.min.y && o.y < c.max.y && o.z > c.min.z && o.z < c.max.z) continue;
+      const t = rayBox(o, dir, c.min, c.max);
+      if (t >= 0 && t < best) best = t;
+    }
+    return best < maxDist ? best : Infinity;
+  }
+
+  // Le point est-il à l'intérieur (ou à moins de `margin`) d'un obstacle du décor ?
+  pointBlocked(p, margin = 0) {
+    const list = this.query(p.x - margin, p.z - margin, p.x + margin, p.z + margin, _tmpList);
+    for (const c of list) {
+      if (p.y > c.min.y - margin && p.y < c.max.y + margin && p.x > c.min.x - margin && p.x < c.max.x + margin && p.z > c.min.z - margin && p.z < c.max.z + margin) return true;
+    }
+    return false;
   }
 
   // Boîte centrée posée sur le sol (y = base)
@@ -122,7 +159,7 @@ export class Physics {
   }
 
   // Lancer de rayon contre le décor (boîtes + relief). Renvoie la distance ou Infinity.
-  raycast(origin, dir, maxDist, out, ignore = null) {
+  raycast(origin, dir, maxDist, out, ignore = null, all = false) {
     let best = maxDist;
     let hitBox = null;
     // Parcours des cellules traversées (2D, algorithme d'Amanatides & Woo)
@@ -143,7 +180,7 @@ export class Physics {
       for (const c of this.cells[this.cellIndex(cx, cz)]) {
         if (c.mark === this.stamp) continue;
         c.mark = this.stamp;
-        if (c.tag === 'nobullet') continue;
+        if (c.tag === 'nobullet' && !all) continue;
         const t = rayBox(origin, dir, c.min, c.max);
         if (t >= 0 && t < best) {
           best = t;

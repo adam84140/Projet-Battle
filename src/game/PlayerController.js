@@ -10,6 +10,7 @@ const _right = new THREE.Vector3();
 const _fwd = new THREE.Vector3();
 const _want = new THREE.Vector3();
 const _dir = new THREE.Vector3();
+const _base = new THREE.Vector3();
 const _hit = { t: 0 };
 
 export class PlayerController {
@@ -25,6 +26,13 @@ export class PlayerController {
     this.camDist = 3.3;
     this.scoped = false;
     this.deathCamT = 0;
+    // état lissé de la caméra
+    this.pivotS = new THREE.Vector3();
+    this.shoulderCur = 0.7;
+    this.distCur = 3.3;
+    this.colDist = 3.3;
+    this.shoulderCol = 0.7;
+    this.mode = '';
   }
 
   attach(soldier) {
@@ -188,6 +196,7 @@ export class PlayerController {
     let fov = baseFov;
     let dist;
     let shoulder;
+    let ignore = null;
     this.scoped = false;
     if (!s.alive) {
       // caméra de mort : on recule doucement au-dessus du corps
@@ -206,6 +215,7 @@ export class PlayerController {
       dist = v.type === 'tank' ? 9 : 7;
       shoulder = 0;
       fov = 72;
+      ignore = v.collider;
     } else {
       this.deathCamT = 0;
       _pivot.copy(s.body.pos);
@@ -217,28 +227,71 @@ export class PlayerController {
         dist = -0.1;
         shoulder = 0;
         fov = baseFov / s.weapon.zoom;
+      } else if (aiming) {
+        // visée : caméra plus proche, décalée et un peu relevée pour dégager le centre
+        dist = 2.25;
+        shoulder = 0.82;
+        _pivot.y += 0.1;
+        fov = baseFov / s.weapon.zoom;
       } else {
-        dist = aiming ? 1.8 : 3.3;
-        shoulder = aiming ? 0.62 : 0.7;
-        fov = aiming ? baseFov / s.weapon.zoom : baseFov;
+        dist = 3.3;
+        shoulder = 0.7;
+        // sprint : champ de vision légèrement élargi (sensation de vitesse)
+        if (s.sprinting && Math.hypot(s.body.vel.x, s.body.vel.z) > 4) fov = baseFov + 6;
       }
     }
-    // Position voulue + collision caméra
-    const base = _want.copy(_pivot).addScaledVector(_right, shoulder);
-    const camTarget = this._camTarget || (this._camTarget = new THREE.Vector3());
-    camTarget.copy(base).addScaledVector(_fwd, -dist);
-    if (dist > 0) {
-      _dir.subVectors(camTarget, _pivot);
-      const len = _dir.length();
-      _dir.divideScalar(len);
-      const t = phys.raycast(_pivot, _dir, len + 0.3, _hit);
-      if (t !== Infinity) camTarget.copy(_pivot).addScaledVector(_dir, Math.max(0.3, t - 0.3));
+    // Changement de sujet (véhicule, mort, réapparition) : recalage du pivot
+    const mode = !s.alive ? 'dead' : s.vehicle ? 'vehicle' : 'foot';
+    const snap = this.snap || mode !== this.mode;
+    this.mode = mode;
+    this.snap = false;
+    // Pivot lissé : presque rigide à l'horizontale, plus souple en hauteur (accroupi, marches, sauts)
+    const ps = this.pivotS;
+    if (snap || ps.distanceToSquared(_pivot) > 9) ps.copy(_pivot);
+    else {
+      const kh = 1 - Math.exp(-dt * 40);
+      const kv = 1 - Math.exp(-dt * 16);
+      ps.x += (_pivot.x - ps.x) * kh;
+      ps.z += (_pivot.z - ps.z) * kh;
+      ps.y += (_pivot.y - ps.y) * kv;
     }
-    if (this.snap) {
-      this.camPos.copy(camTarget);
-      this.snap = false;
-    } else this.camPos.lerp(camTarget, 1 - Math.exp(-dt * (this.scoped ? 60 : 25)));
-    this.fov += (fov - this.fov) * (1 - Math.exp(-dt * 14));
+    // Épaule et distance voulues : transitions douces (visée), lunette immédiate
+    const ka = 1 - Math.exp(-dt * 12);
+    if (snap || this.scoped || this.distCur < 0) {
+      this.shoulderCur = shoulder;
+      this.distCur = dist;
+    } else {
+      this.shoulderCur += (shoulder - this.shoulderCur) * ka;
+      this.distCur += (dist - this.distCur) * ka;
+    }
+    // Collision : 1) du pivot vers l'épaule  2) de l'épaule vers l'arrière.
+    // Rapprochement immédiat (jamais à travers un mur), éloignement progressif.
+    let shoulderOk = this.shoulderCur;
+    if (shoulderOk > 0.01) {
+      const t = phys.raycastCamera(ps, _right, shoulderOk + 0.3, ignore);
+      if (t !== Infinity) shoulderOk = Math.max(0, t - 0.3);
+    }
+    if (snap || shoulderOk < this.shoulderCol) this.shoulderCol = shoulderOk;
+    else this.shoulderCol += (shoulderOk - this.shoulderCol) * (1 - Math.exp(-dt * 6));
+    const base = _base.copy(ps).addScaledVector(_right, this.shoulderCol);
+    const want = this.distCur;
+    if (want > 0) {
+      _dir.copy(_fwd).negate();
+      const t = phys.raycastCamera(base, _dir, want + 0.3, ignore);
+      const allowed = t === Infinity ? want : Math.max(0, t - 0.3);
+      if (snap || allowed < this.colDist) this.colDist = allowed;
+      else this.colDist += (allowed - this.colDist) * (1 - Math.exp(-dt * 6));
+    } else this.colDist = want;
+    this.camPos.copy(base).addScaledVector(_fwd, -this.colDist);
+    // Dernier garde-fou : jamais d'image prise depuis l'intérieur d'un mur
+    if (want > 0 && phys.pointBlocked(this.camPos, 0.05)) {
+      this.colDist = 0;
+      if (phys.pointBlocked(base, 0.05)) {
+        this.shoulderCol = 0;
+        this.camPos.copy(ps);
+      } else this.camPos.copy(base);
+    }
+    this.fov += (fov - this.fov) * (1 - Math.exp(-dt * 10));
     camera.fov = this.fov;
     camera.updateProjectionMatrix();
     camera.position.copy(this.camPos);
@@ -249,8 +302,8 @@ export class PlayerController {
       camera.position.y += (Math.random() - 0.5) * sh * 0.25;
     }
     camera.lookAt(_want.copy(camera.position).add(_fwd));
-    // Personnage masqué en vue lunette
-    if (!s.vehicle) s.char.root.visible = s.alive ? !this.scoped : s.deadT < 7;
+    // Personnage masqué en vue lunette, ou quand un obstacle colle la caméra contre lui
+    if (!s.vehicle) s.char.root.visible = s.alive ? !this.scoped && this.colDist > 0.45 : s.deadT < 7;
     // Point visé par le réticule
     this.computeAimPoint(camera.position, _fwd);
   }
@@ -259,7 +312,7 @@ export class PlayerController {
     const game = this.game;
     const s = this.s;
     // on démarre le rayon au niveau du personnage (évite les murs derrière lui)
-    const skip = Math.max(0, this.camPos.distanceTo(_pivot) - 0.5);
+    const skip = Math.max(0, this.camPos.distanceTo(this.pivotS) - 0.5);
     const o = this._o || (this._o = new THREE.Vector3());
     o.copy(origin).addScaledVector(dir, skip);
     let best = game.physics.raycast(o, dir, 400, _hit, s.vehicle ? s.vehicle.collider : null);

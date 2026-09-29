@@ -105,6 +105,9 @@ export class Soldier {
     this.sprinting = false;
     this.lastShotTime = -99;
     this.revealT = 0;
+    this.airT = 0;
+    this.jumpBuf = 0;
+    this.jumped = false;
     const a = this.char.anim;
     a.mode = 'combat';
     a.reload = -1;
@@ -191,13 +194,24 @@ export class Soldier {
       _v.multiplyScalar(speed);
     }
     if (busy && this.actionT < 0.35) _v.addScaledVector(fwd, 9);
-    const accel = body.grounded ? 12 : 2.5;
+    // au sol : départ franc, arrêt encore plus net ; en l'air : contrôle réduit
+    const accel = body.grounded ? (ml > 0.01 ? 12 : 16) : 2.5;
     const k = 1 - Math.exp(-accel * dt);
     body.vel.x += (_v.x - body.vel.x) * k;
     body.vel.z += (_v.z - body.vel.z) * k;
-    if (cmd.jump && body.grounded && !this.crouching) {
+    // Saut : appui mémorisé un court instant avant l'atterrissage, et tolérance
+    // juste après avoir quitté un rebord
+    if (body.grounded) {
+      this.airT = 0;
+      this.jumped = false;
+    } else this.airT += dt;
+    this.jumpBuf = cmd.jump ? 0.14 : Math.max(0, this.jumpBuf - dt);
+    const canJump = body.grounded || (this.airT < 0.12 && !this.jumped && body.vel.y <= 0);
+    if (this.jumpBuf > 0 && canJump && !this.crouching) {
       body.vel.y = 8.2;
       body.grounded = false;
+      this.jumpBuf = 0;
+      this.jumped = true;
     }
     body.height = this.crouching ? 1.25 : 1.8;
     body.landSpeed = 0;

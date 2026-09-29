@@ -70,6 +70,13 @@ try {
   C.ok('saut (décolle)', !(await get(page, 'g.player.body.grounded')));
   await step(page, 1.2);
   C.ok('saut (retombe)', await get(page, 'g.player.body.grounded'));
+  // saut mémorisé : appui juste avant l'atterrissage -> nouveau saut dès le contact
+  await page.keyboard.press('Space');
+  await step(page, 0.6);
+  await page.keyboard.press('Space');
+  await step(page, 0.2);
+  C.ok('saut mémorisé avant atterrissage', await get(page, '!g.player.body.grounded && g.player.body.vel.y > 0'));
+  await step(page, 1.2);
   await page.keyboard.down('KeyC');
   await step(page, 0.3);
   C.ok('accroupi', await get(page, 'g.player.crouching && g.player.body.height < 1.5'));
