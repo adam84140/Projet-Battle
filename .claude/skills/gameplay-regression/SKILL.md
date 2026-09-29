@@ -12,6 +12,7 @@ npm run test:smoke     # ordinateur : 48 vérifications
 npm run test:touch     # téléphone émulé 844×390
 npm run test:camera    # caméra jamais dans un mur, un feuillage ou le sol
 npm run test:bots      # partie simulée 3 min
+npm run test:character # personnage : coût par soldat, mains / arme, tête / hitbox, 16v16, mémoire
 ```
 Rendu logiciel (SwiftShader) : les tests avancent la simulation par pas fixes (`step()` dans `tests/lib.mjs`) ; ne pas attendre en temps réel.
 
@@ -29,6 +30,7 @@ Rendu logiciel (SwiftShader) : les tests avancent la simulation par pas fixes (`
 | Caméra : 0 image dans un mur, 0 dans un feuillage, 0 sous le sol, pas de recul brutal | camera |
 | Bots bloqués < 3 %, aucun > 20 s, tactique utilisée | bots |
 | Coût logique < 8 ms par image (test) ; objectif 16v16 < 4 ms | smoke, bots |
+| Personnage : 16 articulations, ≤ 18 maillages visibles par soldat, mains sur l'arme, tête / sphère de touche, arme / visée, bouche du canon, mémoire sans fuite, 16v16 chargé, planche A/B reproductible | character ([référence M0](../../../docs/characters/MASTER-ASSAULT-BASELINE.md)) |
 | Aucune erreur console | tous |
 
 ## 3. Règles

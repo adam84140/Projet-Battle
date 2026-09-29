@@ -1,0 +1,3518 @@
+{
+ "date": "2026-09-29T15:40:42.288Z",
+ "limits": {
+  "visibleMeshes": 18,
+  "triangles": 17500,
+  "geometryKB": 1900,
+  "buildMs": 400,
+  "handMm": 10,
+  "handTransientMm": {
+   "land": 22,
+   "throw": 45
+  },
+  "headUprightCm": 4,
+  "headMaxCm": 10,
+  "headIdleCoverage": 0.8,
+  "weaponAimDeg": 3,
+  "weaponFireDeg": 6,
+  "weaponCrouchAimDeg": 16,
+  "mountFromSpineM": 0.6,
+  "liveHeadMaxCm": 15,
+  "liveHeadMeanCm": 5,
+  "liveAimMeanDeg": 6,
+  "soldierCallsPerVisible": 30,
+  "memoryGrowth": 1.05,
+  "heapGrowthMB": 5
+ },
+ "models": {
+  "assaut-blue-jeu": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 3,
+   "triangles": 16798,
+   "vertices": 50350,
+   "geometries": 22,
+   "geometryKB": 1782,
+   "buildMsMin": 69,
+   "buildMsMedian": 81.6
+  },
+  "assaut-blue-menu": {
+   "meshes": 180,
+   "visibleMeshes": 174,
+   "hiddenMeshes": 6,
+   "shadowCasters": 157,
+   "materials": 55,
+   "triangles": 44102,
+   "vertices": 71236,
+   "geometries": 144,
+   "geometryKB": 1974,
+   "buildMsMin": 33.3,
+   "buildMsMedian": 34.1
+  },
+  "assaut-red-jeu": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 3,
+   "triangles": 16758,
+   "vertices": 50230,
+   "geometries": 22,
+   "geometryKB": 1778,
+   "buildMsMin": 55.3,
+   "buildMsMedian": 80.6
+  },
+  "assaut-red-menu": {
+   "meshes": 180,
+   "visibleMeshes": 174,
+   "hiddenMeshes": 6,
+   "shadowCasters": 157,
+   "materials": 55,
+   "triangles": 44062,
+   "vertices": 71148,
+   "geometries": 144,
+   "geometryKB": 1971,
+   "buildMsMin": 29.3,
+   "buildMsMedian": 29.5
+  },
+  "assaut-blue-jeu-sans-sac": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 3,
+   "triangles": 15944,
+   "vertices": 47788,
+   "geometries": 22,
+   "geometryKB": 1692
+  },
+  "artilleur-blue-jeu": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 3,
+   "triangles": 14920,
+   "vertices": 44716,
+   "geometries": 22,
+   "geometryKB": 1584,
+   "buildMsMin": 59.5,
+   "buildMsMedian": 67.1
+  },
+  "artilleur-blue-menu": {
+   "meshes": 177,
+   "visibleMeshes": 171,
+   "hiddenMeshes": 6,
+   "shadowCasters": 153,
+   "materials": 54,
+   "triangles": 39304,
+   "vertices": 69908,
+   "geometries": 151,
+   "geometryKB": 2029,
+   "buildMsMin": 26.5,
+   "buildMsMedian": 28.1
+  },
+  "artilleur-red-jeu": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 3,
+   "triangles": 14870,
+   "vertices": 44566,
+   "geometries": 22,
+   "geometryKB": 1579,
+   "buildMsMin": 60.6,
+   "buildMsMedian": 67.1
+  },
+  "artilleur-red-menu": {
+   "meshes": 177,
+   "visibleMeshes": 171,
+   "hiddenMeshes": 6,
+   "shadowCasters": 153,
+   "materials": 54,
+   "triangles": 39254,
+   "vertices": 69798,
+   "geometries": 151,
+   "geometryKB": 2026,
+   "buildMsMin": 26.2,
+   "buildMsMedian": 28.4
+  },
+  "artilleur-blue-jeu-sans-sac": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 3,
+   "triangles": 14066,
+   "vertices": 42154,
+   "geometries": 22,
+   "geometryKB": 1494
+  },
+  "commando-blue-jeu": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 2,
+   "triangles": 15260,
+   "vertices": 45780,
+   "geometries": 22,
+   "geometryKB": 1621,
+   "buildMsMin": 55.4,
+   "buildMsMedian": 56
+  },
+  "commando-blue-menu": {
+   "meshes": 163,
+   "visibleMeshes": 157,
+   "hiddenMeshes": 6,
+   "shadowCasters": 139,
+   "materials": 52,
+   "triangles": 40180,
+   "vertices": 68565,
+   "geometries": 134,
+   "geometryKB": 1957,
+   "buildMsMin": 30.3,
+   "buildMsMedian": 38.2
+  },
+  "commando-red-jeu": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 2,
+   "triangles": 15220,
+   "vertices": 45660,
+   "geometries": 22,
+   "geometryKB": 1617,
+   "buildMsMin": 69.8,
+   "buildMsMedian": 73.5
+  },
+  "commando-red-menu": {
+   "meshes": 163,
+   "visibleMeshes": 157,
+   "hiddenMeshes": 6,
+   "shadowCasters": 139,
+   "materials": 52,
+   "triangles": 40140,
+   "vertices": 68477,
+   "geometries": 134,
+   "geometryKB": 1954,
+   "buildMsMin": 24.6,
+   "buildMsMedian": 25.3
+  },
+  "commando-blue-jeu-sans-sac": {
+   "meshes": 24,
+   "visibleMeshes": 18,
+   "hiddenMeshes": 6,
+   "shadowCasters": 18,
+   "materials": 2,
+   "triangles": 14406,
+   "vertices": 43218,
+   "geometries": 22,
+   "geometryKB": 1531
+  }
+ },
+ "reference": {
+  "jeu": {
+   "topIdle": 1.935,
+   "topApose": 1.94,
+   "headTopApose": 1.94,
+   "headBoneIdleY": 1.554,
+   "headHitCentreIdleY": 1.717
+  },
+  "menu": {
+   "topIdle": 1.965,
+   "topApose": 1.971,
+   "headTopApose": 1.971,
+   "headBoneIdleY": 1.554,
+   "headHitCentreIdleY": 1.717,
+   "headOffset": 0.1638,
+   "hipsHeight": 0.95,
+   "bonesApose": {
+    "hips": [
+     0,
+     0.95,
+     0
+    ],
+    "legL": [
+     0.1,
+     0.91,
+     0
+    ],
+    "kneeL": [
+     0.1294,
+     0.491,
+     0
+    ],
+    "ankleL": [
+     0.1567,
+     0.102,
+     0
+    ],
+    "legR": [
+     -0.1,
+     0.91,
+     0
+    ],
+    "kneeR": [
+     -0.1294,
+     0.491,
+     0
+    ],
+    "ankleR": [
+     -0.1567,
+     0.102,
+     0
+    ],
+    "spine": [
+     0,
+     1.01,
+     0
+    ],
+    "shoulderL": [
+     0.25,
+     1.43,
+     0.0042
+    ],
+    "elbowL": [
+     0.4478,
+     1.2044,
+     0.0019
+    ],
+    "handL": [
+     0.6442,
+     0.9802,
+     0.0356
+    ],
+    "shoulderR": [
+     -0.25,
+     1.43,
+     0.0042
+    ],
+    "elbowR": [
+     -0.4478,
+     1.2044,
+     0.0019
+    ],
+    "handR": [
+     -0.6442,
+     0.9802,
+     0.0356
+    ],
+    "neck": [
+     0,
+     1.4799,
+     0.0097
+    ],
+    "head": [
+     0,
+     1.5598,
+     0.0225
+    ]
+   },
+   "boneCount": 16,
+   "joints": [
+    "hips",
+    "spine",
+    "neck",
+    "head",
+    "shoulderL",
+    "shoulderR",
+    "elbowL",
+    "elbowR",
+    "handL",
+    "handR",
+    "legL",
+    "legR",
+    "kneeL",
+    "kneeR",
+    "ankleL",
+    "ankleR"
+   ],
+   "hasWeaponMount": true,
+   "animatorChannels": 60
+  }
+ },
+ "gpu": {
+  "soloDrawWithShadow": {
+   "calls": 36,
+   "triangles": 33596
+  },
+  "cycles": [
+   {
+    "uploaded": 18,
+    "remainingAfterDispose": 0
+   },
+   {
+    "uploaded": 18,
+    "remainingAfterDispose": 0
+   }
+  ],
+  "textures": 3
+ },
+ "heap": [
+  {
+   "perCharacterKB": 1907,
+   "residualKB": 1984,
+   "n": 8
+  },
+  {
+   "perCharacterKB": 1899,
+   "residualKB": 1984,
+   "n": 32
+  }
+ ],
+ "alignment": {
+  "assaut": [
+   {
+    "pose": "idle",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0004,
+     -0.0376,
+     0.9993
+    ],
+    "muzzle": [
+     -0.158,
+     1.2481,
+     0.9057
+    ],
+    "weaponMount": [
+     -0.1581,
+     1.2505,
+     0.1885
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0032,
+      1.7174,
+      0.027
+     ],
+     "visualCentre": [
+      -0.0035,
+      1.7349,
+      0.0389
+     ],
+     "centreDistance": 0.0211,
+     "coverage": 0.864,
+     "farthestVertex": 0.23
+    }
+   },
+   {
+    "pose": "aim",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0003,
+     -0.0188,
+     0.9998
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 1.08,
+    "muzzle": [
+     -0.1895,
+     1.3612,
+     0.9272
+    ],
+    "weaponMount": [
+     -0.1898,
+     1.35,
+     0.21
+    ],
+    "mountFromSpine": 0.4465,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7174,
+      0.0272
+     ],
+     "visualCentre": [
+      0.0179,
+      1.7335,
+      0.0401
+     ],
+     "centreDistance": 0.0296,
+     "coverage": 0.835,
+     "farthestVertex": 0.235
+    }
+   },
+   {
+    "pose": "aim-up",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0174,
+     0.5322,
+     0.8464
+    ],
+    "pitch": 0.6,
+    "weaponToAimDeg": 2.43,
+    "muzzle": [
+     -0.1787,
+     1.818,
+     0.7321
+    ],
+    "weaponMount": [
+     -0.194,
+     1.4158,
+     0.1385
+    ],
+    "mountFromSpine": 0.4753,
+    "head": {
+     "hitCentre": [
+      -0.0032,
+      1.7115,
+      -0.0876
+     ],
+     "visualCentre": [
+      0.0285,
+      1.7125,
+      -0.1571
+     ],
+     "centreDistance": 0.0764,
+     "coverage": 0.718,
+     "farthestVertex": 0.255
+    }
+   },
+   {
+    "pose": "aim-down",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0047,
+    "handL_toGrip": 0.0047,
+    "weaponForward": [
+     0.0237,
+     -0.5637,
+     0.8256
+    ],
+    "pitch": -0.6,
+    "weaponToAimDeg": 1.36,
+    "muzzle": [
+     -0.172,
+     0.8894,
+     0.8679
+    ],
+    "weaponMount": [
+     -0.1863,
+     1.2732,
+     0.2622
+    ],
+    "mountFromSpine": 0.4189,
+    "head": {
+     "hitCentre": [
+      -0.003,
+      1.6965,
+      0.1396
+     ],
+     "visualCentre": [
+      0.0084,
+      1.6882,
+      0.2329
+     ],
+     "centreDistance": 0.0944,
+     "coverage": 0.253,
+     "farthestVertex": 0.3
+    }
+   },
+   {
+    "pose": "fire",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0023,
+     0.0957,
+     0.9954
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 5.5,
+    "muzzle": [
+     -0.1666,
+     1.4544,
+     0.8545
+    ],
+    "weaponMount": [
+     -0.1691,
+     1.3613,
+     0.1433
+    ],
+    "mountFromSpine": 0.42,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7174,
+      0.0271
+     ],
+     "visualCentre": [
+      0.0179,
+      1.7335,
+      0.04
+     ],
+     "centreDistance": 0.0296,
+     "coverage": 0.835,
+     "farthestVertex": 0.235
+    }
+   },
+   {
+    "pose": "walk",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     -0.0194,
+     -0.1106,
+     0.9937
+    ],
+    "muzzle": [
+     -0.1776,
+     1.1762,
+     0.9189
+    ],
+    "weaponMount": [
+     -0.1633,
+     1.231,
+     0.2039
+    ],
+    "mountFromSpine": 0.3468,
+    "head": {
+     "hitCentre": [
+      -0.0084,
+      1.7115,
+      0.0683
+     ],
+     "visualCentre": [
+      -0.011,
+      1.7276,
+      0.0934
+     ],
+     "centreDistance": 0.0299,
+     "coverage": 0.815,
+     "farthestVertex": 0.239
+    }
+   },
+   {
+    "pose": "run",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0266,
+     -0.1729,
+     0.9846
+    ],
+    "muzzle": [
+     -0.1362,
+     1.1111,
+     0.9359
+    ],
+    "weaponMount": [
+     -0.1549,
+     1.2107,
+     0.2259
+    ],
+    "mountFromSpine": 0.3471,
+    "head": {
+     "hitCentre": [
+      -0.0078,
+      1.6999,
+      0.1036
+     ],
+     "visualCentre": [
+      -0.0101,
+      1.714,
+      0.14
+     ],
+     "centreDistance": 0.0392,
+     "coverage": 0.647,
+     "farthestVertex": 0.247
+    }
+   },
+   {
+    "pose": "backward",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0199,
+     -0.1106,
+     0.9937
+    ],
+    "muzzle": [
+     -0.1426,
+     1.1778,
+     0.9254
+    ],
+    "weaponMount": [
+     -0.1564,
+     1.2326,
+     0.2104
+    ],
+    "mountFromSpine": 0.3486,
+    "head": {
+     "hitCentre": [
+      -0.0085,
+      1.7115,
+      0.0687
+     ],
+     "visualCentre": [
+      -0.011,
+      1.7275,
+      0.0938
+     ],
+     "centreDistance": 0.03,
+     "coverage": 0.815,
+     "farthestVertex": 0.239
+    }
+   },
+   {
+    "pose": "strafe",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0338,
+     -0.0859,
+     0.9957
+    ],
+    "muzzle": [
+     -0.1095,
+     1.1932,
+     0.923
+    ],
+    "weaponMount": [
+     -0.135,
+     1.2303,
+     0.2072
+    ],
+    "mountFromSpine": 0.3503,
+    "head": {
+     "hitCentre": [
+      0.0314,
+      1.6917,
+      0.0539
+     ],
+     "visualCentre": [
+      0.0421,
+      1.7081,
+      0.0741
+     ],
+     "centreDistance": 0.0282,
+     "coverage": 0.832,
+     "farthestVertex": 0.236
+    }
+   },
+   {
+    "pose": "crouch",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.2852,
+     0.9585
+    ],
+    "muzzle": [
+     -0.157,
+     0.661,
+     0.9409
+    ],
+    "weaponMount": [
+     -0.1569,
+     0.8418,
+     0.2468
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      -0.0022,
+      1.3481,
+      0.2225
+     ],
+     "centreDistance": 0.0573,
+     "coverage": 0.4,
+     "farthestVertex": 0.264
+    }
+   },
+   {
+    "pose": "crouch-walk",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.2852,
+     0.9585
+    ],
+    "muzzle": [
+     -0.157,
+     0.6624,
+     0.9413
+    ],
+    "weaponMount": [
+     -0.1569,
+     0.8432,
+     0.2472
+    ],
+    "mountFromSpine": 0.3487,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      -0.0022,
+      1.3481,
+      0.2225
+     ],
+     "centreDistance": 0.0573,
+     "coverage": 0.4,
+     "farthestVertex": 0.264
+    }
+   },
+   {
+    "pose": "crouch-aim",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0,
+     -0.2667,
+     0.9638
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 15.47,
+    "muzzle": [
+     -0.1885,
+     0.7656,
+     0.9898
+    ],
+    "weaponMount": [
+     -0.1885,
+     0.933,
+     0.2924
+    ],
+    "mountFromSpine": 0.4465,
+    "head": {
+     "hitCentre": [
+      -0.002,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      0.0193,
+      1.3466,
+      0.2231
+     ],
+     "centreDistance": 0.0615,
+     "coverage": 0.354,
+     "farthestVertex": 0.267
+    }
+   },
+   {
+    "pose": "sprint",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.8785,
+     0.1061,
+     0.4659
+    ],
+    "muzzle": [
+     0.6128,
+     1.2202,
+     0.5772
+    ],
+    "weaponMount": [
+     -0.0139,
+     1.1197,
+     0.2434
+    ],
+    "mountFromSpine": 0.2856,
+    "head": {
+     "hitCentre": [
+      0.0051,
+      1.6628,
+      0.1426
+     ],
+     "visualCentre": [
+      0.0067,
+      1.6738,
+      0.1917
+     ],
+     "centreDistance": 0.0503,
+     "coverage": 0.452,
+     "farthestVertex": 0.258
+    }
+   },
+   {
+    "pose": "jump",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.0392,
+     0.9992
+    ],
+    "muzzle": [
+     -0.157,
+     1.2728,
+     0.906
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.2763,
+     0.1888
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.7434,
+      0.0278
+     ],
+     "visualCentre": [
+      -0.0022,
+      1.7608,
+      0.04
+     ],
+     "centreDistance": 0.0213,
+     "coverage": 0.864,
+     "farthestVertex": 0.23
+    }
+   },
+   {
+    "pose": "fall",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.1979,
+     0.9802
+    ],
+    "muzzle": [
+     -0.157,
+     1.1253,
+     0.9331
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.2431,
+     0.2256
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.732,
+      0.115
+     ],
+     "visualCentre": [
+      -0.0022,
+      1.7451,
+      0.1559
+     ],
+     "centreDistance": 0.043,
+     "coverage": 0.555,
+     "farthestVertex": 0.251
+    }
+   },
+   {
+    "pose": "land",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0116,
+    "handL_toGrip": 0.0116,
+    "weaponForward": [
+     0.0064,
+     -0.271,
+     0.9626
+    ],
+    "muzzle": [
+     -0.1502,
+     0.8486,
+     0.929
+    ],
+    "weaponMount": [
+     -0.1549,
+     1.0191,
+     0.2324
+    ],
+    "mountFromSpine": 0.3207,
+    "head": {
+     "hitCentre": [
+      0.0019,
+      1.5523,
+      0.1551
+     ],
+     "visualCentre": [
+      0.0032,
+      1.5619,
+      0.2092
+     ],
+     "centreDistance": 0.0549,
+     "coverage": 0.418,
+     "farthestVertex": 0.262
+    }
+   },
+   {
+    "pose": "hit-front",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     -0.0015,
+     0.0836,
+     0.9965
+    ],
+    "muzzle": [
+     -0.1505,
+     1.326,
+     0.7923
+    ],
+    "weaponMount": [
+     -0.1482,
+     1.2415,
+     0.08
+    ],
+    "mountFromSpine": 0.3191,
+    "head": {
+     "hitCentre": [
+      -0.005,
+      1.672,
+      -0.1159
+     ],
+     "visualCentre": [
+      0.0025,
+      1.6784,
+      -0.1791
+     ],
+     "centreDistance": 0.0639,
+     "coverage": 0.78,
+     "farthestVertex": 0.238
+    }
+   },
+   {
+    "pose": "hit-left",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0144,
+     0.1283,
+     0.9916
+    ],
+    "muzzle": [
+     -0.1787,
+     1.3366,
+     0.7815
+    ],
+    "weaponMount": [
+     -0.1841,
+     1.2207,
+     0.0737
+    ],
+    "mountFromSpine": 0.3191,
+    "head": {
+     "hitCentre": [
+      -0.087,
+      1.6599,
+      -0.138
+     ],
+     "visualCentre": [
+      -0.1048,
+      1.6625,
+      -0.2084
+     ],
+     "centreDistance": 0.0727,
+     "coverage": 0.76,
+     "farthestVertex": 0.247
+    }
+   },
+   {
+    "pose": "pivot",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.0192,
+     0.9998
+    ],
+    "muzzle": [
+     -0.157,
+     1.2709,
+     0.9009
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.26,
+     0.1838
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.7239,
+      0.0168
+     ],
+     "visualCentre": [
+      -0.0022,
+      1.7415,
+      0.0253
+     ],
+     "centreDistance": 0.0196,
+     "coverage": 0.868,
+     "farthestVertex": 0.228
+    }
+   },
+   {
+    "pose": "reload",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0.4534,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0.5079,
+    "weaponForward": [
+     0.0073,
+     0.2011,
+     0.9795
+    ],
+    "muzzle": [
+     -0.1644,
+     1.386,
+     0.8858
+    ],
+    "weaponMount": [
+     -0.1581,
+     1.2205,
+     0.1879
+    ],
+    "mountFromSpine": 0.3268,
+    "head": {
+     "hitCentre": [
+      -0.0085,
+      1.7117,
+      0.0456
+     ],
+     "visualCentre": [
+      -0.0212,
+      1.7206,
+      0.1002
+     ],
+     "centreDistance": 0.0568,
+     "coverage": 0.403,
+     "farthestVertex": 0.263
+    }
+   },
+   {
+    "pose": "throw",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0.8076,
+    "handL_toTarget": 0.0303,
+    "handL_toGrip": 0.0303,
+    "weaponForward": [
+     -0.2501,
+     -0.047,
+     0.9671
+    ],
+    "muzzle": [
+     -0.379,
+     1.1582,
+     0.8378
+    ],
+    "weaponMount": [
+     -0.1994,
+     1.1673,
+     0.1435
+    ],
+    "mountFromSpine": 0.2955,
+    "head": {
+     "hitCentre": [
+      -0.0083,
+      1.7149,
+      0.0314
+     ],
+     "visualCentre": [
+      -0.0111,
+      1.7322,
+      0.0447
+     ],
+     "centreDistance": 0.022,
+     "coverage": 0.861,
+     "farthestVertex": 0.231
+    }
+   },
+   {
+    "pose": "buff",
+    "mode": "combat",
+    "ikL": 0.106,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.3194,
+    "handL_toGrip": 0.3194,
+    "weaponForward": [
+     0.0002,
+     -0.0297,
+     0.9996
+    ],
+    "muzzle": [
+     -0.1582,
+     1.2527,
+     0.9037
+    ],
+    "weaponMount": [
+     -0.1582,
+     1.2494,
+     0.1865
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0041,
+      1.7115,
+      0.0365
+     ],
+     "visualCentre": [
+      -0.0116,
+      1.724,
+      0.0794
+     ],
+     "centreDistance": 0.0453,
+     "coverage": 0.561,
+     "farthestVertex": 0.251
+    }
+   },
+   {
+    "pose": "heal",
+    "mode": "combat",
+    "ikL": 0.081,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.5333,
+    "handL_toGrip": 0.5333,
+    "weaponForward": [
+     0.0002,
+     -0.0306,
+     0.9995
+    ],
+    "muzzle": [
+     -0.1582,
+     1.2522,
+     0.9039
+    ],
+    "weaponMount": [
+     -0.1582,
+     1.2495,
+     0.1867
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7153,
+      0.0231
+     ],
+     "visualCentre": [
+      -0.0038,
+      1.7329,
+      0.0337
+     ],
+     "centreDistance": 0.0205,
+     "coverage": 0.866,
+     "farthestVertex": 0.229
+    }
+   },
+   {
+    "pose": "sit",
+    "mode": "sit",
+    "ikL": 0,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": false,
+    "head": {
+     "hitCentre": [
+      0,
+      1.3034,
+      -0.027
+     ],
+     "visualCentre": [
+      0,
+      1.3212,
+      -0.033
+     ],
+     "centreDistance": 0.0187,
+     "coverage": 0.864,
+     "farthestVertex": 0.22
+    }
+   },
+   {
+    "pose": "dead-back",
+    "mode": "dead",
+    "ikL": 0,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": true
+   }
+  ],
+  "artilleur": [
+   {
+    "pose": "idle",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0004,
+     -0.0376,
+     0.9993
+    ],
+    "muzzle": [
+     -0.1579,
+     1.2387,
+     1.0959
+    ],
+    "weaponMount": [
+     -0.1581,
+     1.2505,
+     0.1885
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0032,
+      1.7174,
+      0.027
+     ],
+     "visualCentre": [
+      -0.0026,
+      1.7148,
+      0.015
+     ],
+     "centreDistance": 0.0123,
+     "coverage": 0.919,
+     "farthestVertex": 0.207
+    }
+   },
+   {
+    "pose": "aim",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0003,
+     -0.0188,
+     0.9998
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 1.08,
+    "muzzle": [
+     -0.1895,
+     1.3554,
+     1.1175
+    ],
+    "weaponMount": [
+     -0.1898,
+     1.35,
+     0.21
+    ],
+    "mountFromSpine": 0.4465,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7174,
+      0.0272
+     ],
+     "visualCentre": [
+      0.0165,
+      1.7136,
+      0.0161
+     ],
+     "centreDistance": 0.0231,
+     "coverage": 0.907,
+     "farthestVertex": 0.214
+    }
+   },
+   {
+    "pose": "aim-up",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0174,
+     0.5322,
+     0.8464
+    ],
+    "pitch": 0.6,
+    "weaponToAimDeg": 2.43,
+    "muzzle": [
+     -0.1756,
+     1.9174,
+     0.8945
+    ],
+    "weaponMount": [
+     -0.194,
+     1.4158,
+     0.1385
+    ],
+    "mountFromSpine": 0.4753,
+    "head": {
+     "hitCentre": [
+      -0.0032,
+      1.7115,
+      -0.0876
+     ],
+     "visualCentre": [
+      0.0258,
+      1.684,
+      -0.1695
+     ],
+     "centreDistance": 0.0911,
+     "coverage": 0.812,
+     "farthestVertex": 0.285
+    }
+   },
+   {
+    "pose": "aim-down",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0237,
+     -0.5637,
+     0.8256
+    ],
+    "pitch": -0.6,
+    "weaponToAimDeg": 1.36,
+    "muzzle": [
+     -0.1673,
+     0.7802,
+     1.0239
+    ],
+    "weaponMount": [
+     -0.1863,
+     1.2732,
+     0.2622
+    ],
+    "mountFromSpine": 0.4189,
+    "head": {
+     "hitCentre": [
+      -0.003,
+      1.6965,
+      0.1396
+     ],
+     "visualCentre": [
+      0.0078,
+      1.6813,
+      0.2025
+     ],
+     "centreDistance": 0.0656,
+     "coverage": 0.256,
+     "farthestVertex": 0.272
+    }
+   },
+   {
+    "pose": "fire",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0023,
+     0.0957,
+     0.9954
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 5.5,
+    "muzzle": [
+     -0.1662,
+     1.4704,
+     1.0442
+    ],
+    "weaponMount": [
+     -0.1691,
+     1.3613,
+     0.1433
+    ],
+    "mountFromSpine": 0.42,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7174,
+      0.0271
+     ],
+     "visualCentre": [
+      0.0165,
+      1.7136,
+      0.016
+     ],
+     "centreDistance": 0.0231,
+     "coverage": 0.907,
+     "farthestVertex": 0.214
+    }
+   },
+   {
+    "pose": "walk",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     -0.0194,
+     -0.1106,
+     0.9937
+    ],
+    "muzzle": [
+     -0.1812,
+     1.1529,
+     1.1079
+    ],
+    "weaponMount": [
+     -0.1633,
+     1.231,
+     0.2039
+    ],
+    "mountFromSpine": 0.3468,
+    "head": {
+     "hitCentre": [
+      -0.0084,
+      1.7115,
+      0.0683
+     ],
+     "visualCentre": [
+      -0.0093,
+      1.7093,
+      0.0681
+     ],
+     "centreDistance": 0.0023,
+     "coverage": 0.864,
+     "farthestVertex": 0.209
+    }
+   },
+   {
+    "pose": "run",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0266,
+     -0.1729,
+     0.9846
+    ],
+    "muzzle": [
+     -0.1311,
+     1.0759,
+     1.123
+    ],
+    "weaponMount": [
+     -0.1549,
+     1.2107,
+     0.2259
+    ],
+    "mountFromSpine": 0.3471,
+    "head": {
+     "hitCentre": [
+      -0.0078,
+      1.6999,
+      0.1036
+     ],
+     "visualCentre": [
+      -0.0095,
+      1.6974,
+      0.1136
+     ],
+     "centreDistance": 0.0105,
+     "coverage": 0.676,
+     "farthestVertex": 0.218
+    }
+   },
+   {
+    "pose": "backward",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0199,
+     -0.1106,
+     0.9937
+    ],
+    "muzzle": [
+     -0.1388,
+     1.1546,
+     1.1143
+    ],
+    "weaponMount": [
+     -0.1564,
+     1.2326,
+     0.2104
+    ],
+    "mountFromSpine": 0.3486,
+    "head": {
+     "hitCentre": [
+      -0.0085,
+      1.7115,
+      0.0687
+     ],
+     "visualCentre": [
+      -0.0102,
+      1.7093,
+      0.0685
+     ],
+     "centreDistance": 0.0028,
+     "coverage": 0.865,
+     "farthestVertex": 0.209
+    }
+   },
+   {
+    "pose": "strafe",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0338,
+     -0.0859,
+     0.9957
+    ],
+    "muzzle": [
+     -0.1032,
+     1.1746,
+     1.1124
+    ],
+    "weaponMount": [
+     -0.135,
+     1.2303,
+     0.2072
+    ],
+    "mountFromSpine": 0.3503,
+    "head": {
+     "hitCentre": [
+      0.0314,
+      1.6917,
+      0.0539
+     ],
+     "visualCentre": [
+      0.0411,
+      1.6892,
+      0.0493
+     ],
+     "centreDistance": 0.011,
+     "coverage": 0.893,
+     "farthestVertex": 0.207
+    }
+   },
+   {
+    "pose": "crouch",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.2852,
+     0.9585
+    ],
+    "muzzle": [
+     -0.157,
+     0.6046,
+     1.1227
+    ],
+    "weaponMount": [
+     -0.1569,
+     0.8418,
+     0.2468
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      -0.0013,
+      1.3347,
+      0.1944
+     ],
+     "centreDistance": 0.0289,
+     "coverage": 0.396,
+     "farthestVertex": 0.236
+    }
+   },
+   {
+    "pose": "crouch-walk",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.2852,
+     0.9585
+    ],
+    "muzzle": [
+     -0.157,
+     0.606,
+     1.1231
+    ],
+    "weaponMount": [
+     -0.1569,
+     0.8432,
+     0.2472
+    ],
+    "mountFromSpine": 0.3487,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      -0.0013,
+      1.3347,
+      0.1944
+     ],
+     "centreDistance": 0.0289,
+     "coverage": 0.396,
+     "farthestVertex": 0.236
+    }
+   },
+   {
+    "pose": "crouch-aim",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0,
+     -0.2667,
+     0.9638
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 15.47,
+    "muzzle": [
+     -0.1885,
+     0.7126,
+     1.1727
+    ],
+    "weaponMount": [
+     -0.1885,
+     0.933,
+     0.2924
+    ],
+    "mountFromSpine": 0.4465,
+    "head": {
+     "hitCentre": [
+      -0.002,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      0.0179,
+      1.3333,
+      0.1949
+     ],
+     "centreDistance": 0.0357,
+     "coverage": 0.348,
+     "farthestVertex": 0.239
+    }
+   },
+   {
+    "pose": "sprint",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.8785,
+     0.1061,
+     0.4659
+    ],
+    "muzzle": [
+     0.7804,
+     1.2382,
+     0.6659
+    ],
+    "weaponMount": [
+     -0.0139,
+     1.1197,
+     0.2434
+    ],
+    "mountFromSpine": 0.2856,
+    "head": {
+     "hitCentre": [
+      0.0051,
+      1.6628,
+      0.1426
+     ],
+     "visualCentre": [
+      0.007,
+      1.6592,
+      0.1642
+     ],
+     "centreDistance": 0.0219,
+     "coverage": 0.449,
+     "farthestVertex": 0.228
+    }
+   },
+   {
+    "pose": "jump",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.0392,
+     0.9992
+    ],
+    "muzzle": [
+     -0.157,
+     1.2631,
+     1.0961
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.2763,
+     0.1888
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.7434,
+      0.0278
+     ],
+     "visualCentre": [
+      -0.0013,
+      1.7408,
+      0.016
+     ],
+     "centreDistance": 0.012,
+     "coverage": 0.919,
+     "farthestVertex": 0.207
+    }
+   },
+   {
+    "pose": "fall",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.1979,
+     0.9802
+    ],
+    "muzzle": [
+     -0.157,
+     1.0855,
+     1.1193
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.2431,
+     0.2256
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.732,
+      0.115
+     ],
+     "visualCentre": [
+      -0.0013,
+      1.7292,
+      0.1291
+     ],
+     "centreDistance": 0.0144,
+     "coverage": 0.566,
+     "farthestVertex": 0.221
+    }
+   },
+   {
+    "pose": "land",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0069,
+    "handL_toGrip": 0.0069,
+    "weaponForward": [
+     0.0064,
+     -0.271,
+     0.9626
+    ],
+    "muzzle": [
+     -0.149,
+     0.7948,
+     1.1117
+    ],
+    "weaponMount": [
+     -0.1549,
+     1.0191,
+     0.2324
+    ],
+    "mountFromSpine": 0.3207,
+    "head": {
+     "hitCentre": [
+      0.0019,
+      1.5523,
+      0.1551
+     ],
+     "visualCentre": [
+      0.0039,
+      1.548,
+      0.1812
+     ],
+     "centreDistance": 0.0266,
+     "coverage": 0.415,
+     "farthestVertex": 0.233
+    }
+   },
+   {
+    "pose": "hit-front",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     -0.0015,
+     0.0836,
+     0.9965
+    ],
+    "muzzle": [
+     -0.1507,
+     1.3396,
+     0.9822
+    ],
+    "weaponMount": [
+     -0.1482,
+     1.2415,
+     0.08
+    ],
+    "mountFromSpine": 0.3191,
+    "head": {
+     "hitCentre": [
+      -0.005,
+      1.672,
+      -0.1159
+     ],
+     "visualCentre": [
+      0.0027,
+      1.6503,
+      -0.1927
+     ],
+     "centreDistance": 0.0801,
+     "coverage": 0.869,
+     "farthestVertex": 0.276
+    }
+   },
+   {
+    "pose": "hit-left",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0144,
+     0.1283,
+     0.9916
+    ],
+    "muzzle": [
+     -0.1755,
+     1.3589,
+     0.9706
+    ],
+    "weaponMount": [
+     -0.1841,
+     1.2207,
+     0.0737
+    ],
+    "mountFromSpine": 0.3191,
+    "head": {
+     "hitCentre": [
+      -0.087,
+      1.6599,
+      -0.138
+     ],
+     "visualCentre": [
+      -0.105,
+      1.6338,
+      -0.2206
+     ],
+     "centreDistance": 0.0885,
+     "coverage": 0.844,
+     "farthestVertex": 0.284
+    }
+   },
+   {
+    "pose": "pivot",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0001,
+     -0.0192,
+     0.9998
+    ],
+    "muzzle": [
+     -0.157,
+     1.265,
+     1.0913
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.26,
+     0.1838
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.7239,
+      0.0168
+     ],
+     "visualCentre": [
+      -0.0013,
+      1.721,
+      0.0018
+     ],
+     "centreDistance": 0.0153,
+     "coverage": 0.923,
+     "farthestVertex": 0.21
+    }
+   },
+   {
+    "pose": "reload",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0.4286,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0.48,
+    "weaponForward": [
+     0.0073,
+     0.2011,
+     0.9795
+    ],
+    "muzzle": [
+     -0.162,
+     1.4223,
+     1.0727
+    ],
+    "weaponMount": [
+     -0.1581,
+     1.2205,
+     0.1879
+    ],
+    "mountFromSpine": 0.3268,
+    "head": {
+     "hitCentre": [
+      -0.0085,
+      1.7117,
+      0.0456
+     ],
+     "visualCentre": [
+      -0.019,
+      1.707,
+      0.0722
+     ],
+     "centreDistance": 0.0291,
+     "coverage": 0.4,
+     "farthestVertex": 0.234
+    }
+   },
+   {
+    "pose": "throw",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0.8115,
+    "handL_toTarget": 0.0268,
+    "handL_toGrip": 0.0268,
+    "weaponForward": [
+     -0.2501,
+     -0.047,
+     0.9671
+    ],
+    "muzzle": [
+     -0.4266,
+     1.1471,
+     1.0218
+    ],
+    "weaponMount": [
+     -0.1994,
+     1.1673,
+     0.1435
+    ],
+    "mountFromSpine": 0.2955,
+    "head": {
+     "hitCentre": [
+      -0.0083,
+      1.7149,
+      0.0314
+     ],
+     "visualCentre": [
+      -0.0042,
+      1.7124,
+      0.0216
+     ],
+     "centreDistance": 0.0109,
+     "coverage": 0.916,
+     "farthestVertex": 0.205
+    }
+   },
+   {
+    "pose": "buff",
+    "mode": "combat",
+    "ikL": 0.106,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.3508,
+    "handL_toGrip": 0.3508,
+    "weaponForward": [
+     0.0002,
+     -0.0297,
+     0.9996
+    ],
+    "muzzle": [
+     -0.1582,
+     1.2449,
+     1.0939
+    ],
+    "weaponMount": [
+     -0.1582,
+     1.2494,
+     0.1865
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0041,
+      1.7115,
+      0.0365
+     ],
+     "visualCentre": [
+      -0.0162,
+      1.708,
+      0.053
+     ],
+     "centreDistance": 0.0208,
+     "coverage": 0.581,
+     "farthestVertex": 0.224
+    }
+   },
+   {
+    "pose": "heal",
+    "mode": "combat",
+    "ikL": 0.081,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.5863,
+    "handL_toGrip": 0.5863,
+    "weaponForward": [
+     0.0002,
+     -0.0306,
+     0.9995
+    ],
+    "muzzle": [
+     -0.1581,
+     1.2442,
+     1.0942
+    ],
+    "weaponMount": [
+     -0.1582,
+     1.2495,
+     0.1867
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7153,
+      0.0231
+     ],
+     "visualCentre": [
+      -0.0028,
+      1.7126,
+      0.01
+     ],
+     "centreDistance": 0.0134,
+     "coverage": 0.92,
+     "farthestVertex": 0.208
+    }
+   },
+   {
+    "pose": "sit",
+    "mode": "sit",
+    "ikL": 0,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": false,
+    "head": {
+     "hitCentre": [
+      0,
+      1.3034,
+      -0.027
+     ],
+     "visualCentre": [
+      0,
+      1.2989,
+      -0.0548
+     ],
+     "centreDistance": 0.0282,
+     "coverage": 0.928,
+     "farthestVertex": 0.223
+    }
+   },
+   {
+    "pose": "dead-back",
+    "mode": "dead",
+    "ikL": 0,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": true
+   }
+  ],
+  "commando": [
+   {
+    "pose": "idle",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0016,
+    "handL_toGrip": 0.0016,
+    "weaponForward": [
+     0.0004,
+     -0.0376,
+     0.9993
+    ],
+    "muzzle": [
+     -0.158,
+     1.2576,
+     1.0406
+    ],
+    "weaponMount": [
+     -0.1581,
+     1.2505,
+     0.1885
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0032,
+      1.7174,
+      0.027
+     ],
+     "visualCentre": [
+      -0.0027,
+      1.728,
+      0.0181
+     ],
+     "centreDistance": 0.0138,
+     "coverage": 0.929,
+     "farthestVertex": 0.218
+    }
+   },
+   {
+    "pose": "aim",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0006,
+    "handL_toGrip": 0.0006,
+    "weaponForward": [
+     0.0003,
+     -0.0188,
+     0.9998
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 1.08,
+    "muzzle": [
+     -0.1895,
+     1.3732,
+     1.0618
+    ],
+    "weaponMount": [
+     -0.1898,
+     1.35,
+     0.21
+    ],
+    "mountFromSpine": 0.4465,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7174,
+      0.0272
+     ],
+     "visualCentre": [
+      0.018,
+      1.7267,
+      0.0192
+     ],
+     "centreDistance": 0.0246,
+     "coverage": 0.903,
+     "farthestVertex": 0.22
+    }
+   },
+   {
+    "pose": "aim-up",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0174,
+     0.5322,
+     0.8464
+    ],
+    "pitch": 0.6,
+    "weaponToAimDeg": 2.43,
+    "muzzle": [
+     -0.1747,
+     1.9017,
+     0.8382
+    ],
+    "weaponMount": [
+     -0.194,
+     1.4158,
+     0.1385
+    ],
+    "mountFromSpine": 0.4753,
+    "head": {
+     "hitCentre": [
+      -0.0032,
+      1.7115,
+      -0.0876
+     ],
+     "visualCentre": [
+      0.028,
+      1.697,
+      -0.1726
+     ],
+     "centreDistance": 0.0917,
+     "coverage": 0.786,
+     "farthestVertex": 0.275
+    }
+   },
+   {
+    "pose": "aim-down",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0077,
+    "handL_toGrip": 0.0077,
+    "weaponForward": [
+     0.0237,
+     -0.5637,
+     0.8256
+    ],
+    "pitch": -0.6,
+    "weaponToAimDeg": 1.36,
+    "muzzle": [
+     -0.1705,
+     0.8255,
+     0.9871
+    ],
+    "weaponMount": [
+     -0.1863,
+     1.2732,
+     0.2622
+    ],
+    "mountFromSpine": 0.4189,
+    "head": {
+     "hitCentre": [
+      -0.003,
+      1.6965,
+      0.1396
+     ],
+     "visualCentre": [
+      0.0086,
+      1.6915,
+      0.2112
+     ],
+     "centreDistance": 0.0728,
+     "coverage": 0.26,
+     "farthestVertex": 0.242
+    }
+   },
+   {
+    "pose": "fire",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0023,
+     0.0957,
+     0.9954
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 5.5,
+    "muzzle": [
+     -0.1658,
+     1.4817,
+     0.9869
+    ],
+    "weaponMount": [
+     -0.1691,
+     1.3613,
+     0.1433
+    ],
+    "mountFromSpine": 0.42,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7174,
+      0.0271
+     ],
+     "visualCentre": [
+      0.018,
+      1.7267,
+      0.0192
+     ],
+     "centreDistance": 0.0246,
+     "coverage": 0.903,
+     "farthestVertex": 0.22
+    }
+   },
+   {
+    "pose": "walk",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0021,
+    "handL_toGrip": 0.0021,
+    "weaponForward": [
+     -0.0194,
+     -0.1106,
+     0.9937
+    ],
+    "muzzle": [
+     -0.1804,
+     1.1758,
+     1.0541
+    ],
+    "weaponMount": [
+     -0.1633,
+     1.231,
+     0.2039
+    ],
+    "mountFromSpine": 0.3468,
+    "head": {
+     "hitCentre": [
+      -0.0084,
+      1.7115,
+      0.0683
+     ],
+     "visualCentre": [
+      -0.0096,
+      1.7222,
+      0.0722
+     ],
+     "centreDistance": 0.0115,
+     "coverage": 0.885,
+     "farthestVertex": 0.214
+    }
+   },
+   {
+    "pose": "run",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0019,
+    "handL_toGrip": 0.0019,
+    "weaponForward": [
+     0.0266,
+     -0.1729,
+     0.9846
+    ],
+    "muzzle": [
+     -0.1329,
+     1.1022,
+     1.0707
+    ],
+    "weaponMount": [
+     -0.1549,
+     1.2107,
+     0.2259
+    ],
+    "mountFromSpine": 0.3471,
+    "head": {
+     "hitCentre": [
+      -0.0078,
+      1.6999,
+      0.1036
+     ],
+     "visualCentre": [
+      -0.0097,
+      1.71,
+      0.1185
+     ],
+     "centreDistance": 0.0181,
+     "coverage": 0.687,
+     "farthestVertex": 0.212
+    }
+   },
+   {
+    "pose": "backward",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0011,
+    "handL_toGrip": 0.0011,
+    "weaponForward": [
+     0.0199,
+     -0.1106,
+     0.9937
+    ],
+    "muzzle": [
+     -0.1402,
+     1.1774,
+     1.0606
+    ],
+    "weaponMount": [
+     -0.1564,
+     1.2326,
+     0.2104
+    ],
+    "mountFromSpine": 0.3486,
+    "head": {
+     "hitCentre": [
+      -0.0085,
+      1.7115,
+      0.0687
+     ],
+     "visualCentre": [
+      -0.0104,
+      1.7222,
+      0.0726
+     ],
+     "centreDistance": 0.0116,
+     "coverage": 0.885,
+     "farthestVertex": 0.214
+    }
+   },
+   {
+    "pose": "strafe",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0002,
+    "handL_toGrip": 0.0002,
+    "weaponForward": [
+     0.0338,
+     -0.0859,
+     0.9957
+    ],
+    "muzzle": [
+     -0.1042,
+     1.1961,
+     1.0581
+    ],
+    "weaponMount": [
+     -0.135,
+     1.2303,
+     0.2072
+    ],
+    "mountFromSpine": 0.3503,
+    "head": {
+     "hitCentre": [
+      0.0314,
+      1.6917,
+      0.0539
+     ],
+     "visualCentre": [
+      0.0419,
+      1.7022,
+      0.053
+     ],
+     "centreDistance": 0.0148,
+     "coverage": 0.904,
+     "farthestVertex": 0.216
+    }
+   },
+   {
+    "pose": "crouch",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0016,
+    "handL_toGrip": 0.0016,
+    "weaponForward": [
+     0.0001,
+     -0.2852,
+     0.9585
+    ],
+    "muzzle": [
+     -0.1571,
+     0.6366,
+     1.0738
+    ],
+    "weaponMount": [
+     -0.1569,
+     0.8418,
+     0.2468
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      -0.0014,
+      1.3466,
+      0.2007
+     ],
+     "centreDistance": 0.0355,
+     "coverage": 0.404,
+     "farthestVertex": 0.211
+    }
+   },
+   {
+    "pose": "crouch-walk",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.001,
+    "handL_toGrip": 0.001,
+    "weaponForward": [
+     0.0001,
+     -0.2852,
+     0.9585
+    ],
+    "muzzle": [
+     -0.1571,
+     0.638,
+     1.0742
+    ],
+    "weaponMount": [
+     -0.1569,
+     0.8432,
+     0.2472
+    ],
+    "mountFromSpine": 0.3487,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      -0.0014,
+      1.3466,
+      0.2007
+     ],
+     "centreDistance": 0.0355,
+     "coverage": 0.404,
+     "farthestVertex": 0.211
+    }
+   },
+   {
+    "pose": "crouch-aim",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0006,
+    "handL_toGrip": 0.0006,
+    "weaponForward": [
+     0,
+     -0.2667,
+     0.9638
+    ],
+    "pitch": 0,
+    "weaponToAimDeg": 15.47,
+    "muzzle": [
+     -0.1885,
+     0.7437,
+     1.1232
+    ],
+    "weaponMount": [
+     -0.1885,
+     0.933,
+     0.2924
+    ],
+    "mountFromSpine": 0.4465,
+    "head": {
+     "hitCentre": [
+      -0.002,
+      1.3394,
+      0.1659
+     ],
+     "visualCentre": [
+      0.0194,
+      1.3452,
+      0.2012
+     ],
+     "centreDistance": 0.0417,
+     "coverage": 0.356,
+     "farthestVertex": 0.213
+    }
+   },
+   {
+    "pose": "sprint",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.8785,
+     0.1061,
+     0.4659
+    ],
+    "muzzle": [
+     0.7292,
+     1.2489,
+     0.6398
+    ],
+    "weaponMount": [
+     -0.0139,
+     1.1197,
+     0.2434
+    ],
+    "mountFromSpine": 0.2856,
+    "head": {
+     "hitCentre": [
+      0.0051,
+      1.6628,
+      0.1426
+     ],
+     "visualCentre": [
+      0.007,
+      1.6714,
+      0.1699
+     ],
+     "centreDistance": 0.0287,
+     "coverage": 0.46,
+     "farthestVertex": 0.21
+    }
+   },
+   {
+    "pose": "jump",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0016,
+    "handL_toGrip": 0.0016,
+    "weaponForward": [
+     0.0001,
+     -0.0392,
+     0.9992
+    ],
+    "muzzle": [
+     -0.1571,
+     1.2821,
+     1.0408
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.2763,
+     0.1888
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.7434,
+      0.0278
+     ],
+     "visualCentre": [
+      -0.0014,
+      1.754,
+      0.0192
+     ],
+     "centreDistance": 0.0136,
+     "coverage": 0.929,
+     "farthestVertex": 0.218
+    }
+   },
+   {
+    "pose": "fall",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0016,
+    "handL_toGrip": 0.0016,
+    "weaponForward": [
+     0.0001,
+     -0.1979,
+     0.9802
+    ],
+    "muzzle": [
+     -0.1571,
+     1.113,
+     1.0677
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.2431,
+     0.2256
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.732,
+      0.115
+     ],
+     "visualCentre": [
+      -0.0014,
+      1.7417,
+      0.1343
+     ],
+     "centreDistance": 0.0216,
+     "coverage": 0.578,
+     "farthestVertex": 0.211
+    }
+   },
+   {
+    "pose": "land",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0181,
+    "handL_toGrip": 0.0181,
+    "weaponForward": [
+     0.0064,
+     -0.271,
+     0.9626
+    ],
+    "muzzle": [
+     -0.1493,
+     0.8261,
+     1.0624
+    ],
+    "weaponMount": [
+     -0.1549,
+     1.0191,
+     0.2324
+    ],
+    "mountFromSpine": 0.3207,
+    "head": {
+     "hitCentre": [
+      0.0019,
+      1.5523,
+      0.1551
+     ],
+     "visualCentre": [
+      0.0039,
+      1.56,
+      0.1873
+     ],
+     "centreDistance": 0.0332,
+     "coverage": 0.424,
+     "farthestVertex": 0.21
+    }
+   },
+   {
+    "pose": "hit-front",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     -0.0015,
+     0.0836,
+     0.9965
+    ],
+    "muzzle": [
+     -0.1514,
+     1.3517,
+     0.925
+    ],
+    "weaponMount": [
+     -0.1482,
+     1.2415,
+     0.08
+    ],
+    "mountFromSpine": 0.3191,
+    "head": {
+     "hitCentre": [
+      -0.005,
+      1.672,
+      -0.1159
+     ],
+     "visualCentre": [
+      0.0031,
+      1.6636,
+      -0.1952
+     ],
+     "centreDistance": 0.0802,
+     "coverage": 0.844,
+     "farthestVertex": 0.266
+    }
+   },
+   {
+    "pose": "hit-left",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0,
+    "weaponForward": [
+     0.0144,
+     0.1283,
+     0.9916
+    ],
+    "muzzle": [
+     -0.1796,
+     1.368,
+     0.913
+    ],
+    "weaponMount": [
+     -0.1841,
+     1.2207,
+     0.0737
+    ],
+    "mountFromSpine": 0.3191,
+    "head": {
+     "hitCentre": [
+      -0.087,
+      1.6599,
+      -0.138
+     ],
+     "visualCentre": [
+      -0.1061,
+      1.6469,
+      -0.2237
+     ],
+     "centreDistance": 0.0888,
+     "coverage": 0.82,
+     "farthestVertex": 0.273
+    }
+   },
+   {
+    "pose": "pivot",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.0016,
+    "handL_toGrip": 0.0016,
+    "weaponForward": [
+     0.0001,
+     -0.0192,
+     0.9998
+    ],
+    "muzzle": [
+     -0.1571,
+     1.2828,
+     1.0356
+    ],
+    "weaponMount": [
+     -0.1569,
+     1.26,
+     0.1838
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0019,
+      1.7239,
+      0.0168
+     ],
+     "visualCentre": [
+      -0.0014,
+      1.7342,
+      0.0047
+     ],
+     "centreDistance": 0.0159,
+     "coverage": 0.931,
+     "farthestVertex": 0.219
+    }
+   },
+   {
+    "pose": "reload",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 1,
+    "leftHandOffset": 0.44,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0,
+    "handL_toGrip": 0.4928,
+    "weaponForward": [
+     0.0073,
+     0.2011,
+     0.9795
+    ],
+    "muzzle": [
+     -0.1703,
+     1.4256,
+     1.0149
+    ],
+    "weaponMount": [
+     -0.1581,
+     1.2205,
+     0.1879
+    ],
+    "mountFromSpine": 0.3268,
+    "head": {
+     "hitCentre": [
+      -0.0085,
+      1.7117,
+      0.0456
+     ],
+     "visualCentre": [
+      -0.02,
+      1.719,
+      0.0784
+     ],
+     "centreDistance": 0.0355,
+     "coverage": 0.409,
+     "farthestVertex": 0.211
+    }
+   },
+   {
+    "pose": "throw",
+    "mode": "combat",
+    "ikL": 1,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0.7982,
+    "handL_toTarget": 0.0374,
+    "handL_toGrip": 0.0374,
+    "weaponForward": [
+     -0.2501,
+     -0.047,
+     0.9671
+    ],
+    "muzzle": [
+     -0.4128,
+     1.1665,
+     0.9685
+    ],
+    "weaponMount": [
+     -0.1994,
+     1.1673,
+     0.1435
+    ],
+    "mountFromSpine": 0.2955,
+    "head": {
+     "hitCentre": [
+      -0.0083,
+      1.7149,
+      0.0314
+     ],
+     "visualCentre": [
+      -0.0051,
+      1.7255,
+      0.0247
+     ],
+     "centreDistance": 0.0129,
+     "coverage": 0.928,
+     "farthestVertex": 0.217
+    }
+   },
+   {
+    "pose": "buff",
+    "mode": "combat",
+    "ikL": 0.106,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.3176,
+    "handL_toGrip": 0.3176,
+    "weaponForward": [
+     0.0002,
+     -0.0297,
+     0.9996
+    ],
+    "muzzle": [
+     -0.1583,
+     1.2633,
+     1.0385
+    ],
+    "weaponMount": [
+     -0.1582,
+     1.2494,
+     0.1865
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0041,
+      1.7115,
+      0.0365
+     ],
+     "visualCentre": [
+      -0.0162,
+      1.7205,
+      0.0583
+     ],
+     "centreDistance": 0.0265,
+     "coverage": 0.589,
+     "farthestVertex": 0.212
+    }
+   },
+   {
+    "pose": "heal",
+    "mode": "combat",
+    "ikL": 0.081,
+    "ikR": 1,
+    "leftHandOffset": 0,
+    "weaponVisible": true,
+    "handR_toGrip": 0,
+    "handL_toTarget": 0.5221,
+    "handL_toGrip": 0.5221,
+    "weaponForward": [
+     0.0002,
+     -0.0306,
+     0.9995
+    ],
+    "muzzle": [
+     -0.1582,
+     1.2627,
+     1.0387
+    ],
+    "weaponMount": [
+     -0.1582,
+     1.2495,
+     0.1867
+    ],
+    "mountFromSpine": 0.3477,
+    "head": {
+     "hitCentre": [
+      -0.0034,
+      1.7153,
+      0.0231
+     ],
+     "visualCentre": [
+      -0.0029,
+      1.7258,
+      0.013
+     ],
+     "centreDistance": 0.0146,
+     "coverage": 0.929,
+     "farthestVertex": 0.219
+    }
+   },
+   {
+    "pose": "sit",
+    "mode": "sit",
+    "ikL": 0,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": false,
+    "head": {
+     "hitCentre": [
+      0,
+      1.3034,
+      -0.027
+     ],
+     "visualCentre": [
+      0,
+      1.3123,
+      -0.053
+     ],
+     "centreDistance": 0.0275,
+     "coverage": 0.924,
+     "farthestVertex": 0.226
+    }
+   },
+   {
+    "pose": "dead-back",
+    "mode": "dead",
+    "ikL": 0,
+    "ikR": 0,
+    "leftHandOffset": 0,
+    "weaponVisible": true
+   }
+  ]
+ },
+ "logic16v16": {
+  "frames": 1800,
+  "avgMs": 3.57,
+  "p99Ms": 9.4,
+  "maxMs": 20.3,
+  "over16": 1
+ },
+ "live": {
+  "headSamples": 271,
+  "headMaxCm": 10.464529137236047,
+  "headMeanCm": 3.5337169836342053,
+  "aimStanding": {
+   "n": 119,
+   "meanDeg": 3.91,
+   "maxDeg": 12.33
+  },
+  "aimCrouching": {
+   "n": 45,
+   "meanDeg": 14.2,
+   "maxDeg": 15.73
+  },
+  "aimOther": {
+   "n": 21,
+   "meanDeg": 6.86,
+   "maxDeg": 22.47
+  }
+ },
+ "view16v16": [
+  {
+   "yaw": 0,
+   "soldiersActive": 32,
+   "calls": 630,
+   "callsWithoutSoldiers": 106,
+   "soldierCalls": 524,
+   "soldierTriangles": 456316,
+   "callsPerActiveSoldier": 16.4
+  },
+  {
+   "yaw": 1.57,
+   "soldiersActive": 32,
+   "calls": 560,
+   "callsWithoutSoldiers": 89,
+   "soldierCalls": 471,
+   "soldierTriangles": 406308,
+   "callsPerActiveSoldier": 14.7
+  },
+  {
+   "yaw": 3.14,
+   "soldiersActive": 31,
+   "calls": 554,
+   "callsWithoutSoldiers": 92,
+   "soldierCalls": 462,
+   "soldierTriangles": 402496,
+   "callsPerActiveSoldier": 14.9
+  },
+  {
+   "yaw": -1.57,
+   "soldiersActive": 32,
+   "calls": 848,
+   "callsWithoutSoldiers": 130,
+   "soldierCalls": 718,
+   "soldierTriangles": 620684,
+   "callsPerActiveSoldier": 22.4
+  }
+ ],
+ "crowd16v16": [
+  {
+   "yaw": 0,
+   "soldiersActive": 32,
+   "calls": 814,
+   "callsWithoutSoldiers": 94,
+   "soldierCalls": 720,
+   "soldierTriangles": 620058,
+   "callsPerActiveSoldier": 22.5
+  },
+  {
+   "yaw": 1.57,
+   "soldiersActive": 32,
+   "calls": 860,
+   "callsWithoutSoldiers": 93,
+   "soldierCalls": 767,
+   "soldierTriangles": 661806,
+   "callsPerActiveSoldier": 24
+  },
+  {
+   "yaw": 3.14,
+   "soldiersActive": 32,
+   "calls": 880,
+   "callsWithoutSoldiers": 126,
+   "soldierCalls": 754,
+   "soldierTriangles": 651124,
+   "callsPerActiveSoldier": 23.6
+  },
+  {
+   "yaw": -1.57,
+   "soldiersActive": 32,
+   "calls": 961,
+   "callsWithoutSoldiers": 170,
+   "soldierCalls": 791,
+   "soldierTriangles": 683222,
+   "callsPerActiveSoldier": 24.7
+  }
+ ],
+ "restarts": [
+  {
+   "geometries": 827,
+   "textures": 3,
+   "heapMB": 162.7
+  },
+  {
+   "geometries": 827,
+   "textures": 3,
+   "heapMB": 163.1
+  },
+  {
+   "geometries": 827,
+   "textures": 3,
+   "heapMB": 162.9
+  }
+ ],
+ "errors": []
+}

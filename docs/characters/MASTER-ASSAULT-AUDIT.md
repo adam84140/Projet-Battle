@@ -1,6 +1,6 @@
 # Master Assault — audit technique et plan de migration
 
-**Statut : proposition, en attente d'autorisation du propriétaire.** Aucun code n'a été modifié pour cet audit. Base auditée : branche `claude/dazzling-cray-gn1bg5`, code du jeu identique à `05827b4` ; mesures du 2026-09-29 dans le conteneur Cloud (Chromium sans GPU : appels de rendu, triangles, mémoire et temps de construction sont fiables ; les FPS ne le sont pas).
+**Statut : audit accepté par le propriétaire (2026-09-29). Étape M0 terminée ([référence M0](MASTER-ASSAULT-BASELINE.md)) ; M1 et suivantes NON autorisées** (chacune demandera une autorisation explicite). Aucun code du jeu n'a été modifié pour cet audit. Base auditée : branche `claude/dazzling-cray-gn1bg5`, code du jeu identique à `05827b4` ; mesures du 2026-09-29 dans le conteneur Cloud (Chromium sans GPU : appels de rendu, triangles, mémoire et temps de construction sont fiables ; les FPS ne le sont pas).
 
 Cible : [MASTER-ASSAULT](MASTER-ASSAULT.md) · chaîne : [CHARACTER-PIPELINE](CHARACTER-PIPELINE.md) · références : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md) · décisions : D-002, D-003, D-007, D-009, D-010, D-011 ([DECISIONS](../DECISIONS.md)).
 
@@ -119,7 +119,7 @@ Chaque étape : un ou plusieurs petits commits, `npm test` vert, captures avant 
 
 | Étape | Contenu | Risque | Qui | Résultat vérifiable |
 | --- | --- | --- | --- | --- |
-| **M0** Tests protecteurs | nouveau test `test:character` : maillages, appels et triangles par soldat, mémoire par soldat et sur rotation de la réserve, écart mains / points de prise dans les 18 poses (< 1 cm), écart tête visible / sphère de tête, temps de construction ; captures de référence `turn`, `poses`, `game` | aucun (tests seulement) | Claude | chiffres de ce document reproduits par un test |
+| **M0** Tests protecteurs ✅ [fait](MASTER-ASSAULT-BASELINE.md) | nouveau test `test:character` : maillages, appels et triangles par soldat, mémoire par soldat et sur rotation de la réserve, écart mains / points de prise dans les 18 poses (< 1 cm), écart tête visible / sphère de tête, temps de construction ; captures de référence `turn`, `poses`, `game` | aucun (tests seulement) | Claude | chiffres de ce document reproduits par un test |
 | **M1** Prototype à peau rigide | les os deviennent des `THREE.Bone` (même nom, même rôle) ; nouvelle fusion en **un seul `SkinnedMesh`** (chaque sommet lié à 100 % à son os), arme à part ; sphère englobante fixe ; variante transparente pour le camouflage ; derrière le réglage `skinned-proto` | moyen : touche `Character.bake` et `parts.js` (système central) ; le chemin actuel reste intact | Claude | rendu identique en A/B (même géométrie, mêmes couleurs) ; 18 → 3 maillages visibles par soldat ; appels de rendu 16v16 remesurés |
 | **M2** Adaptateur de squelette | reciblage vers un squelette aux repères quelconques (A-pose), IK des mains sur ses longueurs ; **squelette d'essai synthétique** exporté depuis le modèle actuel en A-pose (présenté comme donnée de test, pas comme art) ; script de contrôle d'un `.glb` (noms d'os, sockets, triangles, matériaux, textures, échelle, orientation) sans dépendance | moyen : nouveau code isolé | Claude | mains < 1 cm, hitboxes identiques, poses A/B avec le squelette d'essai |
 | **M3** Matériau à masque d'équipe | matériau stylisé partagé : couleurs d'équipe (primaire, secondaire, emblème), teint et cheveux par uniformes ; emblèmes canoniques (aigle / étoile, D-011) en décalque | faible | Claude | bleu et rouge depuis une seule géométrie et une seule texture ; test bleu/rouge à 5, 20 et 40 m |
@@ -141,14 +141,31 @@ Ensuite seulement : Artilleur et Commando sur la même architecture ([ROADMAP](.
 | Scène de charge ci-dessus | estimation après M1 : environ 4 à 6 appels par soldat (couleur et ombre), soit ~130 à 190 pour 32 soldats au lieu de ~780 (à mesurer, pas une promesse) |
 | Mémoire | après M3 et M5 : une géométrie et une texture partagées par classe ; asset < 1,5 Mo LOD compris |
 
-## 7. Décisions demandées au propriétaire
-1. **M0 (tests protecteurs)** : autoriser. Aucun risque pour le jeu.
-2. **M1 (prototype à peau rigide)** : autoriser la modification de `Character.bake` et `parts.js`, derrière un réglage, ancien chemin conservé. C'est le premier gain de performance mesurable, avant tout travail artistique.
-3. **Production de l'asset (M4)** : qui la fait, et avec quel outil ? Artiste 3D, Blender sur votre machine, ou autre source. Claude ne peut pas produire l'art final par le code ([CHARACTER-PIPELINE](CHARACTER-PIPELINE.md)).
-4. **Convention du squelette** : accepter l'adaptateur de reciblage (recommandé), qui laisse l'artiste exporter une A-pose standard avec les noms canoniques. L'alternative, imposer des repères d'os identité à l'artiste, est inhabituelle et source d'erreurs.
-5. **Réglages sauvegardés** (D-010) : migration douce recommandée (un champ de révision ajouté dans la même clé ; les anciens réglages restent lisibles et le sac est retiré une seule fois). Sans migration, les joueurs existants gardent le sac.
-6. **Bots** : recommandation : pas de sac pour les bots par défaut (le dos et l'emblème restent lisibles), autres accessoires toujours au hasard.
-7. **Matériaux** : recommandation : petit atlas peint (1024²) + masque d'équipe pour LOD0 et LOD1, couleurs de sommets pour LOD2.
+## 6 bis. Bénéfice attendu de M1, révisé après M0
+Estimations à partir des mesures M0 ; M1 doit les **mesurer** avec `test:character`.
+
+| Mesure | M0 (actuel) | Après M1 (estimation) |
+| --- | --- | --- |
+| Maillages visibles par soldat | 18 | **3** (corps avec le cou, arme, chargeur) |
+| Soldat seul, couleur + ombre | 36 appels | **≈ 6** |
+| Scène chargée 16v16 : appels des soldats / total | 717–810 / 811–966 | ≈ 120–135 / **≈ 210–310** |
+| Vue de jeu de référence : appels des soldats / total | 420–729 / 521–865 | ≈ 70–120 / **≈ 140–260** (objectif GOLD ≤ 250 à portée dans la vue typique) |
+| Triangles | 16 800 par soldat | inchangés (même géométrie) |
+| Géométrie par soldat | 1,78 Mo, non indexée | + attributs de peau (≈ +0,4 Mo en entiers 8 bits) ; **réindexer** peut au contraire la réduire nettement : à mesurer |
+| Construction d'un soldat | 54–82 ms | inchangée à peu près : le pic de réapparition relève de l'étape 1 de la roadmap (réserve) puis de M5 (clonage de l'asset) |
+| Hitboxes, mains, arme, bouche du canon | voir M0 | **identiques** (mêmes os) : vérifié par `test:character` |
+| Rendu | planche M0 | **identique au pixel près** attendu (même géométrie, mêmes couleurs) |
+
+**M1 paraît toujours sûre**, aux conditions déjà prévues : derrière un réglage, ancien chemin intact ; les os restent les mêmes objets (seul leur type passe de `Group` à `Bone`, rien n'en dépend) ; comparaison chiffrée et au pixel avec la référence M0. Risques restants : sphère englobante du `SkinnedMesh` (disparition au bord de l'écran), ombres, transparence du camouflage, coût du skinning sur téléphone (non mesurable dans le conteneur), mémoire des attributs de peau.
+
+## 7. Décisions du propriétaire (2026-09-29)
+1. **M0 : autorisée.** Tests protecteurs et mesures de référence avant toute migration ; personnage procédural intégralement préservé. Résultats : [MASTER-ASSAULT-BASELINE](MASTER-ASSAULT-BASELINE.md).
+2. **M1 : non autorisée pour l'instant.** Après M0 : rapport des mesures, puis arrêt ; M1 sera autorisée séparément.
+3. **M4** : asset de production par la chaîne Blender / 3D, jamais par des primitives procédurales ([DECISIONS](../DECISIONS.md) D-014).
+4. **Adaptateur de squelette** : autorisé sur le principe, implémenté seulement à son étape (D-015).
+5. **Réglages et sac** : Assaut par défaut sans sac ; migration unique des réglages sauvegardés à l'étape concernée ; support du sac conservé (D-010).
+6. **Bots** : bots Assaut sans sac par défaut ; autres variations cosmétiques compatibles aléatoires (D-010).
+7. **Matériaux** : matériau et asset partagés, masque d'équipe, pas de duplication bleu/rouge, peu de matériaux ; couleurs de sommets à grande distance **provisoires** jusqu'à mesure (D-016).
 
 ## 8. Ce qui n'est pas vérifié
 - FPS et mémoire sur un vrai GPU (le conteneur n'en a pas).

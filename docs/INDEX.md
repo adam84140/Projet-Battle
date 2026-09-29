@@ -18,7 +18,8 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | --- | --- |
 | [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) | spécification du personnage de référence : art, technique, animation, validation, critères GOLD |
 | [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md) | chaîne de production cible (Blender → glTF → Three.js), partage code / outil 3D |
-| [MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md) | audit technique du personnage actuel, mesures, plan de migration M0 à M7, décisions demandées |
+| [MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md) | audit technique du personnage actuel, mesures, plan de migration M0 à M7, décisions du propriétaire |
+| [MASTER-ASSAULT-BASELINE](characters/MASTER-ASSAULT-BASELINE.md) | **référence M0** : tests `test:character`, mesures, captures A/B, surprises |
 
 ## Carte 1 — *Castelmare*
 | Document | Contenu |

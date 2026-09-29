@@ -31,6 +31,13 @@ Scène de charge 16v16 : 32 soldats vivants à moins de 18 m de la place B, 4 di
 
 Détail et plan : [MASTER-ASSAULT-AUDIT](../characters/MASTER-ASSAULT-AUDIT.md).
 
+## Référence M0 automatisée (`npm run test:character`)
+Mesures répétées par le test, sur le même code (détail : [MASTER-ASSAULT-BASELINE](../characters/MASTER-ASSAULT-BASELINE.md)) :
+- soldat seul : 36 appels (couleur + ombre), 18 maillages visibles, 16 800 triangles, 1,78 Mo de géométrie, ≈ 1,9 Mo de mémoire JS ;
+- vue de jeu de référence 16v16 : 521 à 865 appels, dont 420 à 729 pour les soldats ; scène chargée : 811 à 966 appels, dont 717 à 810 (22 à 25 par soldat) ;
+- logique 16v16 sur les 60 s qui suivent le déploiement : **3,5 à 3,9 ms** en moyenne, p99 8,5 à 9,9 ms, 1 à 4 images > 16 ms. Plus élevé que les 1,66 ms ci-dessus (autre fenêtre de mesure, autre machine, même code) : c'est la valeur de référence pour le travail sur le personnage ;
+- mémoire stable sur 3 relances 16v16 (827 géométries GPU à chaque fois).
+
 ## Techniques en place
 - Décor statique fusionné en paquets de 1 500 maillages (`bakeStatic`) ; personnages fusionnés par os, arme fusionnée à part sous son support animé (`bakeHierarchy`) ; véhicules fusionnés par pièce mobile.
 - Matériaux en cache (`mat()`), géométries partagées marquées (`markShared`), libération par `disposeTree` (véhicules, drapeaux, projectiles, personnages).

@@ -70,7 +70,8 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
 - **Décision :** le Master Assault par défaut **n'a pas de sac à dos**. Les images 01 et 03 font autorité pour sa silhouette par défaut ; l'**emblème du dos doit rester bien visible** depuis la caméra à la 3ᵉ personne. Le sac à dos est **uniquement un accessoire de personnalisation optionnel**.
 - **Conservé :** le support du sac dans l'architecture (socket `socket_back`, option `backpack` de la personnalisation, construction de l'accessoire) : un sac doit pouvoir être équipé plus tard. Ne pas le supprimer.
-- **Conséquences :** la distinction entre classes ne repose plus sur le sac (test de silhouette à refaire avec le Master Assault) ; le changement de la valeur par défaut en jeu (`DEFAULT_CUSTOM.backpack`) se fait **avec l'intégration du Master Assault**, en respectant la compatibilité des réglages sauvegardés (clé `frontline-legends-settings-v1`).
+- **Conséquences :** la distinction entre classes ne repose plus sur le sac (test de silhouette à refaire avec le Master Assault) ; le changement de la valeur par défaut en jeu (`DEFAULT_CUSTOM.backpack`) se fait **avec l'étape de migration concernée** (M6 de l'[audit](characters/MASTER-ASSAULT-AUDIT.md)), en respectant la compatibilité des réglages sauvegardés (clé `frontline-legends-settings-v1`).
+- **Complément (propriétaire, 2026-09-29) :** à cette étape, une **migration unique des réglages sauvegardés** fait passer l'Assaut existant à « sans sac » (même clé, anciens réglages toujours lisibles). Les **bots Assaut n'ont pas de sac par défaut** ; les autres variations cosmétiques compatibles restent aléatoires.
 
 ## D-011 — IDENTITÉ D'ÉQUIPE CANONIQUE
 - **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
@@ -90,3 +91,19 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Règles inchangées :** la victoire aux tickets reste la règle canonique de la conquête ; on ne change pas les règles pour reproduire une maquette.
 - **Chrono :** acceptable plus tard s'il est **informatif seulement** (durée écoulée) et n'influence jamais la victoire ou la défaite. **Aucun compte à rebours ni limite de temps sans autorisation explicite séparée.**
 - **Quand :** passe HUD de la [ROADMAP](ROADMAP.md) (étape 5), avec vérifications de chevauchement (ordinateur et tactile) ; pas pendant le Master Character.
+
+## D-014 — ASSET DE PRODUCTION PAR LA CHAÎNE BLENDER / 3D
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-29)
+- **Décision :** le modèle de production du Master Assault est créé par une vraie chaîne Blender / 3D. **Ne pas tenter de reproduire le personnage final des références avec des primitives JavaScript procédurales.** Les images 01 et 02 restent l'autorité visuelle.
+- **Rôle de Claude :** définir le contrat de l'asset, préparer des spécifications compatibles Blender, écrire des scripts d'aide et de validation d'export, valider les fichiers GLB/glTF, intégrer l'asset dans Three.js, automatiser des parties de la chaîne Blender quand c'est pratique. L'asset visuel lui-même appartient à la chaîne Blender / 3D.
+- **Conséquence :** aucune production Blender avant l'autorisation de l'étape M4 ([MASTER-ASSAULT-AUDIT](characters/MASTER-ASSAULT-AUDIT.md)).
+
+## D-015 — ADAPTATEUR DE SQUELETTE (RECIBLAGE)
+- **Statut :** LOCKED sur le principe (propriétaire, 2026-09-29) ; implémentation soumise à l'autorisation de son étape (M2)
+- **Décision :** un adaptateur permet à un squelette Blender de production standard (A-pose, noms canoniques) de suivre le contrat actuel d'animation et de gameplay (squelette de gameplay, `Animator`, IK, hitboxes) **sans réécrire les systèmes de jeu qui fonctionnent**.
+- **Raison :** voir les constats C1 à C3 de l'[audit](characters/MASTER-ASSAULT-AUDIT.md).
+
+## D-016 — STRATÉGIE DE MATÉRIAUX DES PERSONNAGES
+- **Statut :** LOCKED pour la direction ; **PENDING** pour le rendu à grande distance
+- **Décision :** architecture de matériau de production **partagée**, asset de personnage **partagé**, **masque de couleurs d'équipe** bleu/rouge, pas de géométrie ni de texture dupliquées par équipe, nombre de matériaux minimal.
+- **En attente :** la stratégie « couleurs de sommets à grande distance » (LOD2) reste **provisoire** : elle ne sera verrouillée que si des mesures visuelles et de performance montrent un gain réel sans dégrader visiblement la cible officielle.

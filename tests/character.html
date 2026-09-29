@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sonde personnage</title>
+  </head>
+  <body style="margin: 0; background: #1b2638">
+    <script type="module">
+      // Page de mesure du personnage (référence M0) : expose la sonde à tests/character.mjs.
+      import * as probe from '/tests/character-probe.js';
+      window.__probe = probe;
+      window.__ready = true;
+    </script>
+  </body>
+</html>

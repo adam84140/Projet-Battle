@@ -29,8 +29,10 @@ Repos combat, marche, course, sprint (arme portée), marche arrière, pas chass�
 - Pas de clips : les gestes complexes (rechargement, morts) restent simples.
 - Pas d'IK des pieds : les pieds peuvent glisser légèrement sur les pentes.
 - Dans la variante de mort en vrille, l'arme peut rester quelques centimètres au-dessus du sol.
+- Mesuré en M0 ([référence](../characters/MASTER-ASSAULT-BASELINE.md)) : mains à < 8 mm de l'arme dans les poses stables, mais main gauche à 7–18 mm en réception et 27–37 mm pendant le lancer de grenade (cible hors d'atteinte) ; en **visée accroupie, l'arme pointe ~15° sous la ligne de visée** (visuel seulement : les balles partent vers le point visé) ; la sphère de touche de la tête est décalée **verticalement** depuis l'os `head` et ne suit pas son inclinaison (écart jusqu'à ~9 cm tête penchée).
 
 ## Outils d'inspection
+- `npm run test:character` : mesures et gardes du personnage (voir [MASTER-ASSAULT-BASELINE](../characters/MASTER-ASSAULT-BASELINE.md)), planches A/B reproductibles dans `test-results/character/`.
 - `tests/turntable.html?classe=…&equipe=…&bake=1` : 7 vues (face, 3/4, profil, dos, repos, visée, course).
 - `tests/poses.html` : planche de 18 états (saut, réception, impacts, pivot, morts…).
 - `npm run shots -- <étiquette> turn|poses`.
