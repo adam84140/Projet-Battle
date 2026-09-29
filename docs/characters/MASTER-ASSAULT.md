@@ -8,39 +8,47 @@ Le Master Assault est le **personnage de référence de production** ([DECISIONS
 
 ## 1. Art
 
-### Rôle
-Le héros de la jaquette : l'Assaut bleu à l'aigle ailé de la planche de référence (voir [ART-DIRECTION](../product/ART-DIRECTION.md)). Il doit être reconnaissable en vignette, lisible en combat et assez sympathique pour porter l'identité du jeu.
+### Références officielles
+- **Autorité primaire : [image 01](../_attachments/ref-01-master-assault-turnaround.webp)** (vues tournantes) pour les proportions, la silhouette, le visage, la coiffure, les vêtements, l'équipement, les gants, les genouillères, les bottes, le placement des emblèmes, les matériaux et la palette.
+- **Secondaire : [image 02](../_attachments/ref-02-master-assault-production-sheet.webp)** (planche de production) pour les expressions, les accessoires, les poses et l'échelle.
+- Lecture détaillée, palette relevée et écarts avec le jeu actuel : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md). Décision : [DECISIONS](../DECISIONS.md) D-009.
 
-### Proportions (hauteur totale ≈ 1,80 m, unités en mètres)
-- Environ 6,5 têtes de haut (tête ≈ 1,13 × une tête « réaliste »).
+### Rôle
+Le héros de la jaquette : l'Assaut bleu à l'aigle ailé des images 01 à 03. Il doit être reconnaissable en vignette, lisible en combat et assez sympathique pour porter l'identité du jeu.
+
+### Proportions (unités en mètres)
+- **Hauteur totale 1,85 m** au sommet des cheveux (image 01), environ 6,5 têtes (tête ≈ 1,13 × une tête « réaliste »). Le jeu actuel est bâti sur 1,80 m (capsule physique `body.height`) : les hitboxes ne changent pas (partie technique) ; l'écart de 5 cm se vérifie au prototype d'intégration.
 - Épaules larges (≈ 0,55 m d'un deltoïde à l'autre), taille fine, bassin étroit : torse en V.
-- Avant-bras épais et lisibles, mains légèrement surdimensionnées, gantées.
-- Jambes solides, bottes légèrement exagérées avec semelle marquée.
+- Avant-bras épais et lisibles, mains fortes, gantées.
+- Jambes solides, bottes massives à semelle épaisse.
 - Posture droite, menton volontaire.
 
 ### Silhouette
-- Lisible en ombre chinoise pleine : sac à dos, grenades à la ceinture, fusil compact.
-- Différente de l'Artilleur (plus massif, casque, épaulières) et du Commando (plus fin, bonnet, écharpe).
+- Lisible en ombre pleine, **tête nue** (coiffure relevée), gilet ouvert à harnais, ceinture chargée de poches, étui sur la cuisse droite, genouillères, bottes massives, fusil compact.
+- **Pas de sac à dos sur le modèle de base** (images 01 et 03) : le sac devient un accessoire (image 02). À confirmer par le propriétaire ([VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md), questions ouvertes).
+- Différente de l'Artilleur (plus massif, casque, épaulières) et du Commando (plus fin, bonnet, écharpe) : à revérifier au test de silhouette puisque le sac ne porte plus la différence.
 
 ### Visage et cheveux
-- Visage stylisé, grands traits : sourcils épais, yeux lisibles, bouche expressive.
-- Cheveux en quelques volumes nets (mèche avant marquée), sans fils ni transparence.
-- Expressions nécessaires : neutre, déterminé, confiant, concentré (visée), douleur (impact), K.-O. (mort).
+- Visage stylisé à grands traits : mâchoire carrée, menton marqué, sourcils épais et sombres, yeux bruns lisibles, léger sourire assuré.
+- Cheveux brun foncé en quelques volumes nets : côtés courts dégradés, dessus relevé vers l'arrière, mèche avant marquée ; sans fils ni transparence.
+- Expressions de référence (image 02) : neutre, déterminé, confiant, énervé, surpris, souriant. Expressions nécessaires au jeu : concentré (visée), douleur (impact), K.-O. (mort).
 
 ### Lisibilité d'équipe
-- Maillot et manches aux couleurs d'équipe, dominants sur le haut du corps.
-- Emblème poitrine et dos (aigle ailé / étoile), bande colorée sur le sac, couleur visible de dos.
-- Bleu `#2F5BB7` / rouge `#B2382C` ; gilet `#29344A` / `#4A2C27` ; pantalon olive / gris-vert (voir [ART-DIRECTION](../product/ART-DIRECTION.md)).
+- Chemise aux couleurs d'équipe, dominante sur le haut du corps (manches retroussées à revers gris clair).
+- Emblème blanc (aigle ailé / étoile) : **poitrine**, **les deux manches**, **grand emblème du dos** sur le panneau du harnais, visible de la caméra à la 3ᵉ personne (image 03).
+- Couleurs actuelles du jeu : bleu `#2F5BB7` / rouge `#B2382C` ; gilet `#29344A` / `#4A2C27` ; pantalon olive / gris-vert (voir [ART-DIRECTION](../product/ART-DIRECTION.md)). Palette relevée sur l'image 01 (bleu plus sombre `#32548F`, olive `#787752`, cuir `#493427`…) : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md). L'harmonisation se fait avec l'asset et se valide par le test bleu/rouge à 40 m.
 
-### Équipement
-Gilet porte-chargeurs avec sangles, ceinture et poches, 2 grenades, gourde, sac à dos (bande d'équipe, emblème), genouillères, gants mi-doigts, bottes lacées. Pas d'accessoire qui masque le visage par défaut.
+### Équipement (modèle de base, image 01)
+Chemise à col ouvert sur tee-shirt sombre ; gilet porte-chargeurs très sombre ouvert devant, poches à rabat sur la poitrine ; harnais de cuir brun (en Y dans le dos) ; ceinture de cuir brun à boucle métallique et poches brunes tout autour ; pantalon cargo olive rentré dans les bottes, sangles sur les deux cuisses ; étui de pistolet noir sur la cuisse droite, poche noire sur la cuisse gauche ; genouillères noires ; gants noirs mi-doigts ; bottes de cuir brun lacées à crochets. Pas d'accessoire qui masque le visage par défaut.
+
+**Accessoires optionnels** (image 02, via sockets) : sac à dos olive à emblème, 2 grenades, gourde, casquette, sacoches, lunettes de soleil, bandana.
 
 ### Langage des armes
-Fusil d'assaut FL-4 : compact, épais, crosse et garde-main tan `#8B7A57`, viseur à point rouge, chargeur courbe bien visible (il se retire au rechargement). Échelle ×1,12 (cartoon).
+Fusil d'assaut FL-4 : compact, épais, crosse et garde-main tan `#8B7A57`, viseur à point rouge, chargeur courbe bien visible (il se retire au rechargement). Échelle ×1,12 (cartoon). Les images ne montrent pas l'arme en détail : la forme actuelle reste la référence.
 
 ### Matériaux et textures
-- Rendu stylisé : couleurs unies, léger dégradé peint, contours lisibles. **Pas de PBR réaliste, pas de salissure.**
-- Un **atlas partagé** de textures (couleur de base) pour tout le personnage, avec des zones peintes à la main pour le visage et les détails.
+- Rendu stylisé comme l'image 01 : couleurs franches, léger dégradé peint, toile, cuir, caoutchouc et métal distincts, **usure légère peinte** (poussière du pantalon, éraflures des bottes et du cuir). **Pas de PBR photoréaliste, pas de saleté réaliste ni de bruit.**
+- Un **atlas partagé** de textures (couleur de base, et au besoin un canal de rugosité) pour tout le personnage, avec des zones peintes à la main pour le visage et les détails.
 - Couleurs d'équipe par **masque**, pas par duplication de textures (voir la partie technique).
 
 ---
@@ -49,6 +57,7 @@ Fusil d'assaut FL-4 : compact, épais, crosse et garde-main tan `#8B7A57`, viseu
 
 ### Maillage
 - **Un seul `SkinnedMesh` pour le corps** (tête comprise), plus des objets rigides attachés aux sockets : arme, sac, casque ou bonnet, accessoires amovibles.
+- L'équipement du modèle de base (gilet, harnais, ceinture et poches, étui, genouillères, gants, bottes) fait **partie du maillage du corps**, pas des objets séparés : il ne coûte aucun appel de rendu.
 - Objectif : **≤ 4 appels de rendu par soldat** en LOD0 (corps, arme, sac, accessoire), contre 24 maillages aujourd'hui.
 
 ### Budgets de géométrie
@@ -127,6 +136,7 @@ Le corps projette une ombre en LOD0 et LOD1 ; pas d'accessoires fins dans l'ombr
 | Marche, course, sprint | code | foulée accordée à la vitesse (déjà en place) |
 | Déplacements directionnels (arrière, pas chassés) | code | rotation des hanches, contre-rotation du buste |
 | Pivot sur place | code | petits pas |
+| Accroupi (immobile et en déplacement) | code | déjà en place ; pose clé de l'image 02 |
 | Début de saut, en l'air, réception | code | réception proportionnelle à la vitesse de chute |
 | Visée | code | tangage réparti bassin / buste / cou, IK des mains |
 | Tir, recul | code | recul additif du support d'arme et du buste, profil par arme |
@@ -167,6 +177,7 @@ Le corps projette une ombre en LOD0 et LOD1 ; pas d'accessoires fins dans l'ombr
 | Régression gameplay | `npm test` | tout vert |
 | Caméra | `test:camera` + captures en visée | le personnage ne masque pas le centre de l'écran |
 | Performance 16v16 | mesures de [PERFORMANCE](../systems/PERFORMANCE.md) | pas de régression par rapport au personnage actuel |
+| Conformité aux références | vues face, 3/4, profil, dos (`fiche.html`, `shots turn`) à côté de l'image 01 ; capture en visée à côté de l'image 03 | écarts listés et acceptés par le propriétaire |
 | Comparaison A/B | captures identiques ancien / nouveau personnage | le nouveau est meilleur sur chaque vue, validé par un humain |
 
 ## 6. Critères GOLD du Master Assault
@@ -178,4 +189,4 @@ Le Master Assault est GOLD quand **tous** les points suivants sont vrais :
 5. Toutes les animations de la section 3 présentes ; mains sur l'arme à < 1 cm dans toutes les poses tenues.
 6. Hitboxes identiques à l'actuel ; `npm test` vert ; aucune erreur console.
 7. Squelette et sockets documentés ici, puis **gelés** (D-003 passe à LOCKED).
-8. Validation visuelle par le propriétaire du projet (comparaison A/B).
+8. Validation visuelle par le propriétaire du projet (comparaison A/B et conformité aux images 01 à 03).

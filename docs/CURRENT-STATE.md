@@ -1,7 +1,7 @@
 # État actuel du projet
 
-- **Référence :** commit `05827b4807c67959e125c9681b5ffa953b113a29` (point de contrôle D-004), branche `claude/similar-project-tn0j8l`.
-- **Vérifié le :** 2026-09-29, dans le conteneur Cloud (Chromium sans GPU).
+- **Référence :** commit `05827b4807c67959e125c9681b5ffa953b113a29` (point de contrôle D-004, créé sur la branche `claude/similar-project-tn0j8l`). Branche de travail actuelle : `claude/dazzling-cray-gn1bg5`, qui contient ce commit ; depuis, seuls la documentation, les skills et le banc de test ont changé.
+- **Vérifié le :** 2026-09-29, dans le conteneur Cloud (Chromium sans GPU), à nouveau en début de session sur `claude/dazzling-cray-gn1bg5`.
 - **Jalon :** MAP 1 GOLD — **sous-jalon :** MASTER CHARACTER ASSAULT (**pas commencé**).
 
 Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce qui n'a pas été vérifié est marqué comme tel.
@@ -17,6 +17,7 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
 | **Bots** | 8v8 ou 16v16, 3 difficultés, rôles attaque / défense / contournement / soutien, abris, replis — [AI](systems/AI.md) |
 | **Véhicules** | jeep et char par équipe, suspension, destruction, réapparition ; conduits par le joueur seulement — [VEHICLES](systems/VEHICLES.md) |
 | **Personnages** | procéduraux (primitives Three.js fusionnées par os), 24 maillages par soldat, personnalisation (teint, cheveux, accessoires), planche de référence `fiche.html` |
+| **Références visuelles** | images officielles 01 à 04 versionnées dans `docs/_attachments/` ([VISUAL-REFERENCES](product/VISUAL-REFERENCES.md), D-009) ; **le jeu n'a pas encore été modifié** pour s'en rapprocher (écarts listés dans ce document) |
 | **Animation** | procédurale avec IK des mains, couches additives d'impact et de réception, 3 variantes de mort — [ANIMATION](systems/ANIMATION.md) |
 | **Caméra** | 3ᵉ personne sans traversée du décor ni des feuillages, visée décalée, champ élargi au sprint |
 | **HUD** | tickets, drapeaux, mini-carte, fil d'éliminations, marqueurs d'objectifs (aussi derrière le joueur), noms des alliés, dégâts flottants, direction des tirs, compétences, lunette, scores, anneau de rechargement, barre de capture en haut |
@@ -29,15 +30,15 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
 1 personnage (proportions, silhouettes, IK à < 1 cm) · 2 animations (impacts, réception, foulée, pivots, morts ; correction de l'arme fusionnée dans le torse) · 3 caméra et déplacement · 4 armes · 5 effets · 6 couverts de la carte, mât de B déplacé, bots qui contournent les véhicules garés · 7 kit village · 8 éclairage · 9 HUD · 10 son · 11 IA · 12 véhicules · 13 tactile · 14 performances (fuites GPU, fusion des véhicules, réserve de modèles) · 15 finition (particules près de la caméra, tons harmonisés).
 Détail par commit : `git log --oneline 9011271^..05827b4`.
 
-## Tests (tous verts ; code du jeu identique à `05827b4`)
+## Tests (tous verts ; code du jeu identique à `05827b4` ; dernière exécution : début de session du 2026-09-29 sur `claude/dazzling-cray-gn1bg5`)
 | Commande | Résultat |
 | --- | --- |
 | `npm run build` | OK |
-| `npm run test:smoke` | 48/48, logique 1,18 ms par image |
+| `npm run test:smoke` | 48/48, logique 1,54 ms par image |
 | `npm run test:touch` | 12/12 |
 | `npm run test:camera` | 6/6 : 68 positions, 4 760 images, 0 dans un mur, 0 dans un feuillage, 0 sous le sol |
-| `npm run test:bots` | 8/8 : 47 éliminations et 9 captures en 3 min, blocages 1,2 %, 7 s au plus |
-| Session de 4 min (script ad hoc) | 102 apparitions, 6 772 échantillons : 0 dans le décor, 0 sous le sol, 0 caméra dans un mur, 0 erreur |
+| `npm run test:bots` | 8/8 : 60 éliminations et 7 captures en 3 min, blocages 0,9 %, 7 s au plus, logique 1,59 ms |
+| Session de 4 min (script ad hoc, session précédente, non relancée) | 102 apparitions, 6 772 échantillons : 0 dans le décor, 0 sous le sol, 0 caméra dans un mur, 0 erreur |
 
 Le banc de test abandonne les polices Google si elles ne répondent pas en 8 s (le réseau du conteneur peut les bloquer ; sans cela, la page ne finissait pas de charger).
 

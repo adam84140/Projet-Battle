@@ -32,6 +32,7 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | [GAME-VISION](product/GAME-VISION.md) | ce qu'est (et n'est pas) le jeu |
 | [GAMEPLAY-PILLARS](product/GAMEPLAY-PILLARS.md) | piliers de gameplay, classes |
 | [ART-DIRECTION](product/ART-DIRECTION.md) | style, couleurs d'équipe, personnages, décor, lumière |
+| [VISUAL-REFERENCES](product/VISUAL-REFERENCES.md) | **références visuelles officielles** (images 01 à 04), rôle de chacune, écarts avec le jeu actuel |
 
 ## Systèmes
 | Document | Contenu |

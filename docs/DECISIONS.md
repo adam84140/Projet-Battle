@@ -49,3 +49,18 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Statut :** SUPERSEDED par D-002
 - **Décision d'origine :** pendant les phases 1 à 15, passer les soldats en SkinnedMesh était considéré comme une réécriture de la chaîne des personnages et n'a pas été fait (24 maillages par soldat).
 - **Aujourd'hui :** ce passage fait partie du Master Assault, validé par D-002, et suit [CHARACTER-PIPELINE](characters/CHARACTER-PIPELINE.md).
+
+## D-009 — RÉFÉRENCES VISUELLES OFFICIELLES
+- **Statut :** LOCKED (fournies et hiérarchisées par le propriétaire du projet le 2026-09-29)
+- **Décision :** *Frontline Legends* et les images 01 à 04 sont l'autorité visuelle du projet ([VISUAL-REFERENCES](product/VISUAL-REFERENCES.md), fichiers dans `_attachments/ref-0*.webp`) :
+  - **01** vues tournantes du Master Assault : autorité **primaire** du personnage (proportions, silhouette, visage, coiffure, vêtements, équipement, emblèmes, matériaux, palette) ;
+  - **02** planche de production du Master Assault : secondaire (expressions, accessoires, poses, échelle) ; l'image 01 prime en cas de conflit ;
+  - **03** cible visuelle en jeu : autorité **primaire** de la présentation en jeu (caméra, lisibilité, décor, lumière, HUD, effets, véhicules) ;
+  - **04** vision produit et interface : cohérence à long terme seulement ; **n'autorise** ni nouvelles cartes, ni passe de combat, ni serveur multijoueur, ni clans, ni progression, ni boutique, ni contenu supplémentaire ;
+  - **05** *Battlefield Heroes* : inspiration seulement (lisibilité arcade, 3ᵉ personne accessible, classes lisibles, véhicules, capture de points, ton militaire bon enfant). **Ne jamais reproduire** ses éléments, personnages, marque, interface, cartes ou designs protégés. L'image n'est pas stockée dans le dépôt (marques d'un tiers).
+- **Raison :** donner une cible visuelle unique au Master Assault et à la finition de la carte 1, sans élargir le périmètre.
+- **Conséquences :**
+  - la spécification [MASTER-ASSAULT](characters/MASTER-ASSAULT.md) suit l'image 01 : hauteur 1,85 m, tête nue, emblèmes poitrine / deux manches / dos, **modèle de base sans sac à dos** (le sac devient un accessoire) — point à confirmer à la revue de la spécification ;
+  - le gel du périmètre et D-001 restent entiers : les classes, cartes, avions et menus visibles dans les images 03 et 04 ne sont pas des demandes de travail ;
+  - aucune valeur du jeu (couleurs, HUD, caméra) n'est modifiée par cette décision seule ; chaque écart listé dans [VISUAL-REFERENCES](product/VISUAL-REFERENCES.md) est traité dans l'étape de la [ROADMAP](ROADMAP.md) concernée, avec captures avant/après ;
+  - une règle technique déjà fixée (hitboxes, budgets, lisibilité bleu/rouge) n'est jamais changée en silence à cause d'une référence : le conflit est soumis au propriétaire.

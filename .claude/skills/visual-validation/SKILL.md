@@ -24,6 +24,7 @@ Modes de `tests/shots.mjs` :
 Sortie : `test-results/shots/<étiquette>/` (non versionné). **Regarder réellement chaque image** (outil de lecture d'image) et comparer.
 
 ## 2. Liste de contrôle
+- **Références** : comparer aux images officielles ([VISUAL-REFERENCES](../../../docs/product/VISUAL-REFERENCES.md)) : personnage → image 01 (mêmes vues), en jeu → image 03 (cadrage, lumière, HUD). Signaler les écarts, ne pas copier l'image 04 ni *Battlefield Heroes*.
 - **Silhouette** : reconnaissable en ombre pleine ; chaque classe distincte.
 - **Distance** : équipe et classe lisibles à 5, 20 et 40 m en jeu.
 - **Bleu / rouge** : mêmes vues pour les deux équipes, identification immédiate de face et de dos.
@@ -41,4 +42,4 @@ Sortie : `test-results/shots/<étiquette>/` (non versionné). **Regarder réelle
 ## 4. Rapport
 Lister les captures regardées, ce qui s'est amélioré, ce qui reste imparfait. Un avis esthétique final revient au propriétaire du projet.
 
-Références : [ART-DIRECTION](../../../docs/product/ART-DIRECTION.md) · [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md) (section Validation)
+Références : [VISUAL-REFERENCES](../../../docs/product/VISUAL-REFERENCES.md) · [ART-DIRECTION](../../../docs/product/ART-DIRECTION.md) · [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md) (section Validation)

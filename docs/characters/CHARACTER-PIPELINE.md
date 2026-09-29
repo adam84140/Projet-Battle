@@ -15,7 +15,7 @@ concept / référence ──► modélisation ──► topologie ──► UV /
 
 | Étape | Contenu | Outil | Qui |
 | --- | --- | --- | --- |
-| 1. Concept / référence | planche de référence, vues face/profil/dos, palette | `fiche.html` (planche rendue depuis le modèle actuel), dessin | humain ; Claude peut produire la planche et les captures de référence |
+| 1. Concept / référence | vues face/profil/dos, palette : **images officielles 01 et 02** ([VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md)) | images de référence ; `fiche.html` (planche rendue depuis le modèle du jeu, pour la comparaison) | fourni par le propriétaire ; Claude produit les captures de comparaison |
 | 2. Modélisation | volumes, proportions héroïques, silhouette | Blender | artiste 3D (ou humain assisté) |
 | 3. Topologie | boucles aux articulations, budgets de triangles, LOD | Blender | artiste 3D |
 | 4. UV / textures | atlas partagé, masque de couleurs d'équipe, zones du visage | Blender, peinture de textures | artiste 3D |

@@ -18,6 +18,9 @@ Jeu de tir **cartoon à la 3ᵉ personne** jouable dans le navigateur (Three.js 
 ## Gel du périmètre (jusqu'à MAP 1 GOLD)
 Interdit sans autorisation explicite : nouvelles cartes, nouveaux modes, multijoueur, serveur, progression, passe de combat, boutique, monétisation, clans, matchmaking, grandes bibliothèques d'armes, grands systèmes de personnalisation. Autorisé : finition, correction, contenu de la carte 1, production du Master Assault.
 
+## Références visuelles officielles
+[`docs/product/VISUAL-REFERENCES.md`](docs/product/VISUAL-REFERENCES.md) (D-009) : image 01 = autorité du Master Assault, image 03 = autorité de la présentation en jeu, image 02 = détails du personnage. L'image 04 (vision produit) **n'autorise aucun contenu** hors périmètre. *Battlefield Heroes* = inspiration seulement : **ne jamais reproduire** ses éléments, personnages, marque, interface ou cartes.
+
 ## Aucune affirmation « terminé » sans preuve
 Un travail n'est terminé que si **tout** est vrai :
 - `npm run build` réussit ;

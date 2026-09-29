@@ -7,6 +7,8 @@ description: Produire ou intégrer un personnage de production pour Frontline Le
 
 **Vérifier d'abord l'état réel** : le personnage en jeu est encore procédural (`src/character/`). Ne jamais supposer que le Master Assault existe déjà ; lire [CURRENT-STATE](../../../docs/CURRENT-STATE.md).
 
+**Cible visuelle** : l'[image 01](../../../docs/_attachments/ref-01-master-assault-turnaround.webp) fait autorité (proportions, silhouette, équipement, emblèmes, matériaux, palette), l'[image 02](../../../docs/_attachments/ref-02-master-assault-production-sheet.webp) complète ; lecture et écarts : [VISUAL-REFERENCES](../../../docs/product/VISUAL-REFERENCES.md) (D-009).
+
 ## Règles du rig canonique (proposition, gel en attente : D-003)
 - 1 unité = 1 m, Y en haut, personnage face à +Z, droite = −X, pose de liaison en A-pose.
 - Noms d'os en camelCase, suffixe `L`/`R` ; les os actuels (`hips`, `spine`, `neck`, `head`, `shoulderX`, `elbowX`, `handX`, `legX`, `kneeX`, `ankleX`) gardent leur rôle ; ajouts listés dans [MASTER-ASSAULT](../../../docs/characters/MASTER-ASSAULT.md).
