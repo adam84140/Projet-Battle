@@ -72,17 +72,44 @@ export class World {
     return top;
   }
 
-  gableRoof(x, y, z, span, length, rise, alongX, color) {
-    const s = new THREE.Shape();
-    s.moveTo(-span / 2, 0);
-    s.lineTo(span / 2, 0);
-    s.lineTo(0, rise);
-    s.closePath();
-    const g = new THREE.ExtrudeGeometry(s, { depth: length, bevelEnabled: false });
-    g.translate(0, 0, -length / 2);
-    const m = part(this.statics, g, color, { p: [x, y, z], r: [0, alongX ? Math.PI / 2 : 0, 0], receive: true });
+  // Toit à deux pans. Avec `wall` ({ color, span, length }) : pignons crépis de la couleur
+  // des murs sous deux pans de tuiles qui débordent (même silhouette qu'avant).
+  gableRoof(x, y, z, span, length, rise, alongX, color, wall = null) {
+    const ry = alongX ? Math.PI / 2 : 0;
+    const prism = (w, h, len, c) => {
+      const s = new THREE.Shape();
+      s.moveTo(-w / 2, 0);
+      s.lineTo(w / 2, 0);
+      s.lineTo(0, h);
+      s.closePath();
+      const g = new THREE.ExtrudeGeometry(s, { depth: len, bevelEnabled: false });
+      g.translate(0, 0, -len / 2);
+      return part(this.statics, g, c, { p: [x, y, z], r: [0, ry, 0], receive: true });
+    };
+    if (!wall) {
+      const m = prism(span, rise, length, color);
+      part(this.statics, box(0.35, 0.25, length + 0.1), shade(color, 0.8), { p: [x, y + rise, z], r: [0, ry, 0] });
+      return m;
+    }
+    const a = Math.atan2(rise, span / 2);
+    const t = 0.22; // épaisseur des pans
+    // pignon parallèle aux pans, juste sous leur face inférieure
+    const m = prism(wall.span, rise * (wall.span / span), wall.length, wall.color);
+    // pans : leur face supérieure suit l'ancienne pente
+    const slope = Math.hypot(span / 2, rise);
+    const c = Math.cos(ry), sn = Math.sin(ry);
+    for (const side of [-1, 1]) {
+      // milieu de la pente, décalé vers l'intérieur de la moitié de l'épaisseur
+      const lx = side * (span / 4) - side * Math.sin(a) * (t / 2);
+      const ly = rise / 2 - Math.cos(a) * (t / 2);
+      part(this.statics, box(slope + 0.05, t, length), side < 0 ? color : shade(color, 0.94), {
+        p: [x + lx * c, y + ly, z - lx * sn],
+        r: [0, ry, -side * a],
+        receive: true,
+      });
+    }
     // faîtage
-    part(this.statics, box(0.35, 0.25, length + 0.1), shade(color, 0.8), { p: [x, y + rise, z], r: [0, alongX ? Math.PI / 2 : 0, 0] });
+    part(this.statics, box(0.4, 0.28, length + 0.1), shade(color, 0.8), { p: [x, y + rise, z], r: [0, ry, 0] });
     return m;
   }
 
@@ -202,7 +229,7 @@ export class World {
     const span = (alongX ? d : w) + 0.9;
     const length = (alongX ? w : d) + 0.7;
     const rise = span * 0.32;
-    this.gableRoof(x, top, z, span, length, rise, alongX, roofC);
+    this.gableRoof(x, top, z, span, length, rise, alongX, roofC, { color: wall, span: span - 0.9, length: length - 0.7 });
     // cheminée
     if (this.rand() < 0.6) {
       const cx = x + (alongX ? w * 0.25 : span * 0.15);
@@ -218,6 +245,10 @@ export class World {
       { nx: -1, nz: 0, len: d },
     ];
     const doorFace = o.door ?? 0;
+    // encadrements : pierre sur les murs clairs, enduit clair sur les murs ocre
+    const lum = ((wall >> 16) & 255) * 0.3 + ((wall >> 8) & 255) * 0.59 + (wall & 255) * 0.11;
+    const frameC = lum > 215 ? 0xcdbf9f : 0xf5eee0;
+    const IRON = 0x3b3b3b;
     faces.forEach((f, fi) => {
       const n = Math.max(1, Math.floor(f.len / 2.8));
       for (let fl = 0; fl < floors; fl++) {
@@ -232,10 +263,36 @@ export class World {
           if (isDoor) {
             part(this.statics, box(1.25, 2.3, 0.14), 0x6a4428, { p: [px, wy, pz], r: [0, rotY, 0] });
             part(this.statics, box(1.55, 0.18, 0.2), STONE, { p: [px, wy + 1.22, pz], r: [0, rotY, 0] });
+            part(this.statics, box(1.5, 2.45, 0.1), frameC, { p: [px, wy + 0.05, pz], r: [0, rotY, 0] });
+            // marche devant la porte
+            part(this.statics, box(1.8, 0.16, 0.5), STONE, { p: [px + f.nx * 0.3, hi + 0.08, pz + f.nz * 0.3], r: [0, rotY, 0] });
             continue;
           }
           if (fl === 0 && this.rand() < 0.25) continue;
-          part(this.statics, box(0.85, 1.15, 0.12), 0x33414d, { p: [px, wy, pz], r: [0, rotY, 0] });
+          // balcon en fer forgé au-dessus de l'entrée (maisons à étage)
+          const balcony = fl === 1 && fi === doorFace && i === Math.floor(n / 2);
+          if (balcony) {
+            const by = wy - 0.92;
+            const out = (k) => [px + f.nx * k, pz + f.nz * k];
+            let [bx, bz] = out(0.36);
+            part(this.statics, box(1.8, 0.14, 0.75), STONE, { p: [bx, by, bz], r: [0, rotY, 0] });
+            [bx, bz] = out(0.7);
+            part(this.statics, box(1.8, 0.06, 0.06), IRON, { p: [bx, by + 0.72, bz], r: [0, rotY, 0] });
+            for (let k = 0; k < 7; k++) {
+              const o2 = -0.84 + k * 0.28;
+              part(this.statics, box(0.04, 0.66, 0.04), IRON, { p: [bx + (f.nx === 0 ? o2 : 0), by + 0.4, bz + (f.nx === 0 ? 0 : o2)] });
+            }
+            for (const sd of [-1, 1]) {
+              const [sx, sz] = out(0.36);
+              part(this.statics, box(0.06, 0.06, 0.72), IRON, { p: [sx + (f.nx === 0 ? sd * 0.87 : 0), by + 0.72, sz + (f.nx === 0 ? 0 : sd * 0.87)], r: [0, rotY, 0] });
+            }
+            // la caméra ne traverse pas le balcon
+            const ex = f.nx === 0 ? 0.9 : 0.75, ez = f.nx === 0 ? 0.75 : 0.9;
+            const [cx, cz] = out(0.36);
+            this.physics.addCameraBox(cx - ex / 2 - (f.nx === 0 ? 0.45 : 0), by - 0.1, cz - ez / 2 - (f.nx === 0 ? 0 : 0.45), cx + ex / 2 + (f.nx === 0 ? 0.45 : 0), by + 0.8, cz + ez / 2 + (f.nx === 0 ? 0 : 0.45));
+          }
+          part(this.statics, box(1.02, (balcony ? 1.95 : 1.15) + 0.2, 0.1), frameC, { p: [px, balcony ? wy - 0.38 : wy, pz], r: [0, rotY, 0] });
+          part(this.statics, box(0.85, balcony ? 1.95 : 1.15, 0.12), 0x33414d, { p: [px, balcony ? wy - 0.4 : wy, pz], r: [0, rotY, 0] });
           part(this.statics, box(1.05, 0.12, 0.2), shade(wall, 0.85), { p: [px, wy - 0.63, pz], r: [0, rotY, 0] });
           for (const sd of [-1, 1]) {
             const ox = f.nx === 0 ? sd * 0.68 : 0;
@@ -250,8 +307,21 @@ export class World {
         }
       }
     });
+    this.quoins(x, z, w, d, hi + 0.95, top - 0.35);
     this.physics.addBox(x - w / 2, y0, z - d / 2, x + w / 2, top + rise, z + d / 2);
     this.footprints.push({ x, z, w: w + 3, d: d + 3 });
+  }
+
+  // Pierres d'angle (chaînage) en alternance longue / courte, de y0 à y1
+  quoins(x, z, w, d, y0, y1, size = 1) {
+    const qc = shade(STONE, 1.06);
+    for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      for (let k = 0, qy = y0; qy < y1; k++, qy += 0.5 * size) {
+        const qx = (k % 2 ? 0.28 : 0.46) * size;
+        const qz = (k % 2 ? 0.46 : 0.28) * size;
+        part(this.statics, box(qx, 0.4 * size, qz), qc, { p: [x + sx * (w / 2 - qx / 2 + 0.03), qy, z + sz * (d / 2 - qz / 2 + 0.03)] });
+      }
+    }
   }
 
   bellTower(x, z) {
@@ -262,6 +332,7 @@ export class World {
     part(this.statics, box(w, H + hi - lo + 0.4, w), c, { p: [x, (lo - 0.4 + hi + H) / 2, z], receive: true });
     part(this.statics, box(w + 0.4, 1.2, w + 0.4), STONE, { p: [x, hi + 0.4, z] });
     part(this.statics, box(w + 0.3, 0.3, w + 0.3), shade(c, 0.85), { p: [x, hi + H - 4.2, z] });
+    this.quoins(x, z, w, w, hi + 1.3, hi + H - 4.5, 1.3);
     // Beffroi ouvert
     const top = hi + H;
     for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
@@ -546,7 +617,7 @@ export class World {
     part(this.statics, box(4.1, 0.25, 0.25), 0xf2eadb, { p: [bx, hi + 4.6, bz - bd / 2 - 0.1] });
     part(this.statics, box(0.25, 4.5, 0.25), 0xf2eadb, { p: [bx - 2, hi + 2.25, bz - bd / 2 - 0.1] });
     part(this.statics, box(0.25, 4.5, 0.25), 0xf2eadb, { p: [bx + 2, hi + 2.25, bz - bd / 2 - 0.1] });
-    this.gableRoof(bx, top, bz, bd + 1, bw + 0.8, 3.4, true, 0x6d5a4a);
+    this.gableRoof(bx, top, bz, bd + 1, bw + 0.8, 3.4, true, 0x6d5a4a, { color: red, span: bd, length: bw });
     this.physics.addBox(bx - bw / 2, lo - 0.4, bz - bd / 2, bx + bw / 2, top + 3.4, bz + bd / 2);
     this.footprints.push({ x: bx, z: bz, w: bw + 3, d: bd + 3 });
     // Ferme + dépendances
