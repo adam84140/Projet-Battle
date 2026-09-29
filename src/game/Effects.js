@@ -12,9 +12,11 @@ const particleVS = /* glsl */ `
   varying vec3 vColor;
   uniform float scale;
   void main() {
-    vAlpha = alpha;
     vColor = pcolor;
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    // près de la caméra, les particules s'effacent : une fumée ou une lueur
+    // toute proche ne doit jamais boucher la vue
+    vAlpha = alpha * clamp((-mv.z - 1.2) / 3.0, 0.0, 1.0);
     gl_PointSize = size * scale / max(0.1, -mv.z);
     gl_Position = projectionMatrix * mv;
   }

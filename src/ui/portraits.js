@@ -10,7 +10,8 @@ function getRenderer(w, h) {
   if (!shared) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 0.92;
     const scene = new THREE.Scene();
     scene.add(new THREE.HemisphereLight(0xe0ecff, 0x4a4030, 1.6));
     const key = new THREE.DirectionalLight(0xfff1dd, 2.6);

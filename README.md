@@ -40,7 +40,7 @@ npm run test:smoke   # desktop : menu, déploiement, déplacement, tir, dégâts
 npm run test:touch   # téléphone émulé : joystick, visée, tir, compétences, saut, pause
 npm run test:camera  # caméra : jamais dans un mur, un feuillage ou le sol, pas de recul brutal
 npm run test:bots    # partie simulée de 3 min : bots bloqués, combats, captures, coût logique
-npm run shots -- mon-etiquette   # captures avant/après dans test-results/shots/
+npm run shots -- mon-etiquette [turn|poses|sheet|game|fx|ui|all]   # captures avant/après dans test-results/shots/
 ```
 
 ### Mettre le jeu en ligne (GitHub Pages)
@@ -60,8 +60,12 @@ Il suffit d'activer une fois **Settings → Pages → Source : GitHub Actions** 
   | Artilleur | Mitrailleuse M-60L | Roquette · Blindage · Fureur |
   | Commando | Fusil de précision (lunette) | Camouflage · Tir de précision · Poignard |
 
-- **Bots** (8v8 ou 16v16, trois niveaux de difficulté) : navigation A* dans le village, ligne de vue, temps de réaction, mitraillage latéral, utilisation des compétences, choix des drapeaux à attaquer ou défendre.
-- **Véhicules** : jeep (rapide, écrase les ennemis) et char (tourelle orientée à la souris, obus explosifs). Destruction, épave en feu et réapparition à la base.
+- **Bots** (8v8 ou 16v16, trois niveaux de difficulté) : navigation A* dans le village (en contournant les véhicules garés), ligne de vue, temps de réaction, mitraillage latéral, utilisation des compétences. Rôles attaque / défense / contournement / soutien ; sous le feu ils se mettent à couvert derrière les sacs de sable et murets, et se replient quand ils sont blessés. La difficulté règle aussi ce comportement tactique, pas seulement la précision.
+- **Véhicules** : jeep (rapide, écrase les ennemis) et char (tourelle orientée à la souris, obus explosifs). Suspension (cabrage, plongée, roulis), recul du canon, fumée quand ils sont endommagés, destruction, épave en feu et réapparition à la base.
+- **Sensations de tir** : recul propre à chaque arme (vertical pour le fusil, dérive latérale pour la mitrailleuse, gros coup pour le sniper) qui revient de lui-même, douilles, lueur de bouche, traçantes, marqueurs de touche, anneau de rechargement.
+- **Caméra 3e personne** qui ne traverse jamais les murs ni les feuillages, cadrage de visée dégagé, champ de vision élargi au sprint.
+- **Animations procédurales** : réactions aux impacts selon la direction du tir, réception de saut, pas accordés à la vitesse, pivots sur place, morts en deux temps (trois variantes).
+- **Son** synthétisé et spatialisé : tirs étouffés au loin, pas, balles qui sifflent, impacts, vent et oiseaux, jingles de début et fin de partie.
 - **Personnalisation du héros** : nom, teint, cheveux, sac à dos, casquette, lunettes, bandana — visibles en jeu.
 - **HUD complet** : tickets et drapeaux, mini-carte tournante, fil des éliminations, marqueurs d'objectifs, noms des alliés, dégâts flottants, indicateurs de direction des tirs, barre de compétences avec temps de recharge, lunette de sniper, tableau des scores (`Tab`).
 - **Fiche personnage** (`fiche.html`) : la planche de référence du héros, **rendue en direct depuis le modèle 3D du jeu** — vues face/profil/dos, détails du visage et de l'équipement, 6 expressions faciales, accessoires, palette, A-pose, 8 animations clés et échelle. Changez de classe ou d'équipe en un clic.
