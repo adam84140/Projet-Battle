@@ -8,7 +8,10 @@ description: Modifier la carte 1 de Frontline Legends (Castelmare, drapeaux A Mo
 ## Où
 - `src/game/map.js` : limites, drapeaux (`points`, champ `pole` pour décaler un mât), bases, véhicules, routes, relief.
 - `src/game/World.js` : construction ; couverts de combat dans `buildCombatCover()`.
-- Aujourd'hui, le décor est entièrement construit par le code : aucun fichier 3D chargé. La chaîne d'assets d'environnement et le registre sémantique sont les priorités P1 à P3 de la [ROADMAP](../../../docs/ROADMAP.md).
+- Aujourd'hui, le décor est entièrement construit par le code : aucun fichier 3D chargé.
+- Chaîne d'environnement (état, architecture, génération) : [MAP1-ENVIRONMENT-PLAN](../../../docs/map1/MAP1-ENVIRONMENT-PLAN.md).
+- Registre sémantique `src/environment/` : [MAP1-ASSET-REGISTRY](../../../docs/map1/MAP1-ASSET-REGISTRY.md).
+- Outils de kit `tools/env-kit/` : [MAP1-ASSET-INVENTORY](../../../docs/map1/MAP1-ASSET-INVENTORY.md).
 
 ## Règles impératives
 - **Ne jamais changer l'ordre des tirages aléatoires** (`this.rand`, `this.r`, `this.pick`) : tout le décor bougerait. Ajouter les nouveaux éléments **après** `buildScatter()` (ex. dans `buildCombatCover()`).
@@ -27,7 +30,7 @@ description: Modifier la carte 1 de Frontline Legends (Castelmare, drapeaux A Mo
 Couvert tous les ~6 m dans une zone de capture ; au moins deux approches par drapeau ; pas de couloir de plus de ~80 m sans obstacle vers un drapeau ; repères visuels (moulin, clocher, grange) jamais masqués.
 
 ## Vérification
-1. Vue de dessus (caméra orthographique rendue avec `g.renderer.render`) avant / après.
+1. `npm run test:env` : empreinte des ancres, collisions et navigation. Un écart doit être voulu (`-- --update-baseline` avec une décision). Vue aérienne annotée : `test-results/env/map1-top.png`, avant / après. Vu du ciel, avec le nord en haut, A est à droite.
 2. `npm run test:bots` : blocages < 3 %, aucun blocage près des ajouts.
 3. `npm run test:camera` et `npm run test:smoke`.
 4. Captures en jeu du secteur modifié (skill `visual-validation`).

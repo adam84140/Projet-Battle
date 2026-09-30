@@ -32,6 +32,9 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | Document | Contenu |
 | --- | --- |
 | [ROADMAP](ROADMAP.md), priorités P1 à P10 | **priorité active** : chaîne d'assets d'environnement, kit tiers remplaçable par un registre à identifiants sémantiques (D-024) |
+| [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md) | **état réel de la carte 1** (fichiers, ancres, couplages, mesures, vue aérienne), architecture, étapes E1 à E7, génération menée par le gameplay, **livraison attendue du kit** |
+| [MAP1-ASSET-REGISTRY](map1/MAP1-ASSET-REGISTRY.md) | registre sémantique : identifiants, champs, étiquettes, paquets et liaisons, remplacement, contrôles, les 35 identifiants |
+| [MAP1-ASSET-INVENTORY](map1/MAP1-ASSET-INVENTORY.md) | ingestion et inventaire d'un kit : copie sûre, licence, classement par famille et par rôle |
 | [MAP1-GOLD](map1/MAP1-GOLD.md) | critères de validation GOLD |
 | [LEVEL-DESIGN](map1/LEVEL-DESIGN.md) | plan général, règles de level design, faiblesses connues |
 | [ZONE-A-MILL](map1/ZONE-A-MILL.md) · [ZONE-B-VILLAGE](map1/ZONE-B-VILLAGE.md) · [ZONE-C-FARM](map1/ZONE-C-FARM.md) | détail des trois zones de capture |

@@ -44,8 +44,9 @@ npm run test:bots     # partie simulée 3 min : blocages, combats, captures
 npm run test:character # personnage : chemins de rendu legacy et M1 comparés, 16v16, mémoire, téléphone
 npm run test:rig      # squelette de production : adaptateur, GLB d'essai, validateur, partie 8v8
 npm run test:material # matériau d'équipe : zones du masque, bleu/rouge, emblèmes, COLOR_0, partie 8v8
-npm test              # les sept à la suite (chemin de rendu par défaut)
-RENDU=legacy npm test # les sept sur le chemin de repli (tant que le chemin legacy existe)
+npm run test:env      # carte 1 : empreinte des ancres, collisions et navigation ; registre d'assets ; outils de kit
+npm test              # les huit à la suite (chemin de rendu par défaut)
+RENDU=legacy npm test # les huit sur le chemin de repli (tant que le chemin legacy existe)
 npm run check:glb -- <fichier.glb> [--fit]  # contrôle d'un asset de personnage (docs/characters/ASSET-CONTRACT.md)
 ```
 Chaîne Blender (gabarit, export verrouillé, planches de revue, auto-test) : `tools/blender/README.md` (Blender 4.5 LTS ou module `bpy`).
@@ -67,7 +68,7 @@ Procédure : skill `threejs-performance`.
 - Les réglages sauvegardés (`localStorage`, clé `frontline-legends-settings-v1`) doivent rester compatibles.
 - Objets retirés de la scène : libérer leurs géométries (`disposeTree`), les géométries partagées étant marquées par `markShared`.
 - Pas de dépendance nouvelle sans raison forte ; jamais de dépendance liée à Obsidian.
-- **Kits d'environnement tiers = échafaudage temporaire et remplaçable** (D-024), licence notée. Le gameplay, les objectifs, les collisions et la navigation ne dépendent jamais d'un nom de fichier ni d'un chemin du fournisseur. Chaîne : identifiant sémantique (ex. `HOUSE_SMALL_A`) → registre d'assets d'environnement → asset du kit actuel.
+- **Kits d'environnement tiers = échafaudage temporaire et remplaçable** (D-024), licence notée. Le gameplay, les objectifs, les collisions et la navigation ne dépendent jamais d'un nom de fichier ni d'un chemin du fournisseur. Chaîne : identifiant sémantique (ex. `HOUSE_SMALL_A`) → registre d'assets d'environnement → asset du kit actuel. Fichiers d'un kit nommés **seulement** dans `src/environment/kits/` ; collisions tirées du catalogue, jamais d'un maillage ([`docs/map1/MAP1-ASSET-REGISTRY.md`](docs/map1/MAP1-ASSET-REGISTRY.md)). Un changement de collisions ou de navigation de la carte 1 est voulu et décidé (`tests/baselines/map1-anchors.json`).
 
 ## Documentation
 - Mettre à jour `docs/` **dans le même commit** que le travail décrit : `CURRENT-STATE.md` (faits vérifiés seulement), `DECISIONS.md` (toute décision structurante, avec ID), `ROADMAP.md` si l'ordre change, le doc système concerné.

@@ -15,9 +15,10 @@
     "test:character": "node tests/character.mjs",
     "test:rig": "node tests/rig.mjs",
     "test:material": "node tests/material.mjs",
-    "test": "node tests/smoke.mjs && node tests/touch.mjs && node tests/camera.mjs && node tests/bots.mjs && node tests/character.mjs && node tests/rig.mjs && node tests/material.mjs",
+    "test": "node tests/smoke.mjs && node tests/touch.mjs && node tests/camera.mjs && node tests/bots.mjs && node tests/character.mjs && node tests/rig.mjs && node tests/material.mjs && node tests/env.mjs",
     "shots": "node tests/shots.mjs",
-    "check:glb": "node tests/check-glb.mjs"
+    "check:glb": "node tests/check-glb.mjs",
+    "test:env": "node tests/env.mjs"
   },
   "dependencies": {
     "three": "^0.186.1"

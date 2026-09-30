@@ -179,7 +179,7 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
   Procédure : [MASTER-ASSAULT-M4](characters/MASTER-ASSAULT-M4.md), § 8.
 
 ## D-024 — CARTE 1 PRIORITÉ ACTIVE ; KITS D'ENVIRONNEMENT TIERS REMPLAÇABLES
-- **Statut :** LOCKED (décision du propriétaire, 2026-09-30). La forme exacte du registre sera proposée au propriétaire avant son implémentation.
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-30). Registre implémenté le 2026-09-30 à la demande du propriétaire ; sa forme et l'architecture de la chaîne sont proposées en D-025.
 - **Décision :**
   - le développement actif passe à **MAP 1 GOLD — environnement et production du niveau** (priorités P1 à P10 de la [ROADMAP](ROADMAP.md)). La carte 2 reste hors périmètre (D-001). La réserve « pas de refonte de la carte pendant le jalon Master Character » de D-012 ne s'applique plus ; les règles de D-012 sur la mer restent ;
   - un **kit d'environnement modulaire tiers** (par exemple Quaternius) peut servir **temporairement**, comme échafaudage de production **remplaçable** ;
@@ -192,3 +192,20 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
   - l'ordre des tirages de `World.js` ne change pas ;
   - `test:bots` et `test:camera` protègent collisions et navigation à chaque étape ;
   - *Battlefield Heroes* reste une inspiration seulement : aucun de ses éléments n'est reproduit.
+
+## D-025 — ARCHITECTURE DE L'ENVIRONNEMENT DE LA CARTE 1
+- **Statut :** PENDING (proposé le 2026-09-30). Les parties déjà faites (registre, outils, test) n'engagent pas le jeu : rien n'y est branché.
+- **Décision proposée :**
+  - **gameplay d'abord** : ancres (`map.js`) et disposition de la carte en données définissent la carte. Collisions, boîtes caméra, navigation et mini-carte viennent des **données sémantiques** (catalogue, disposition), **jamais d'un maillage** de fournisseur ;
+  - **registre en deux couches** :
+    - catalogue indépendant de tout fournisseur (`src/environment/catalog.js`, 35 identifiants) ;
+    - paquets (`src/environment/kits/`), qui seuls nomment des fichiers, avec une priorité. Un paquet Frontline Legends de priorité plus haute remplacera le kit, identifiant par identifiant ;
+  - **kit tiers** stocké dans `public/kits/<paquet>/`, arborescence du fournisseur intacte, licence et manifeste obligatoires (`tools/env-kit/ingest.mjs`). Si la licence n'autorise pas la redistribution dans ce dépôt **public** : arrêt et autre stockage à décider ;
+  - **ancres protégées** : l'empreinte de la carte 1 (`tests/baselines/map1-anchors.json`, `npm run test:env`) ne change que pour un changement voulu de collisions ou de navigation, décrit dans une décision ;
+  - **intégration non destructive** (étape E5 de [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md)) :
+    - réglage `?decor=kit|procedural`, décor actuel par défaut jusqu'à la validation du propriétaire ;
+    - le décor actuel est d'abord construit « à blanc », pour garder tirages, collisions et navigation identiques ;
+    - fusion des pièces par matériau (budget de 250 appels de rendu) ;
+  - **génération** hors du jeu, déterministe, à sous-graines par parcelle. Elle est menée par le gameplay (routes, approches, couverts, lignes de vue) ; sa sortie (disposition en données) est revue puis commitée. Le jeu ne génère rien en partie.
+- **Raison :** remplacer les visuels sans jamais reconstruire la logique de jeu (D-024) ; garder la carte stable pour les joueurs, les bots et les tests.
+- **Déjà fait :** catalogue et registre, paquet du kit (sans liaison, kit non livré), chargeur (non branché), outils d'ingestion et d'inventaire, `npm run test:env` (22 vérifications : empreinte, garde des chemins, outils, chargeur).

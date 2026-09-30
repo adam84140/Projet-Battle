@@ -16,6 +16,7 @@ Village méditerranéen, mode Conquête, 3 drapeaux. Données : `src/game/map.js
                  z = -112   BASE AIGLES (bleu)  jeep (-4.5,-103) · char (4.5,-106.5)
 ```
 
+- Schéma en **miroir** : vu du ciel, le nord (Légion) en haut, A (ouest) est à droite. Vue aérienne réelle et état détaillé : [MAP1-ENVIRONMENT-PLAN](MAP1-ENVIRONMENT-PLAN.md).
 - Limites jouables : x ∈ [-112, 112], z ∈ [-128, 128]. Axe bases : nord-sud ; drapeaux : ouest-est.
 - Chaque base est à ~115 m de B et ~135 m de A ou C ; les routes diagonales relient directement chaque base à A et à C (flancs).
 - Zones aplanies autour du village, des drapeaux et des bases ; collines douces ailleurs.

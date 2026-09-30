@@ -1,0 +1,33 @@
+{
+ "note": "Empreinte de la carte 1 (tests/env.mjs). Ne se met à jour que pour un changement VOULU de collisions ou de navigation, avec une décision (docs/DECISIONS.md).",
+ "date": "2026-09-30",
+ "anchors": {
+  "hash": "a859934aa6576602"
+ },
+ "relief": {
+  "hash": "42c3130c568775ac"
+ },
+ "colliders": {
+  "hash": "bdcbc37e2fe33f02",
+  "count": 412,
+  "tags": {
+   "solid": 390,
+   "cover": 18,
+   "nobullet": 4
+  }
+ },
+ "cameraBoxes": {
+  "hash": "6c4a1281bb964534",
+  "count": 544
+ },
+ "nav": {
+  "hash": "7b6d85d070fbf29d",
+  "blocked": 2297
+ },
+ "decor": {
+  "staticMeshes": 4,
+  "staticTriangles": 213028,
+  "staticMaterials": 1,
+  "sceneMeshes": 193
+ }
+}

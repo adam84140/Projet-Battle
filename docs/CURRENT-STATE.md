@@ -1,8 +1,8 @@
 # État actuel du projet
 
 - **Référence :** commit `05827b4807c67959e125c9681b5ffa953b113a29` (point de contrôle D-004, créé sur la branche `claude/similar-project-tn0j8l`). Branche de travail actuelle : `claude/dazzling-cray-gn1bg5`, qui contient ce commit. Seuls changements du code du jeu depuis : **l'étape M1** (`src/character/renderPath.js`, `bakeSkinned` / `bakeIndexed` dans `parts.js`, `Character.bake()` / `dispose()`) **l'étape M2** (deux modules **non branchés en jeu**, `src/character/rigContract.js` et `src/character/rigAdapter.js`, et un export en lecture seule `IK_CHANNELS` dans `animation.js`) **l'étape M3** (module `src/character/teamMaterial.js`, **non branché en jeu**, et le masque d'équipe `TEAM_MASK` dans `rigContract.js`) et **l'étape M4** (contrat `M4-0.3` dans `rigContract.js` : données du validateur ; chaîne Blender `tools/blender/` et ébauche `art/master-assault/`, hors du jeu livré).
-- **Vérifié le :** 2026-09-30, dans le conteneur Cloud (Chromium sans GPU), sur `claude/dazzling-cray-gn1bg5` au commit `4f62626` (fin du point A de M4), lors de la mise en pause du Master Character. Changements de cette mise en pause : documentation et marquage « non approuvé » seulement.
-- **Jalon :** MAP 1 GOLD — **priorité active : ENVIRONNEMENT / PRODUCTION DU NIVEAU** (D-024 ; priorités P1 à P10 de la [ROADMAP](ROADMAP.md)). Aucun travail sur la carte 1 n'a encore commencé dans ce cadre.
+- **Vérifié le :** 2026-09-30, dans le conteneur Cloud (Chromium sans GPU), sur `claude/dazzling-cray-gn1bg5` à partir du commit `29a22aa` (mise en pause du Master Character), puis avec la préparation de la chaîne d'environnement de la carte 1 : nouveaux modules `src/environment/` et outils `tools/env-kit/`, **non branchés dans le jeu**.
+- **Jalon :** MAP 1 GOLD — **priorité active : ENVIRONNEMENT / PRODUCTION DU NIVEAU** (D-024 ; priorités P1 à P10 de la [ROADMAP](ROADMAP.md)). Préparation faite, le jeu n'est pas modifié : section « Environnement de la carte 1 ». **Le kit tiers n'est pas livré** : c'est le blocage de l'étape suivante.
 - **MASTER CHARACTER : EN PAUSE** après le point de contrôle A de M4 (D-023) : voir la section suivante.
 
 Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce qui n'a pas été vérifié est marqué comme tel.
@@ -23,11 +23,22 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
   4. passer vite à M5a (D-020).
   Procédure : [MASTER-ASSAULT-M4](characters/MASTER-ASSAULT-M4.md), § 8.
 
+## Environnement de la carte 1 : préparation (D-024, D-025 proposée)
+| Élément | État |
+| --- | --- |
+| Décor en jeu | inchangé : entièrement construit par `World.js`, aucun fichier 3D chargé |
+| Registre sémantique | `src/environment/catalog.js` : 35 identifiants (28 prefabs, 7 modules ; 29 remplacent un élément existant, 6 prévus). `registry.js` : résolution par priorité de paquet, validation. [MAP1-ASSET-REGISTRY](map1/MAP1-ASSET-REGISTRY.md) |
+| Paquet du kit | `src/environment/kits/medieval-village-megakit.js` : racine `public/kits/medieval-village-megakit/`, licence attendue, **aucune liaison** (kit non livré) |
+| Chargeur | `src/environment/EnvAssetLibrary.js` (identifiant → glTF, instances partagées, `null` si non lié), **non branché** |
+| Outils de kit | `tools/env-kit/` : ingestion (copie à chemins intacts, licence obligatoire, manifeste) et inventaire (dimensions, triangles, pivots, familles, rôles), testés sur un kit d'essai synthétique. [MAP1-ASSET-INVENTORY](map1/MAP1-ASSET-INVENTORY.md) |
+| Ancres protégées | empreinte `tests/baselines/map1-anchors.json` : ancres, relief, 412 collisions (390 `solid`, 18 `cover`, 4 `nobullet`), 544 boîtes caméra, 2 297 cases de navigation bloquées. Décor fusionné : 4 maillages, 213 028 triangles |
+| Plan | état détaillé, architecture, étapes E1 à E7, génération : [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md) |
+
 ## Ce qui est jouable
 | Domaine | État |
 | --- | --- |
 | **Mode** | Conquête, 3 drapeaux, tickets (250 en 8v8, 400 en 16v16), victoire, défaite, relance, retour au menu |
-| **Carte** | *Castelmare* (carte 1 uniquement) — [LEVEL-DESIGN](map1/LEVEL-DESIGN.md). Décor **entièrement construit par le code** (`src/game/World.js`, `src/game/map.js`) : aucun fichier 3D chargé par le jeu, pas de dossier `public/` |
+| **Carte** | *Castelmare* (carte 1 uniquement) — [LEVEL-DESIGN](map1/LEVEL-DESIGN.md), [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md). Décor **entièrement construit par le code** (`src/game/World.js`, `src/game/map.js`) : 24 maisons, clocher, moulin, grange, 120 oliviers, 50 cyprès… ; aucun fichier 3D chargé par le jeu, pas de dossier `public/` |
 | **Équipes** | Les Aigles (bleu, aigle) contre La Légion (rouge, étoile) |
 | **Classes** | Assaut (fusil FL-4), Artilleur (mitrailleuse M-60L), Commando (sniper à lunette), 3 compétences chacune — [COMBAT](systems/COMBAT.md) |
 | **Combat** | hitscan, atténuation par distance, tirs à la tête, recul propre à chaque arme, grenades, roquettes, obus, explosions avec ligne de vue, poignard |
@@ -47,7 +58,7 @@ Règle : ce fichier ne contient que des faits vérifiés sur le dépôt. Tout ce
 1 personnage (proportions, silhouettes, IK à < 1 cm) · 2 animations (impacts, réception, foulée, pivots, morts ; correction de l'arme fusionnée dans le torse) · 3 caméra et déplacement · 4 armes · 5 effets · 6 couverts de la carte, mât de B déplacé, bots qui contournent les véhicules garés · 7 kit village · 8 éclairage · 9 HUD · 10 son · 11 IA · 12 véhicules · 13 tactile · 14 performances (fuites GPU, fusion des véhicules, réserve de modèles) · 15 finition (particules près de la caméra, tons harmonisés).
 Détail par commit : `git log --oneline 9011271^..05827b4`.
 
-## Tests (tous verts ; dernière exécution complète : 2026-09-30, sur `4f62626` au moment de la mise en pause du Master Character, `claude/dazzling-cray-gn1bg5`, chemin M1 par défaut ; mêmes totaux qu'à l'étape M4 point A, détails chiffrés de ce point ci-dessous)
+## Tests (tous verts ; dernière exécution complète : 2026-09-30, préparation de l'environnement de la carte 1, `claude/dazzling-cray-gn1bg5`, chemin M1 par défaut : smoke 48/48 · tactile 12/12 · caméra 6/6 · bots 8/8 · personnage 72/72 · squelette 31/31 · matériau 18/18 · environnement 22/22 ; détails chiffrés des suites plus anciennes : étape M4 point A)
 | Commande | Résultat |
 | --- | --- |
 | `npm run build` | OK |
@@ -58,6 +69,7 @@ Détail par commit : `git log --oneline 9011271^..05827b4`.
 | `npm run test:character` | 72/72 : les deux chemins de rendu comparés (coût, mains / arme, tête / hitbox, arme / visée, bouche du canon, planches au pixel, camouflage, bord de l'écran), 16v16, mémoire, téléphone — [M0](characters/MASTER-ASSAULT-BASELINE.md), [M1](characters/MASTER-ASSAULT-M1.md) |
 | `npm run test:rig` | 31/31 : contrat cohérent, copie JSON des scripts Blender à jour ; adaptateur sur un squelette d'essai aux repères différents (3 classes × 32 états : gameplay jamais modifié, articulations à 0 mm, mains identiques au gameplay, rendu = M1 à 0,004 % près) ; **un seul GLB d'essai** de 1,85 m pour les deux équipes (masque M3), exporté, validé et rechargé (mains 0 mm avec des bras +5 %, tête dans sa zone de touche) ; 14 fichiers fautifs refusés (dont bras trop courts) ; partie 8v8 avec véhicules, 0 exception — [M2](characters/MASTER-ASSAULT-M2.md) |
 | `npm run test:material` | 18/18 : chaque zone du masque à sa couleur exacte (0 niveau d'écart, bleu, rouge, personnalisation) ; COLOR_0 jamais affiché ; asset sans masque neutre ; aigle / étoile à l'endroit ; LOD et accessoire sur un seul matériau ; camouflage ; bleu = M1 à 0,4 % près (zones d'emblème) ; bleu → rouge et teint / cheveux ne changent que leurs zones ; 16 soldats, un matériau par aspect, un programme de shader ; partie 8v8 habillée, camouflage compris, 0 exception — [M3](characters/MASTER-ASSAULT-M3.md) |
+| `npm run test:env` | **22/22** : catalogue et registre valides, 12 erreurs de liaison refusées, remplacement par priorité ; garde D-024 (aucun chemin de fournisseur dans le code du jeu, essai de mutation fait) ; ingestion et inventaire sur un kit d'essai synthétique ; **empreinte de la carte 1 identique** (ancres, relief, collisions, boîtes caméra, navigation ; un déplacement de 50 cm d'une caisse est détecté) ; vue aérienne ; chargeur par identifiant. Kit réel **non testé** (non livré) |
 | `npm run check:glb` | validateur d'asset (Node, sans service externe) ; accepte le GLB d'essai au stade prototype, le refuse au stade production pour LOD1/LOD2, expressions et clips absents seulement ; compte les sommets par zone du masque ; `--fit` : captures bleu, rouge et masque |
 | `python tools/blender/fl_selftest.py` (module `bpy` 4.5.14) | auto-test de la chaîne Blender → glTF → validateur : **accepté** (prototype), essai en jeu : mains 4,7 mm, tête 3,2 cm (point A ; Blender non réinstallé depuis) |
 | `python art/master-assault/blockout.py --fit` | ébauche du point A (**non approuvée**, référence technique ; non relancée depuis) : 14 456 triangles, 1,85 m, A-pose 30,5°, **acceptée** (prototype), mains ≤ 1,2 mm de l'arme, tête 1,9 cm ; silhouettes / image 01 : face 0,68, dos 0,72, 3/4 0,54, profil 0,41 |
@@ -84,7 +96,9 @@ Vérifiés le 2026-09-29 sur `05827b4` :
 11. **Visée accroupie** : l'arme pointe ~15° sous la ligne de visée (visuel seulement).
 12. **Main gauche** à 7–18 mm du garde-main en réception et 27–37 mm pendant le lancer de grenade (< 8 mm dans les poses stables).
 13. **Logique 16v16** : 3,5 à 3,9 ms en moyenne juste après le déploiement (mesure M0), au lieu des 1,66 ms notés en référence (autre fenêtre de mesure) ; objectif < 4 ms tenu de justesse.
+14. **`test:material`, échec ponctuel** (2026-09-30) : 1 exécution de `npm test` sur 2 a échoué. Le clic sur « start » est resté bloqué 30 s (fil principal occupé, rendu logiciel SwiftShader) au lancement de la partie de la vérification en jeu. Relancé seul : 18/18 ; chaîne complète relancée : verte. Le code du jeu n'était pas modifié. Cause non identifiée : à surveiller, comme l'échec ponctuel de `test:bots` (problème 1).
 
 ## Hors de ce dépôt
 - Version jouable publiée (artefact privé du propriétaire), construite depuis `05827b4`.
-- GitHub Pages ne publie qu'au push sur `main` ; la branche de travail n'a pas été fusionnée.
+- Déploiement GitHub Pages : le workflow `.github/workflows/deploy.yml` ne se déclenche qu'au push sur `main`. **Vérifié le 2026-09-30** : le dépôt distant n'a **pas** de branche `main` (seulement `claude/similar-project-tn0j8l`, branche par défaut, et `claude/dazzling-cray-gn1bg5`), et GitHub Pages n'est pas activé. Aucune publication automatique n'a donc lieu.
+- Le dépôt GitHub `adam84140/Projet-Battle` est **public** : tout fichier commité est publié (important pour la licence d'un kit tiers).
