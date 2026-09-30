@@ -1,5 +1,9 @@
 """Master Assault — point de contrôle A : ébauche (blockout) dans Blender.
 
+NON APPROUVÉ — PAS L'ART FINAL (NOT APPROVED FINAL ART). Production artistique en pause (docs/DECISIONS.md,
+D-023) : ne pas continuer ni affiner ce modèle. Gardé comme référence technique (squelette, export, validateur,
+comparaison historique) ; la cible visuelle reste l'image 01. Voir art/master-assault/README.md.
+
 Volumes simples (ellipsoïdes, tubes, boîtes) posés sur le squelette du contrat, aux proportions mesurées
 sur l'image 01 (proportions.json). C'est une ÉBAUCHE pour juger silhouette, proportions et volumes de
 l'équipement ; ce n'est pas le modèle final (topologie, formes sculptées, textures viennent aux points B à D).

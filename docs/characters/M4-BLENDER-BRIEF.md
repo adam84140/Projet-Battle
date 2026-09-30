@@ -1,6 +1,6 @@
 # Master Assault — brief de production Blender (M4)
 
-**Pour l'artiste 3D ou la chaîne Blender.** Document court pour démarrer ; la référence complète et exacte est le [contrat d'asset](ASSET-CONTRACT.md) (en cas de doute, le contrat et le validateur font foi). **M4 est autorisée (2026-09-30)** ; suivi, méthode et points de contrôle : [MASTER-ASSAULT-M4](MASTER-ASSAULT-M4.md).
+**Pour l'artiste 3D ou la chaîne Blender.** Document court pour démarrer ; la référence complète et exacte est le [contrat d'asset](ASSET-CONTRACT.md) (en cas de doute, le contrat et le validateur font foi). **M4 est en pause depuis le 2026-09-30 ([D-023](../DECISIONS.md))** : l'ébauche scriptée du point A n'est pas approuvée. Ce brief reste la référence pour un **asset externe** ou un artiste : procédure de reprise dans [MASTER-ASSAULT-M4](MASTER-ASSAULT-M4.md), § 8.
 
 ## 1. Ce qu'on produit, et dans quel ordre
 1. **D'abord l'asset d'aperçu** (« preview ») : le Master Assault complet en **un seul niveau de détail**, riggé, avec son masque d'équipe et des couleurs simples. Son seul but : **l'essayer en jeu au plus tôt** (aperçu jouable M5, [D-020](../DECISIONS.md)) pour juger silhouette, proportions, échelle, mains sur l'arme, lisibilité à l'écran et sensation en caméra de jeu.

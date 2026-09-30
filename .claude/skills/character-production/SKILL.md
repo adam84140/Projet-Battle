@@ -5,6 +5,11 @@ description: Produire ou intégrer un personnage de production pour Frontline Le
 
 # Production de personnage — Frontline Legends
 
+**EN PAUSE ([D-023](../../../docs/DECISIONS.md))** : production artistique du Master Assault arrêtée après le point A de M4.
+- L'ébauche scriptée `art/master-assault/` est **non approuvée** : ne pas la continuer ni l'affiner, pas de M5a.
+- Reprise seulement avec un asset externe fourni par le propriétaire : procédure dans [MASTER-ASSAULT-M4](../../../docs/characters/MASTER-ASSAULT-M4.md), § 8.
+- Ne rien supprimer de l'infrastructure M0–M3.
+
 **Vérifier d'abord l'état réel** : le personnage en jeu est encore procédural (`src/character/`). Ne jamais supposer que le Master Assault existe déjà ; lire [CURRENT-STATE](../../../docs/CURRENT-STATE.md).
 
 **Cible visuelle** : l'[image 01](../../../docs/_attachments/ref-01-master-assault-turnaround.webp) fait autorité (proportions, silhouette, équipement, emblèmes, matériaux, palette), l'[image 02](../../../docs/_attachments/ref-02-master-assault-production-sheet.webp) complète ; lecture et écarts : [VISUAL-REFERENCES](../../../docs/product/VISUAL-REFERENCES.md) (D-009).

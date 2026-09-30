@@ -7,7 +7,12 @@ Jeu de tir **cartoon à la 3ᵉ personne** jouable dans le navigateur (Three.js 
 - Langue du projet : français (interface, commentaires, docs). Messages de commit : anglais, style `type(scope): résumé`.
 
 ## Jalon actuel
-**MAP 1 GOLD** → sous-jalon **MASTER CHARACTER ASSAULT**. État vérifié : [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md). Prochaine étape : [`docs/SESSION-HANDOFF.md`](docs/SESSION-HANDOFF.md).
+**MAP 1 GOLD** → priorité active **ENVIRONNEMENT / PRODUCTION DU NIVEAU** (D-024). État vérifié : [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md). Prochaine étape : [`docs/SESSION-HANDOFF.md`](docs/SESSION-HANDOFF.md).
+
+**Master Character Assault : production artistique EN PAUSE (D-023).**
+- Ne pas reprendre ni affiner le personnage modélisé par script (`art/master-assault/`, **non approuvé**).
+- L'infrastructure M0–M3 reste en place et ne se supprime pas : M1 par défaut, legacy en repli, adaptateur, contrat, matériau d'équipe, validateur.
+- Reprise seulement avec un asset externe fourni par le propriétaire.
 
 ## Règles d'or
 1. **Préserver ce qui fonctionne. Améliorer par petites étapes. Ne pas élargir le périmètre. La qualité avant la quantité.**
@@ -16,7 +21,7 @@ Jeu de tir **cartoon à la 3ᵉ personne** jouable dans le navigateur (Three.js 
 4. **ONE MAP FIRST** : la carte 2 ne commence pas avant que la carte 1 soit GOLD ([`docs/map1/MAP1-GOLD.md`](docs/map1/MAP1-GOLD.md)). Décisions verrouillées : [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 ## Gel du périmètre (jusqu'à MAP 1 GOLD)
-Interdit sans autorisation explicite : nouvelles cartes, nouveaux modes, multijoueur, serveur, progression, passe de combat, boutique, monétisation, clans, matchmaking, grandes bibliothèques d'armes, grands systèmes de personnalisation. Autorisé : finition, correction, contenu de la carte 1, production du Master Assault.
+Interdit sans autorisation explicite : nouvelles cartes, nouveaux modes, multijoueur, serveur, progression, passe de combat, boutique, monétisation, clans, matchmaking, grandes bibliothèques d'armes, grands systèmes de personnalisation. Autorisé : finition, correction, contenu de la carte 1, production du Master Assault (en pause, D-023).
 
 ## Références visuelles officielles
 [`docs/product/VISUAL-REFERENCES.md`](docs/product/VISUAL-REFERENCES.md) (D-009) : image 01 = autorité du Master Assault, image 03 = autorité de la présentation en jeu, image 02 = détails du personnage. L'image 04 (vision produit) **n'autorise aucun contenu** hors périmètre. *Battlefield Heroes* = inspiration seulement : **ne jamais reproduire** ses éléments, personnages, marque, interface ou cartes. Les maquettes ne changent ni l'identité d'équipe (aigle bleu, étoile rouge : D-011) ni les règles de la conquête (victoire aux tickets : D-013) ; la mer de l'image 03 est un décor de fond (D-012).
@@ -62,6 +67,7 @@ Procédure : skill `threejs-performance`.
 - Les réglages sauvegardés (`localStorage`, clé `frontline-legends-settings-v1`) doivent rester compatibles.
 - Objets retirés de la scène : libérer leurs géométries (`disposeTree`), les géométries partagées étant marquées par `markShared`.
 - Pas de dépendance nouvelle sans raison forte ; jamais de dépendance liée à Obsidian.
+- **Kits d'environnement tiers = échafaudage temporaire et remplaçable** (D-024), licence notée. Le gameplay, les objectifs, les collisions et la navigation ne dépendent jamais d'un nom de fichier ni d'un chemin du fournisseur. Chaîne : identifiant sémantique (ex. `HOUSE_SMALL_A`) → registre d'assets d'environnement → asset du kit actuel.
 
 ## Documentation
 - Mettre à jour `docs/` **dans le même commit** que le travail décrit : `CURRENT-STATE.md` (faits vérifiés seulement), `DECISIONS.md` (toute décision structurante, avec ID), `ROADMAP.md` si l'ordre change, le doc système concerné.

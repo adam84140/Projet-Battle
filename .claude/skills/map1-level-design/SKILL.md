@@ -8,6 +8,7 @@ description: Modifier la carte 1 de Frontline Legends (Castelmare, drapeaux A Mo
 ## Où
 - `src/game/map.js` : limites, drapeaux (`points`, champ `pole` pour décaler un mât), bases, véhicules, routes, relief.
 - `src/game/World.js` : construction ; couverts de combat dans `buildCombatCover()`.
+- Aujourd'hui, le décor est entièrement construit par le code : aucun fichier 3D chargé. La chaîne d'assets d'environnement et le registre sémantique sont les priorités P1 à P3 de la [ROADMAP](../../../docs/ROADMAP.md).
 
 ## Règles impératives
 - **Ne jamais changer l'ordre des tirages aléatoires** (`this.rand`, `this.r`, `this.pick`) : tout le décor bougerait. Ajouter les nouveaux éléments **après** `buildScatter()` (ex. dans `buildCombatCover()`).
@@ -16,6 +17,10 @@ description: Modifier la carte 1 de Frontline Legends (Castelmare, drapeaux A Mo
 - Routes praticables par la jeep et le char ; pas d'obstacle bloquant sur une route.
 - Couverts de combat entre 0,7 et 1,8 m de haut : les bots savent s'en servir.
 - ONE MAP FIRST : aucune nouvelle carte ([DECISIONS](../../../docs/DECISIONS.md) D-001).
+- **Kits d'environnement tiers** (D-024) : échafaudage temporaire et remplaçable, licence notée.
+  - Le code de gameplay, les objectifs, les collisions et la navigation ne référencent **jamais** un nom de fichier ou un chemin du fournisseur.
+  - Ils passent par un identifiant sémantique (ex. `HOUSE_SMALL_A`), résolu par le registre d'assets d'environnement.
+  - Remplacer un asset ne touche que le registre.
 - Mer et horizon côtier (D-012) : **décor de fond seulement**, hors des limites jouables, pendant la passe environnement ; jamais de changement de disposition, d'objectifs, de routes, de collisions ou de navigation pour eux.
 
 ## Critères de design

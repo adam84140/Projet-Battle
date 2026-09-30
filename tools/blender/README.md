@@ -30,4 +30,6 @@ Repère : le jeu a Y en haut et le personnage regarde +Z ; Blender a Z en haut e
 3. `fl_export.py --blend perso.blend --out assault.glb --stade prototype --fit` : export, validateur, essai en jeu, captures `test-results/check-glb/`.
 4. Revue : `fl_review.render_views()` + `compare_sheet()` à côté de l'image 01.
 
-Les fichiers produits (`.blend`, `.glb`, rendus) vont dans `art/build/` (ignoré par Git) ; seul l'asset validé du jeu est versionné (`public/models/characters/assault.glb`, point de contrôle D). Détail et décisions : [MASTER-ASSAULT-M4](../../docs/characters/MASTER-ASSAULT-M4.md).
+Les fichiers produits (`.blend`, `.glb`, rendus) vont dans `art/build/` (ignoré par Git). Seul l'asset validé du jeu sera versionné (`public/models/characters/assault.glb`) ; il n'existe pas encore. Détail et décisions : [MASTER-ASSAULT-M4](../../docs/characters/MASTER-ASSAULT-M4.md).
+
+**Production du Master Assault en pause ([D-023](../../docs/DECISIONS.md))** : `art/master-assault/blockout.py` est une ébauche **non approuvée**, gardée comme référence technique. Ne pas la continuer. Ces outils restent valables pour adapter et contrôler un **asset externe** : gabarit d'armature, export verrouillé, validateur, planches.

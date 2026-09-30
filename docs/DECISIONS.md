@@ -17,6 +17,7 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Décision :** la classe Assaut est produite en premier comme personnage de référence ; elle fixe l'architecture de production définitive des personnages (maillage, squelette, matériaux, animations, intégration).
 - **Raison :** Artilleur, Commando, les skins et la personnalisation réutiliseront cette architecture ; la valider sur un seul personnage limite le risque.
 - **Conséquence :** Artilleur et Commando restent sur le personnage procédural actuel jusqu'à la validation du Master Assault. Spécification : [MASTER-ASSAULT](characters/MASTER-ASSAULT.md).
+- **Note (2026-09-30) :** la production artistique du Master Assault est **en pause** (D-023) et la carte 1 est la priorité active (D-024). La règle reste : le Master Assault sera le premier personnage de production quand la production reprendra.
 
 ## D-003 — SQUELETTE CANONIQUE DES PERSONNAGES
 - **Statut :** PENDING
@@ -145,7 +146,7 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Conséquences :** le plan de l'[audit](characters/MASTER-ASSAULT-AUDIT.md) et la [ROADMAP](ROADMAP.md) intègrent M5a juste après le premier GLB d'aperçu ; la même règle s'applique aux futurs personnages (Artilleur, Commando) : un aperçu jouable avant toute validation finale. Chaque étape reste soumise à l'autorisation explicite du propriétaire.
 
 ## D-021 — AJUSTEMENTS DU CONTRAT AU POINT DE CONTRÔLE A (ÉTAPE M4)
-- **Statut :** PENDING (mesuré le 2026-09-30 ; acceptation du propriétaire attendue avec la revue du point A). Contrat `M4-0.3`, non gelé (D-003).
+- **Statut :** PENDING, **suspendue avec la production (D-023)**. Mesuré le 2026-09-30 sur l'ébauche du point A. Le contrat `M4-0.3` reste en vigueur dans le code et le validateur (non gelé, D-003) ; ces valeurs seront revues à la reprise avec le nouvel asset (un asset externe fidèle à l'image 01 aura des bras plus courts que 0,60 m).
 - **Décision :**
   - **portée des bras** : bras + avant-bras (épaule → poignet) **≥ 0,60 m** de chaque côté (`ASSET.minArmReachM`, règle `PORTEE_BRAS` du validateur). Mesuré avec l'arme du jeu : 0,565 m laisse la main gauche à 36–46 mm du garde-main, 0,60 m à 11 mm en visée basse, 0,61 m à 1,2 mm. La tolérance de ± 3 cm par segment (M2) ne garantissait pas la prise ;
   - **cou et tête** : cibles et tolérances verticales élargies (cou 1,50 ± 0,06 m, tête 1,59 ± 0,07 m) pour l'anatomie de l'image 01 (base du cou ≈ 1,54 m, pivot du crâne ≈ 1,63 m) ; sans effet sur le gameplay (rotations recopiées ; zone de touche vérifiée par l'essai `--fit`) ;
@@ -153,7 +154,41 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Conséquence visible** : les bras du Master Assault sont plus longs que sur l'image 01 (≈ 0,51 m de l'épaule au poignet sur la référence) tant que la tenue de l'arme du jeu ne change pas ; rapprocher l'arme du corps serait un changement de gameplay et d'animation, à autoriser séparément.
 
 ## D-022 — PRODUCTION DE L'ASSET PAR BLENDER PILOTÉ PAR SCRIPTS (ÉTAPE M4)
-- **Statut :** PENDING (proposé le 2026-09-30 dans le premier rapport de M4).
+- **Statut :** SUPERSEDED par D-023 (2026-09-30) **pour la modélisation de l'art** : la modélisation par script n'atteint pas la qualité visuelle visée. Les outils de `tools/blender/` (gabarit, export verrouillé, validateur automatique, planches de revue, auto-test) restent valables pour tout asset.
 - **Décision :** l'asset du Master Assault est produit dans **Blender 4.5 LTS** (module `bpy` dans le conteneur Cloud, même version que le poste d'un artiste), par des **scripts Python versionnés** (`art/master-assault/`) qui régénèrent `.blend`, rendus de revue et `.glb` ; outils communs dans `tools/blender/` (gabarit, export verrouillé, validateur automatique, planches de comparaison). Points de contrôle A (ébauche), B (corps et vêtements), C (visage, cheveux, mains, bottes), D (GLB riggé, validateur à 0 erreur), chacun comparé aux images 01 et 02 et revu par le propriétaire ; M5a (D-020) dès le point D.
 - **Fichiers :** scripts et proportions versionnés ; `.blend`, `.glb` d'étape et rendus générés dans `art/build/` (ignoré par Git) ; planches de revue dans `docs/_attachments/m4/` ; asset du jeu `public/models/characters/assault.glb` au point D seulement.
 - **Limite :** un script ne sculpte pas : visage, cheveux et plis restent stylisés ; si le rendu du point C ne suffit pas, un artiste reprend le `.blend` au même contrat (D-014 : jamais de primitives JavaScript pour l'asset).
+
+## D-023 — PRODUCTION ARTISTIQUE DU MASTER CHARACTER EN PAUSE
+- **Statut :** LOCKED FOR NOW (décision du propriétaire, 2026-09-30). Ne change qu'avec l'accord explicite du propriétaire.
+- **Décision :** le personnage du Master Assault modélisé par script dans Blender (M4) **ne va pas au-delà du point de contrôle A**. Points B, C et D non faits, aucun affinage supplémentaire du personnage scripté, **pas de M5a**. L'ébauche du point A **n'est pas approuvée** comme direction visuelle (*NOT APPROVED FINAL ART*).
+- **Raison :** l'ébauche est techniquement utile (squelette, export, validateur, masque d'équipe, essai en jeu : tout fonctionne), mais son résultat visuel reste très en dessous des références officielles (images 01 et 02, D-009). La modélisation par script ne permet pas d'atteindre la qualité visée.
+- **Ce qui reste accepté et conservé :**
+  - M0 : tests et mesures de référence ;
+  - M1 : chemin de rendu optimisé, **toujours par défaut** (D-017) ;
+  - M2 : adaptateur de squelette et contrat d'asset (D-018) ;
+  - M3 : matériau et masque d'équipe (D-019) ;
+  - validateur `check:glb`, scripts d'aide `tools/blender/`, documentation et contrat d'asset ;
+  - personnage legacy en repli.
+- **Fichiers du point A** (`art/master-assault/`, `docs/_attachments/m4/checkpoint-a-*`) : conservés comme **référence technique** (preuve du squelette et de la chaîne, cas d'essai du validateur, comparaison historique), marqués « non approuvé ». Ils ne sont pas une cible visuelle. Dernier commit de la production M4 : `4f626261573c9704a3600b9820b3c611a42a26f2`.
+- **Reprise :** seulement quand le propriétaire fournit un asset **GLB / glTF externe de qualité production**, un meilleur asset 3D, ou une autre méthode de production. Cette voie reste compatible avec D-014 (chaîne 3D, jamais de primitives JavaScript). À la reprise :
+  1. valider l'asset avec le contrat existant (`npm run check:glb -- … --stade prototype --fit`) ;
+  2. le brancher par l'adaptateur M2 et le matériau M3 ;
+  3. garder le personnage actuel en repli ;
+  4. passer vite à l'aperçu jouable M5a (D-020).
+  Procédure : [MASTER-ASSAULT-M4](characters/MASTER-ASSAULT-M4.md), § 8.
+
+## D-024 — CARTE 1 PRIORITÉ ACTIVE ; KITS D'ENVIRONNEMENT TIERS REMPLAÇABLES
+- **Statut :** LOCKED (décision du propriétaire, 2026-09-30). La forme exacte du registre sera proposée au propriétaire avant son implémentation.
+- **Décision :**
+  - le développement actif passe à **MAP 1 GOLD — environnement et production du niveau** (priorités P1 à P10 de la [ROADMAP](ROADMAP.md)). La carte 2 reste hors périmètre (D-001). La réserve « pas de refonte de la carte pendant le jalon Master Character » de D-012 ne s'applique plus ; les règles de D-012 sur la mer restent ;
+  - un **kit d'environnement modulaire tiers** (par exemple Quaternius) peut servir **temporairement**, comme échafaudage de production **remplaçable** ;
+  - **règle** : les systèmes de jeu, les objectifs, les collisions et la navigation des bots ne dépendent **jamais** d'un nom de fichier ni d'un chemin propre au fournisseur ;
+  - **architecture retenue** : un **identifiant sémantique** (ex. `HOUSE_SMALL_A`) est résolu par un **registre d'assets d'environnement** vers l'asset du kit actuel. Exemple : `HOUSE_SMALL_A` → asset Quaternius ou temporaire aujourd'hui → asset propre à Frontline Legends plus tard. Remplacer un asset ne change que le registre : la carte survit au remplacement sans reconstruire la logique de jeu.
+- **Raison :** avancer vite sur la qualité de la carte 1 sans lier le jeu à un fournisseur, et pouvoir remplacer le kit par des assets maison sans rien casser.
+- **Conséquences :**
+  - la licence de chaque kit est vérifiée et notée avant import ;
+  - la disposition de la carte 1 est préservée (drapeaux, bases, routes, limites, couverts de combat) ;
+  - l'ordre des tirages de `World.js` ne change pas ;
+  - `test:bots` et `test:camera` protègent collisions et navigation à chaque étape ;
+  - *Battlefield Heroes* reste une inspiration seulement : aucun de ses éléments n'est reproduit.

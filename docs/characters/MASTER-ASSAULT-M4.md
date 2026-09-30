@@ -1,8 +1,16 @@
 # Master Assault — étape M4 : asset de production (aperçu)
 
-**Statut : en cours. Point de contrôle A (ébauche) fait, en attente de la revue du propriétaire.** Autorisée le 2026-09-30 avec les scripts d'aide Blender. L'asset final n'existe pas encore ; M5a (aperçu jouable) ne commence qu'après un vrai GLB accepté par le validateur (point D). Contrat : [ASSET-CONTRACT](ASSET-CONTRACT.md) · brief : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md) · références : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md) · règle d'aperçu : D-020.
+**Statut : EN PAUSE depuis le 2026-09-30 ([DECISIONS](../DECISIONS.md) D-023).**
+- Le point de contrôle A (ébauche) est fait techniquement, mais **NON APPROUVÉ comme art final ni comme direction visuelle** (*NOT APPROVED FINAL ART*).
+- La production artistique est arrêtée : points B, C et D non faits, aucun affinage du personnage scripté, **pas de M5a**.
+- Raison : la modélisation par script dans Blender n'atteint pas la qualité visuelle des références.
+- Reprise seulement avec un asset GLB / glTF externe de qualité production ou un meilleur asset 3D : § 8.
+
+M4 avait été autorisée le 2026-09-30 avec les scripts d'aide Blender. Aucun asset de production n'existe dans le jeu. Contrat : [ASSET-CONTRACT](ASSET-CONTRACT.md) · brief : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md) · références : [VISUAL-REFERENCES](../product/VISUAL-REFERENCES.md) · règle d'aperçu : D-020.
 
 ## 1. Méthode de production
+*Méthode abandonnée pour l'art (D-022 remplacée par D-023). Les outils restent valables pour tout asset (§ 2).*
+
 - **Blender 4.5 LTS, piloté par scripts Python.** Blender tourne dans le conteneur Cloud sous forme du module officiel `bpy` (4.5.14 LTS, Python 3.11, sans interface ; Cycles sur processeur pour les rendus) : **aucun rendu ni export n'est simulé**. Chaque étape de l'asset est un script versionné dans `art/master-assault/` qui régénère le `.blend`, les rendus de revue et le `.glb` à l'identique.
 - **Ce que fait Claude** : mesure des références, gabarit et squelette, modélisation par script (volumes, puis maillage continu par subdivision), pondération, masque d'équipe, UV d'emblème, atlas de couleurs, export verrouillé, validation, essai en jeu, planches de comparaison avec les images 01 et 02, intégration (M5a).
 - **Ce qui demande un jugement visuel humain** : ressemblance du visage et de la coiffure, qualité des volumes sculptés (plis, cuir, usure peinte), « feeling » général. Le propriétaire juge à chaque point de contrôle ; si la modélisation par script plafonne (visage, cheveux, plis), un artiste peut reprendre le `.blend` au même contrat (gabarit, export, validateur identiques). **Limite connue** : un script ne sculpte pas ; il produit des formes stylisées nettes, pas le rendu peint des images de concept.
@@ -38,19 +46,26 @@
 ## 4. Points de contrôle
 | Point | Contenu | Preuves remises | Statut |
 | --- | --- | --- | --- |
-| **A** | ébauche : silhouette, proportions, volumes de l'équipement | face, 3/4, profil, dos à côté de l'image 01, silhouettes superposées ; essai en jeu | **fait** (§ 5), revue attendue |
-| B | corps et silhouette vêtements / équipement affinés | idem + détail des volumes | à faire après la revue de A |
-| C | visage, cheveux, mains, bottes | idem + gros plans à côté des détails de l'image 01 et de l'image 02 | à faire |
-| D | premier GLB riggé pour le validateur | rapport `check:glb --fit` à 0 erreur, captures bleu / rouge / masque | à faire, **puis M5a** |
+| **A** | ébauche : silhouette, proportions, volumes de l'équipement | face, 3/4, profil, dos à côté de l'image 01, silhouettes superposées ; essai en jeu | fait techniquement (§ 5), **non approuvé** (D-023) |
+| B | corps et silhouette vêtements / équipement affinés | idem + détail des volumes | **arrêté** (D-023) |
+| C | visage, cheveux, mains, bottes | idem + gros plans à côté des détails de l'image 01 et de l'image 02 | **arrêté** (D-023) |
+| D | premier GLB riggé pour le validateur | rapport `check:glb --fit` à 0 erreur, captures bleu / rouge / masque | **arrêté** ; à la reprise, remplacé par la validation de l'asset externe (§ 8), puis M5a |
 
-## 5. Point de contrôle A : résultats
+## 5. Point de contrôle A : résultats (référence technique, NON APPROUVÉ)
+> **NON APPROUVÉ — PAS L'ART FINAL (*NOT APPROVED FINAL ART*).** Cette ébauche n'est **pas** la cible visuelle ; la cible reste l'image 01 (D-009). L'ébauche est gardée comme preuve technique :
+> - squelette, export et essai en jeu fonctionnent ;
+> - cas d'essai du validateur ;
+> - comparaison historique.
+>
+> Les planches portent le bandeau « NON APPROUVÉ ».
+
 Script : `art/master-assault/blockout.py` (≈ 7 s dans le conteneur). Ébauche : 14 456 triangles, un seul maillage `body_LOD0`, pondération rigide par volume, 1 matériau, masque d'équipe par volume.
 
-![Point A : référence (haut), ébauche (milieu), silhouettes superposées (bas : référence en jaune, ébauche en cyan)](../_attachments/m4/checkpoint-a-comparaison.webp)
+![NON APPROUVÉ — point A : référence (haut), ébauche (milieu), silhouettes superposées (bas : référence en jaune, ébauche en cyan)](../_attachments/m4/checkpoint-a-comparaison.webp)
 
-![Point A en jeu, bleu (même fichier)](../_attachments/m4/checkpoint-a-en-jeu-bleu.webp)
-![Point A en jeu, rouge (même fichier)](../_attachments/m4/checkpoint-a-en-jeu-rouge.webp)
-![Point A : zones du masque d'équipe (rouge chemise, vert panneau du dos, jaune peau, blanc cheveux, magenta / cyan emblèmes)](../_attachments/m4/checkpoint-a-masque.webp)
+![NON APPROUVÉ — point A en jeu, bleu (même fichier)](../_attachments/m4/checkpoint-a-en-jeu-bleu.webp)
+![NON APPROUVÉ — point A en jeu, rouge (même fichier)](../_attachments/m4/checkpoint-a-en-jeu-rouge.webp)
+![NON APPROUVÉ — point A : zones du masque d'équipe (rouge chemise, vert panneau du dos, jaune peau, blanc cheveux, magenta / cyan emblèmes)](../_attachments/m4/checkpoint-a-masque.webp)
 
 ### Mesures de l'image 01 (1,85 m = 480 px)
 | Repère | Hauteur | Largeur ou profondeur |
@@ -88,10 +103,10 @@ Accepté au stade prototype : **mains à 1,2 mm au plus de l'arme** dans les pos
 | Emplacement | Contenu | Versionné |
 | --- | --- | --- |
 | `tools/blender/` | scripts de la chaîne (gabarit, export, revue, auto-test), copie JSON du contrat | oui |
-| `art/master-assault/` | sources de l'asset : `proportions.json`, scripts de modélisation (`blockout.py`, puis points B à D) | oui |
+| `art/master-assault/` | ébauche du point A **non approuvée** (`blockout.py`, `proportions.json`, [README](../../art/master-assault/README.md)) : référence technique, pas une base de modèle | oui |
 | `art/build/` | fichiers produits : `.blend`, `.glb` d'étape, rendus | **non** (régénérés par les scripts) |
-| `docs/_attachments/m4/` | planches de revue des points de contrôle | oui |
-| `public/models/characters/assault.glb` | asset du jeu, **au point D seulement** (accepté par le validateur) | oui |
+| `docs/_attachments/m4/` | planches du point A, avec le bandeau « NON APPROUVÉ » | oui |
+| `public/models/characters/assault.glb` | asset du jeu, **n'existe pas** ; à la reprise, l'asset externe accepté par le validateur (§ 8) | oui |
 
 Un `.blend` retouché à la main par un artiste deviendrait une source : il faudrait alors choisir où le garder (Git LFS ou stockage externe), décision du propriétaire.
 
@@ -102,3 +117,15 @@ Un `.blend` retouché à la main par un artiste deviendrait une source : il faud
 4. **Pondération des épaules** en visée haute et au lancer : à juger en jeu (M5a).
 5. **Libellés de l'exportateur** propres à Blender 4.5 : le script les fixe ; une autre version de Blender devra relancer `fl_selftest.py`.
 6. **Le conteneur Cloud est éphémère** : l'environnement `bpy` se réinstalle (`pip install bpy==4.5.14`, ≈ 1 min) ; les sources sont les scripts versionnés.
+
+## 8. Reprise (quand un asset externe sera fourni)
+Conditions : le propriétaire fournit un GLB / glTF de qualité production, un meilleur asset 3D ou une autre méthode de production (D-023). **Ne pas reprendre la modélisation par script** de `art/master-assault/`.
+
+1. **Contrôle** : `npm run check:glb -- <fichier> --stade prototype --fit`.
+   - Les messages du validateur disent quoi corriger : noms d'os, A-pose, échelle, points d'attache, masque `teamMask`, UV `emblem`.
+   - Un asset externe demandera en général une adaptation dans Blender. Outils : gabarit d'armature `fl_template.py`, export verrouillé `fl_export.py`, planches `fl_review.py`.
+2. **Contrat** : revoir D-021 avec les vraies proportions de l'asset.
+   - Un personnage fidèle à l'image 01 a des bras plus courts que 0,60 m.
+   - Soit l'asset suit le contrat, soit la tenue de l'arme change (changement de gameplay et d'animation, à autoriser).
+3. **Branchement** : adaptateur M2 (`rigAdapter.js`) et matériau d'équipe M3 (`teamMaterial.js`). Le personnage actuel reste en repli (M1 par défaut, legacy disponible).
+4. **Aperçu jouable M5a** au plus vite (D-020) : le propriétaire juge silhouette, proportions, mains sur l'arme, lisibilité et sensation en jeu.
