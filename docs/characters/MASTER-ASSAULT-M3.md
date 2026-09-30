@@ -1,6 +1,6 @@
 # Master Assault — étape M3 : matériau d'équipe et contrat de rendu
 
-**Statut : implémentée et validée par les tests, en attente d'acceptation par le propriétaire.** M4 (production Blender) et M5 (intégration) ne sont pas autorisées. M3 prépare le jeu à **recevoir** l'asset de production : le personnage procédural actuel, son apparence, le gameplay, les hitboxes et les chemins de rendu (M1 par défaut, legacy en repli) sont **inchangés** ; le nouveau matériau n'est branché sur aucun soldat en jeu. Contrat pour l'artiste : [ASSET-CONTRACT](ASSET-CONTRACT.md), § 7 et 8 ; brief de production : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md). Étapes précédentes : [M1](MASTER-ASSAULT-M1.md), [M2](MASTER-ASSAULT-M2.md).
+**Statut : acceptée par le propriétaire (D-019 LOCKED, 2026-09-30).** Étape suivante : [M4](MASTER-ASSAULT-M4.md). M3 prépare le jeu à **recevoir** l'asset de production : le personnage procédural actuel, son apparence, le gameplay, les hitboxes et les chemins de rendu (M1 par défaut, legacy en repli) sont **inchangés** ; le nouveau matériau n'est branché sur aucun soldat en jeu. Contrat pour l'artiste : [ASSET-CONTRACT](ASSET-CONTRACT.md), § 7 et 8 ; brief de production : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md). Étapes précédentes : [M1](MASTER-ASSAULT-M1.md), [M2](MASTER-ASSAULT-M2.md).
 
 ## 1. Architecture
 ```

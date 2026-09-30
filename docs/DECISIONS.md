@@ -126,7 +126,8 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Conséquences :** toute évolution du contrat modifie `rigContract.js`, [ASSET-CONTRACT](characters/ASSET-CONTRACT.md) et cette décision dans le même commit ; le matériau (M3) et l'intégration (M5 : chargement, LOD, clips, coût de l'adaptateur) ne sont pas décidés ici.
 
 ## D-019 — MASQUE D'ÉQUIPE ET MATÉRIAU PARTAGÉ DES PERSONNAGES DE PRODUCTION (ÉTAPE M3)
-- **Statut :** PENDING (implémenté et validé par les tests le 2026-09-29 ; acceptation du propriétaire attendue). Non gelé (D-003).
+- **Statut :** LOCKED (M3 et direction acceptées par le propriétaire le 2026-09-30). Non gelé (D-003).
+- **Précisions du propriétaire (2026-09-30)** : couleur secondaire = teinte sombre d'équipe (bleu nuit pour les Aigles, rouge sombre / brun pour la Légion) ; **revers des manches neutres gris clair** (image 01) ; **pantalon olive / kaki non teinté** pour l'aperçu, fidèle à la référence ; **cheveux = zone de personnalisation indépendante**, jamais teintée par l'équipe, changeable indépendamment de l'équipe, du teint et des vêtements ; cheveux **bruns** de la référence pour le Master Assault canonique.
 - **Décision :**
   - le masque `COLOR_0` se peint avec **huit couleurs pures** (R, G, B à 0 ou 1 ; canal A réservé) : noir = neutre, rouge = couleur d'équipe principale, vert = teinte sombre d'équipe (secondaire), bleu / magenta / cyan = zone d'emblème posée sur neutre / principale / secondaire, jaune = peau, blanc = cheveux (`TEAM_MASK` et `decodeMask()` de `src/character/rigContract.js`, contrat `M3-0.2`) ;
   - les zones colorables sont peintes dans l'atlas en gris ; le **gris de référence `#CCCCCC`** rend exactement la teinte ;
@@ -142,3 +143,17 @@ Pour ajouter une décision : nouvel ID à la suite, date, statut, décision, rai
 - **Décision :** le propriétaire doit **voir et essayer** le nouveau personnage bien avant la validation finale. Dès qu'un **premier GLB valide** existe (M4 : asset d'aperçu qui passe `npm run check:glb -- … --stade prototype --fit` sans erreur), le projet prévoit une **intégration minimale jouable (M5a)** : le personnage de production en partie réelle, caméra à la 3ᵉ personne et en visée, bleu et rouge, avec retour immédiat au personnage actuel par un réglage. Le propriétaire y valide silhouette, proportions, échelle générale, mains et arme, lisibilité à l'écran et sensation en jeu.
 - **Rôle des étapes :** **M4 = premier asset réel visible** ; **M5a = première intégration jouable** ; M5 = intégration complète ; **M7 = validation GOLD finale seulement**.
 - **Conséquences :** le plan de l'[audit](characters/MASTER-ASSAULT-AUDIT.md) et la [ROADMAP](ROADMAP.md) intègrent M5a juste après le premier GLB d'aperçu ; la même règle s'applique aux futurs personnages (Artilleur, Commando) : un aperçu jouable avant toute validation finale. Chaque étape reste soumise à l'autorisation explicite du propriétaire.
+
+## D-021 — AJUSTEMENTS DU CONTRAT AU POINT DE CONTRÔLE A (ÉTAPE M4)
+- **Statut :** PENDING (mesuré le 2026-09-30 ; acceptation du propriétaire attendue avec la revue du point A). Contrat `M4-0.3`, non gelé (D-003).
+- **Décision :**
+  - **portée des bras** : bras + avant-bras (épaule → poignet) **≥ 0,60 m** de chaque côté (`ASSET.minArmReachM`, règle `PORTEE_BRAS` du validateur). Mesuré avec l'arme du jeu : 0,565 m laisse la main gauche à 36–46 mm du garde-main, 0,60 m à 11 mm en visée basse, 0,61 m à 1,2 mm. La tolérance de ± 3 cm par segment (M2) ne garantissait pas la prise ;
+  - **cou et tête** : cibles et tolérances verticales élargies (cou 1,50 ± 0,06 m, tête 1,59 ± 0,07 m) pour l'anatomie de l'image 01 (base du cou ≈ 1,54 m, pivot du crâne ≈ 1,63 m) ; sans effet sur le gameplay (rotations recopiées ; zone de touche vérifiée par l'essai `--fit`) ;
+  - le gabarit accepte une **A-pose détendue** (bras portés vers l'avant, léger pli du coude), comme l'image 01, dans l'angle du contrat (30 à 60°).
+- **Conséquence visible** : les bras du Master Assault sont plus longs que sur l'image 01 (≈ 0,51 m de l'épaule au poignet sur la référence) tant que la tenue de l'arme du jeu ne change pas ; rapprocher l'arme du corps serait un changement de gameplay et d'animation, à autoriser séparément.
+
+## D-022 — PRODUCTION DE L'ASSET PAR BLENDER PILOTÉ PAR SCRIPTS (ÉTAPE M4)
+- **Statut :** PENDING (proposé le 2026-09-30 dans le premier rapport de M4).
+- **Décision :** l'asset du Master Assault est produit dans **Blender 4.5 LTS** (module `bpy` dans le conteneur Cloud, même version que le poste d'un artiste), par des **scripts Python versionnés** (`art/master-assault/`) qui régénèrent `.blend`, rendus de revue et `.glb` ; outils communs dans `tools/blender/` (gabarit, export verrouillé, validateur automatique, planches de comparaison). Points de contrôle A (ébauche), B (corps et vêtements), C (visage, cheveux, mains, bottes), D (GLB riggé, validateur à 0 erreur), chacun comparé aux images 01 et 02 et revu par le propriétaire ; M5a (D-020) dès le point D.
+- **Fichiers :** scripts et proportions versionnés ; `.blend`, `.glb` d'étape et rendus générés dans `art/build/` (ignoré par Git) ; planches de revue dans `docs/_attachments/m4/` ; asset du jeu `public/models/characters/assault.glb` au point D seulement.
+- **Limite :** un script ne sculpte pas : visage, cheveux et plis restent stylisés ; si le rendu du point C ne suffit pas, un artiste reprend le `.blend` au même contrat (D-014 : jamais de primitives JavaScript pour l'asset).

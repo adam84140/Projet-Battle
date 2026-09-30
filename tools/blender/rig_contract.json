@@ -1,0 +1,903 @@
+{
+ "version": "M4-0.3",
+ "note": "Généré depuis src/character/rigContract.js par tools/blender/export-contract.mjs : ne pas modifier à la main.",
+ "requiredBones": [
+  {
+   "name": "root",
+   "parent": null,
+   "target": [
+    0,
+    0,
+    0
+   ],
+   "tol": [
+    0.01,
+    0.01,
+    0.01
+   ]
+  },
+  {
+   "name": "hips",
+   "parent": "root",
+   "gameplay": "hips",
+   "target": [
+    0,
+    0.95,
+    0
+   ],
+   "tol": [
+    0.02,
+    0.05,
+    0.04
+   ]
+  },
+  {
+   "name": "spine",
+   "parent": "hips",
+   "gameplay": "spine",
+   "chain": 0,
+   "target": [
+    0,
+    1.01,
+    0
+   ],
+   "tol": [
+    0.02,
+    0.05,
+    0.05
+   ]
+  },
+  {
+   "name": "spine1",
+   "parent": "spine",
+   "chain": 1,
+   "target": [
+    0,
+    1.17,
+    0
+   ],
+   "tol": [
+    0.02,
+    0.06,
+    0.06
+   ]
+  },
+  {
+   "name": "chest",
+   "parent": "spine1",
+   "chain": 2,
+   "target": [
+    0,
+    1.33,
+    0
+   ],
+   "tol": [
+    0.02,
+    0.06,
+    0.06
+   ]
+  },
+  {
+   "name": "neck",
+   "parent": "chest",
+   "gameplay": "neck",
+   "target": [
+    0,
+    1.5,
+    0.005
+   ],
+   "tol": [
+    0.02,
+    0.06,
+    0.04
+   ]
+  },
+  {
+   "name": "head",
+   "parent": "neck",
+   "gameplay": "head",
+   "target": [
+    0,
+    1.59,
+    0.017
+   ],
+   "tol": [
+    0.02,
+    0.07,
+    0.04
+   ]
+  },
+  {
+   "name": "clavicle.L",
+   "parent": "chest",
+   "target": [
+    0.06,
+    1.41,
+    0
+   ],
+   "tol": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "side": "L"
+  },
+  {
+   "name": "upperArm.L",
+   "parent": "clavicle.L",
+   "gameplay": "shoulderL",
+   "limb": true,
+   "target": [
+    0.25,
+    1.43,
+    0
+   ],
+   "tol": [
+    0.03,
+    0.04,
+    0.04
+   ],
+   "side": "L"
+  },
+  {
+   "name": "lowerArm.L",
+   "parent": "upperArm.L",
+   "gameplay": "elbowL",
+   "limb": true,
+   "length": [
+    0.3,
+    0.03
+   ],
+   "side": "L"
+  },
+  {
+   "name": "hand.L",
+   "parent": "lowerArm.L",
+   "gameplay": "handL",
+   "limb": true,
+   "length": [
+    0.3,
+    0.03
+   ],
+   "side": "L"
+  },
+  {
+   "name": "thigh.L",
+   "parent": "hips",
+   "gameplay": "legL",
+   "limb": true,
+   "target": [
+    0.1,
+    0.91,
+    0
+   ],
+   "tol": [
+    0.03,
+    0.05,
+    0.04
+   ],
+   "side": "L"
+  },
+  {
+   "name": "calf.L",
+   "parent": "thigh.L",
+   "gameplay": "kneeL",
+   "limb": true,
+   "length": [
+    0.42,
+    0.04
+   ],
+   "side": "L"
+  },
+  {
+   "name": "foot.L",
+   "parent": "calf.L",
+   "gameplay": "ankleL",
+   "length": [
+    0.39,
+    0.04
+   ],
+   "side": "L"
+  },
+  {
+   "name": "toe.L",
+   "parent": "foot.L",
+   "side": "L"
+  },
+  {
+   "name": "clavicle.R",
+   "parent": "chest",
+   "target": [
+    -0.06,
+    1.41,
+    0
+   ],
+   "tol": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "side": "R"
+  },
+  {
+   "name": "upperArm.R",
+   "parent": "clavicle.R",
+   "gameplay": "shoulderR",
+   "limb": true,
+   "target": [
+    -0.25,
+    1.43,
+    0
+   ],
+   "tol": [
+    0.03,
+    0.04,
+    0.04
+   ],
+   "side": "R"
+  },
+  {
+   "name": "lowerArm.R",
+   "parent": "upperArm.R",
+   "gameplay": "elbowR",
+   "limb": true,
+   "length": [
+    0.3,
+    0.03
+   ],
+   "side": "R"
+  },
+  {
+   "name": "hand.R",
+   "parent": "lowerArm.R",
+   "gameplay": "handR",
+   "limb": true,
+   "length": [
+    0.3,
+    0.03
+   ],
+   "side": "R"
+  },
+  {
+   "name": "thigh.R",
+   "parent": "hips",
+   "gameplay": "legR",
+   "limb": true,
+   "target": [
+    -0.1,
+    0.91,
+    0
+   ],
+   "tol": [
+    0.03,
+    0.05,
+    0.04
+   ],
+   "side": "R"
+  },
+  {
+   "name": "calf.R",
+   "parent": "thigh.R",
+   "gameplay": "kneeR",
+   "limb": true,
+   "length": [
+    0.42,
+    0.04
+   ],
+   "side": "R"
+  },
+  {
+   "name": "foot.R",
+   "parent": "calf.R",
+   "gameplay": "ankleR",
+   "length": [
+    0.39,
+    0.04
+   ],
+   "side": "R"
+  },
+  {
+   "name": "toe.R",
+   "parent": "foot.R",
+   "side": "R"
+  }
+ ],
+ "optionalBones": [
+  {
+   "name": "thumb1.L",
+   "parent": "hand.L"
+  },
+  {
+   "name": "thumb2.L",
+   "parent": "thumb1.L"
+  },
+  {
+   "name": "thumb3.L",
+   "parent": "thumb2.L"
+  },
+  {
+   "name": "index1.L",
+   "parent": "hand.L"
+  },
+  {
+   "name": "index2.L",
+   "parent": "index1.L"
+  },
+  {
+   "name": "index3.L",
+   "parent": "index2.L"
+  },
+  {
+   "name": "fingers1.L",
+   "parent": "hand.L"
+  },
+  {
+   "name": "fingers2.L",
+   "parent": "fingers1.L"
+  },
+  {
+   "name": "fingers3.L",
+   "parent": "fingers2.L"
+  },
+  {
+   "name": "eye.L",
+   "parent": "head"
+  },
+  {
+   "name": "brow.L",
+   "parent": "head"
+  },
+  {
+   "name": "thumb1.R",
+   "parent": "hand.R"
+  },
+  {
+   "name": "thumb2.R",
+   "parent": "thumb1.R"
+  },
+  {
+   "name": "thumb3.R",
+   "parent": "thumb2.R"
+  },
+  {
+   "name": "index1.R",
+   "parent": "hand.R"
+  },
+  {
+   "name": "index2.R",
+   "parent": "index1.R"
+  },
+  {
+   "name": "index3.R",
+   "parent": "index2.R"
+  },
+  {
+   "name": "fingers1.R",
+   "parent": "hand.R"
+  },
+  {
+   "name": "fingers2.R",
+   "parent": "fingers1.R"
+  },
+  {
+   "name": "fingers3.R",
+   "parent": "fingers2.R"
+  },
+  {
+   "name": "eye.R",
+   "parent": "head"
+  },
+  {
+   "name": "brow.R",
+   "parent": "head"
+  },
+  {
+   "name": "jaw",
+   "parent": "head"
+  }
+ ],
+ "sockets": [
+  {
+   "name": "socket_hand.R",
+   "parent": "hand.R",
+   "required": true,
+   "use": "objet tenu main droite (grenade lancée, poignard, trousse)"
+  },
+  {
+   "name": "socket_hand.L",
+   "parent": "hand.L",
+   "required": true,
+   "use": "objet tenu main gauche (chargeur au rechargement)"
+  },
+  {
+   "name": "socket_back",
+   "parent": "chest",
+   "required": true,
+   "use": "sac à dos (accessoire facultatif, D-010), arme en bandoulière"
+  },
+  {
+   "name": "socket_head",
+   "parent": "head",
+   "required": true,
+   "use": "coiffe : casquette, casque, bonnet"
+  },
+  {
+   "name": "socket_face",
+   "parent": "head",
+   "required": true,
+   "use": "lunettes"
+  },
+  {
+   "name": "socket_hip.L",
+   "parent": "hips",
+   "required": true,
+   "use": "gourde, sacoche"
+  },
+  {
+   "name": "socket_hip.R",
+   "parent": "hips",
+   "required": true,
+   "use": "étui, sacoche"
+  },
+  {
+   "name": "socket_grenade",
+   "parent": "hips",
+   "required": true,
+   "use": "grenades de ceinture (accessoire)"
+  },
+  {
+   "name": "socket_weapon",
+   "parent": "chest",
+   "required": false,
+   "use": "aperçu Blender du support d’arme (le jeu garde son support animé par le code)"
+  }
+ ],
+ "asset": {
+  "heightM": 1.85,
+  "heightTolM": 0.04,
+  "originTolM": 0.02,
+  "aPoseArmFromVerticalDeg": [
+   30,
+   60
+  ],
+  "minArmReachM": 0.598,
+  "maxElbowBendDeg": 20,
+  "lods": [
+   {
+    "name": "body_LOD0",
+    "minTris": 12000,
+    "maxTris": 18000,
+    "required": "prototype"
+   },
+   {
+    "name": "body_LOD1",
+    "minTris": 3000,
+    "maxTris": 6000,
+    "required": "production"
+   },
+   {
+    "name": "body_LOD2",
+    "minTris": 800,
+    "maxTris": 2000,
+    "required": "production"
+   }
+  ],
+  "accessoryPattern": "^acc_[a-z0-9]+_LOD[0-2]$",
+  "maxMaterials": 1,
+  "maxMaterialsHard": 2,
+  "textureSizes": [
+   256,
+   512,
+   1024,
+   2048
+  ],
+  "maxTextureSize": 2048,
+  "maxInfluences": 4,
+  "teamMask": {
+   "attribute": "COLOR_0",
+   "emblemUv": "TEXCOORD_1"
+  }
+ },
+ "teamMask": {
+  "attribute": "COLOR_0",
+  "emblemUv": "TEXCOORD_1",
+  "referenceGrey": 204,
+  "codes": [
+   {
+    "zone": "neutre",
+    "rgb": [
+     0,
+     0,
+     0
+    ],
+    "paint": "noir",
+    "tint": null,
+    "use": "tout ce qui garde la couleur de l’atlas : gilet noir, cuir, pantalon, bottes, gants, revers gris clair, métal"
+   },
+   {
+    "zone": "principale",
+    "rgb": [
+     1,
+     0,
+     0
+    ],
+    "paint": "rouge",
+    "tint": "primary",
+    "use": "chemise et manches (bleu / rouge)"
+   },
+   {
+    "zone": "secondaire",
+    "rgb": [
+     0,
+     1,
+     0
+    ],
+    "paint": "vert",
+    "tint": "secondary",
+    "use": "teinte sombre d’équipe : panneau du dos, gilet, casquette (bleu nuit / brun-rouge)"
+   },
+   {
+    "zone": "embleme",
+    "rgb": [
+     0,
+     0,
+     1
+    ],
+    "paint": "bleu",
+    "tint": null,
+    "emblem": true,
+    "use": "emblème posé sur une zone neutre"
+   },
+   {
+    "zone": "embleme_principale",
+    "rgb": [
+     1,
+     0,
+     1
+    ],
+    "paint": "magenta",
+    "tint": "primary",
+    "emblem": true,
+    "use": "emblème sur la chemise (manches)"
+   },
+   {
+    "zone": "embleme_secondaire",
+    "rgb": [
+     0,
+     1,
+     1
+    ],
+    "paint": "cyan",
+    "tint": "secondary",
+    "emblem": true,
+    "use": "emblème sur la teinte sombre (poitrine, grand emblème du dos)"
+   },
+   {
+    "zone": "peau",
+    "rgb": [
+     1,
+     1,
+     0
+    ],
+    "paint": "jaune",
+    "tint": "skin",
+    "use": "peau (teint personnalisable)"
+   },
+   {
+    "zone": "cheveux",
+    "rgb": [
+     1,
+     1,
+     1
+    ],
+    "paint": "blanc",
+    "tint": "hair",
+    "use": "cheveux et sourcils (couleur personnalisable)"
+   }
+  ]
+ },
+ "animation": [
+  {
+   "state": "repos, repos combat",
+   "source": "code"
+  },
+  {
+   "state": "marche, course, sprint, déplacements directionnels, pivot",
+   "source": "code"
+  },
+  {
+   "state": "début de saut, en l’air, réception",
+   "source": "code"
+  },
+  {
+   "state": "accroupi (immobile, marche)",
+   "source": "code"
+  },
+  {
+   "state": "visée, tir, recul",
+   "source": "code"
+  },
+  {
+   "state": "réactions aux impacts",
+   "source": "code"
+  },
+  {
+   "clip": "reload_rifle",
+   "seconds": 1.8,
+   "mask": "haut du corps",
+   "required": true,
+   "events": "chargeur retiré de 30 % à 62 % du clip"
+  },
+  {
+   "clip": "throw_grenade",
+   "seconds": 0.7,
+   "mask": "haut du corps",
+   "required": true,
+   "events": "lâcher à 45 %"
+  },
+  {
+   "clip": "buff",
+   "seconds": 0.45,
+   "mask": "haut du corps",
+   "required": true,
+   "events": "adrénaline et autres compétences de geste"
+  },
+  {
+   "clip": "heal",
+   "seconds": 0.6,
+   "mask": "haut du corps",
+   "required": true
+  },
+  {
+   "clip": "knife",
+   "seconds": 0.55,
+   "mask": "haut du corps",
+   "required": false,
+   "events": "coup à 30 %"
+  },
+  {
+   "clip": "death_back",
+   "seconds": 1,
+   "mask": "corps entier",
+   "required": true,
+   "events": "dernière image tenue au sol"
+  },
+  {
+   "clip": "death_front",
+   "seconds": 1,
+   "mask": "corps entier",
+   "required": true,
+   "events": "dernière image tenue au sol"
+  },
+  {
+   "clip": "death_spin",
+   "seconds": 1,
+   "mask": "corps entier",
+   "required": true,
+   "events": "dernière image tenue au sol"
+  },
+  {
+   "clip": "sit_jeep",
+   "seconds": 0,
+   "mask": "corps entier",
+   "required": true,
+   "events": "pose (1 image)"
+  },
+  {
+   "clip": "hand_grip.R",
+   "seconds": 0,
+   "mask": "doigts",
+   "required": false,
+   "events": "pose des doigts sur la poignée (si os de doigts)"
+  },
+  {
+   "clip": "hand_grip.L",
+   "seconds": 0,
+   "mask": "doigts",
+   "required": false,
+   "events": "pose des doigts sur le garde-main (si os de doigts)"
+  }
+ ],
+ "fps": 30,
+ "morphTargets": [
+  "blink",
+  "expr_determined",
+  "expr_confident",
+  "expr_angry",
+  "expr_surprised",
+  "expr_smile",
+  "expr_focus",
+  "expr_pain",
+  "expr_ko"
+ ],
+ "emblems": {
+  "eagle": [
+   [
+    [
+     0,
+     0.62
+    ],
+    [
+     0.13,
+     0.42
+    ],
+    [
+     0.15,
+     0.1
+    ],
+    [
+     0.1,
+     -0.35
+    ],
+    [
+     0,
+     -0.8
+    ],
+    [
+     -0.1,
+     -0.35
+    ],
+    [
+     -0.15,
+     0.1
+    ],
+    [
+     -0.13,
+     0.42
+    ]
+   ],
+   [
+    [
+     0.2,
+     0.36
+    ],
+    [
+     0.98,
+     0.9
+    ],
+    [
+     0.94,
+     0.62
+    ],
+    [
+     0.22,
+     0.12
+    ]
+   ],
+   [
+    [
+     0.21,
+     0.04
+    ],
+    [
+     0.86,
+     0.48
+    ],
+    [
+     0.8,
+     0.22
+    ],
+    [
+     0.21,
+     -0.2
+    ]
+   ],
+   [
+    [
+     0.2,
+     -0.28
+    ],
+    [
+     0.68,
+     0.04
+    ],
+    [
+     0.6,
+     -0.18
+    ],
+    [
+     0.17,
+     -0.5
+    ]
+   ],
+   [
+    [
+     -0.22,
+     0.12
+    ],
+    [
+     -0.94,
+     0.62
+    ],
+    [
+     -0.98,
+     0.9
+    ],
+    [
+     -0.2,
+     0.36
+    ]
+   ],
+   [
+    [
+     -0.21,
+     -0.2
+    ],
+    [
+     -0.8,
+     0.22
+    ],
+    [
+     -0.86,
+     0.48
+    ],
+    [
+     -0.21,
+     0.04
+    ]
+   ],
+   [
+    [
+     -0.17,
+     -0.5
+    ],
+    [
+     -0.6,
+     -0.18
+    ],
+    [
+     -0.68,
+     0.04
+    ],
+    [
+     -0.2,
+     -0.28
+    ]
+   ]
+  ],
+  "star": [
+   [
+    [
+     5.817072295949927e-17,
+     0.95
+    ],
+    [
+     -0.23511410091698923,
+     0.323606797749979
+    ],
+    [
+     -0.9035036904803958,
+     0.2935661446562001
+    ],
+    [
+     -0.3804226065180615,
+     -0.12360679774997892
+    ],
+    [
+     -0.5583959896778495,
+     -0.7685661446562
+    ],
+    [
+     -7.347880794884119e-17,
+     -0.4
+    ],
+    [
+     0.5583959896778492,
+     -0.7685661446562001
+    ],
+    [
+     0.3804226065180614,
+     -0.12360679774997906
+    ],
+    [
+     0.9035036904803959,
+     0.2935661446561998
+    ],
+    [
+     0.23511410091698937,
+     0.3236067977499789
+    ]
+   ]
+  ]
+ }
+}

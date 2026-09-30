@@ -43,6 +43,7 @@ npm test              # les sept à la suite (chemin de rendu par défaut)
 RENDU=legacy npm test # les sept sur le chemin de repli (tant que le chemin legacy existe)
 npm run check:glb -- <fichier.glb> [--fit]  # contrôle d'un asset de personnage (docs/characters/ASSET-CONTRACT.md)
 ```
+Chaîne Blender (gabarit, export verrouillé, planches de revue, auto-test) : `tools/blender/README.md` (Blender 4.5 LTS ou module `bpy`).
 Si un changement touche un système non couvert : ajouter une vérification au test adapté. Procédure détaillée : skill `gameplay-regression`.
 
 ## Validation visuelle

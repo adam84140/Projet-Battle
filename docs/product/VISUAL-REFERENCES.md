@@ -34,7 +34,7 @@ Fait autorité pour : proportions, silhouette, visage, coiffure, vêtements, éq
 
 | Élément | Lecture de la référence |
 | --- | --- |
-| Stature | **1,85 m** (échelle de la planche), environ 6,5 têtes, pose en A |
+| Stature | **1,85 m** (échelle de la planche), environ 8 têtes (mesuré au point A de M4 : tête cheveux compris ≈ 0,23 m, menton ≈ 1,62 m), A-pose détendue (bras ≈ 30° et portés vers l'avant) |
 | Corps | athlétique, torse en V, épaules larges, avant-bras et mains forts, jambes solides, bottes massives |
 | Visage | mâchoire carrée, menton marqué, sourcils épais et sombres, yeux bruns, léger sourire assuré |
 | Cheveux | brun foncé, côtés courts dégradés, dessus volumineux relevé vers l'arrière, mèche avant marquée |

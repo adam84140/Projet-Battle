@@ -17,7 +17,7 @@ Le Master Assault est le **personnage de référence de production** ([DECISIONS
 Le héros de la jaquette : l'Assaut bleu à l'aigle ailé des images 01 à 03. Il doit être reconnaissable en vignette, lisible en combat et assez sympathique pour porter l'identité du jeu.
 
 ### Proportions (unités en mètres)
-- **Hauteur totale 1,85 m** au sommet des cheveux (image 01), environ 6,5 têtes (tête ≈ 1,13 × une tête « réaliste »). Le personnage actuel mesure **1,94 m** au sommet des cheveux en jeu (capsule physique 1,80 m ; sphère de tête centrée à 1,724 m, rayon 0,17 m) : la cible est donc **plus petite** de 9 cm. Les hitboxes ne changent pas (partie technique) ; la sphère de tête (1,55 à 1,89 m) couvre la tête d'un personnage de 1,85 m, à vérifier au prototype ([audit](MASTER-ASSAULT-AUDIT.md)).
+- **Hauteur totale 1,85 m** au sommet des cheveux (image 01), environ 8 têtes (tête cheveux compris ≈ 0,23 m, mesure du point A de M4). Le personnage actuel mesure **1,94 m** au sommet des cheveux en jeu (capsule physique 1,80 m ; sphère de tête centrée à 1,724 m, rayon 0,17 m) : la cible est donc **plus petite** de 9 cm. Les hitboxes ne changent pas (partie technique) ; la sphère de tête (1,55 à 1,89 m) couvre la tête d'un personnage de 1,85 m, à vérifier au prototype ([audit](MASTER-ASSAULT-AUDIT.md)).
 - Épaules larges (≈ 0,55 m d'un deltoïde à l'autre), taille fine, bassin étroit : torse en V.
 - Avant-bras épais et lisibles, mains fortes, gantées.
 - Jambes solides, bottes massives à semelle épaisse.

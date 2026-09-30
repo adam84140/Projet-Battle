@@ -8,6 +8,8 @@ import { fileURLToPath } from 'node:url';
 import { startServer, launch, step, run, Checks } from './lib.mjs';
 import { parseAsset, validateAsset, trs, mul } from './check-glb.mjs';
 import { REQUIRED_BONES, OPTIONAL_BONES, SOCKETS, runtimeName } from '../src/character/rigContract.js';
+import { contractJson } from '../tools/blender/export-contract.mjs';
+import { readFileSync } from 'node:fs';
 
 const C = new Checks('Squelette de production (M2, masque M3)');
 const dir = fileURLToPath(new URL('../test-results/rig/', import.meta.url));
@@ -27,6 +29,11 @@ const metrics = { date: new Date().toISOString() };
     const r = REQUIRED_BONES.find((x) => x.name === b.name.replace('.L', '.R'));
     return r && (!b.target || (r.target[0] === -b.target[0] && r.target[1] === b.target[1]));
   }));
+  let json = '';
+  try {
+    json = readFileSync(new URL('../tools/blender/rig_contract.json', import.meta.url), 'utf8');
+  } catch {}
+  C.ok('contrat : copie JSON des scripts Blender à jour (tools/blender/rig_contract.json)', json === contractJson(), 'sinon : node tools/blender/export-contract.mjs');
 }
 
 const { server, url } = await startServer();
@@ -148,6 +155,12 @@ try {
       acc.max = acc.max.map((x) => x * 100);
     }],
     ['épaule trop haute (+10 cm)', 'PROPORTIONS', (a) => moveWorld(a, 'clavicle.L', [0, 0.1, 0])],
+    ['bras trop courts pour tenir l\'arme (−6 cm)', 'PORTEE_BRAS', (a) => {
+      const e = posW(a, 'lowerArm.L');
+      const h = posW(a, 'hand.L');
+      const k = 0.06 / Math.hypot(h[0] - e[0], h[1] - e[1], h[2] - e[2]);
+      moveWorld(a, 'hand.L', [(e[0] - h[0]) * k, (e[1] - h[1]) * k, (e[2] - h[2]) * k]);
+    }],
     ['T-pose (bras à l\'horizontale)', 'POSE_A', (a) => {
       // coude et poignet gauches ramenés à l'horizontale de l'épaule
       const s = posW(a, 'upperArm.L');

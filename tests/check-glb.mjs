@@ -226,6 +226,10 @@ export function validateAsset(asset, { stage = 'production', fileBytes = 0 } = {
       if (Math.abs(l - b.length[0]) > b.length[1]) err('LONGUEUR', `Segment « ${b.parent} » → « ${b.name} » de ${cm(l)} (attendu ${cm(b.length[0])} ± ${cm(b.length[1])}).`, 'Ajuster la longueur du membre : au-delà, les mains ne tiennent plus l’arme ou les pieds quittent le sol.');
     }
   }
+  for (const sd of ['L', 'R']) {
+    const reach = len(sub(P(`lowerArm.${sd}`), P(`upperArm.${sd}`))) + len(sub(P(`hand.${sd}`), P(`lowerArm.${sd}`)));
+    if (reach < ASSET.minArmReachM) err('PORTEE_BRAS', `Bras ${sd} de ${cm(reach)} de l’épaule au poignet (${cm(ASSET.minArmReachM)} au moins).`, 'Allonger bras et avant-bras : plus courts, la main gauche n’atteint plus le garde-main de l’arme du jeu (essai --fit).');
+  }
   for (const [l, r] of [['upperArm.L', 'upperArm.R'], ['hand.L', 'hand.R'], ['thigh.L', 'thigh.R'], ['foot.L', 'foot.R']]) {
     const a = P(l);
     const b = P(r);
@@ -455,10 +459,15 @@ export async function fitTest(bytes, name = 'asset') {
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
 if (isMain) {
   const args = process.argv.slice(2);
-  const file = args.find((a) => !a.startsWith('--') && !['prototype', 'production'].includes(a));
-  const stage = args.includes('--stade') ? args[args.indexOf('--stade') + 1] : 'production';
-  if (!file) {
-    console.log('Usage : npm run check:glb -- <fichier.glb|.gltf> [--stade prototype|production] [--fit] [--json]');
+  const opt = (...names) => {
+    const i = args.findIndex((a) => names.includes(a));
+    return i >= 0 ? args[i + 1] : undefined;
+  };
+  // --file et --state : alias anglais de l'argument de fichier et de --stade
+  const file = opt('--file') ?? args.find((a, i) => !a.startsWith('--') && !['--stade', '--state', '--file'].includes(args[i - 1]));
+  const stage = opt('--stade', '--state') ?? 'production';
+  if (!file || !['prototype', 'production'].includes(stage)) {
+    console.log('Usage : npm run check:glb -- <fichier.glb|.gltf> [--stade prototype|production] [--fit] [--json]\n        (alias : --file <fichier>, --state <stade>)');
     process.exit(2);
   }
   let report;

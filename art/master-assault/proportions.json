@@ -1,0 +1,32 @@
+{
+ "_source": "Mesuré sur l'image 01 (1,85 m = 480 px) : voir docs/characters/MASTER-ASSAULT-M4.md. Positions dans le repère du jeu (m), dans les tolérances du contrat.",
+ "arm_angle_deg": 29,
+ "arm_forward_deg": 10,
+ "elbow_bend_deg": 8,
+ "upper_arm": 0.3,
+ "forearm": 0.31,
+ "hand": 0.1,
+ "thigh": 0.39,
+ "shin": 0.4,
+ "leg_spread_deg": 11,
+ "toe": [0.0, -0.08, 0.12],
+ "positions": {
+  "hips": [0, 0.94, 0],
+  "spine": [0, 1.02, 0],
+  "spine1": [0, 1.17, 0],
+  "chest": [0, 1.32, 0],
+  "neck": [0, 1.54, 0.0],
+  "head": [0, 1.63, 0.01],
+  "clavicle.L": [0.05, 1.455, 0.0],
+  "clavicle.R": [-0.05, 1.455, 0.0],
+  "upperArm.L": [0.24, 1.445, -0.005],
+  "upperArm.R": [-0.24, 1.445, -0.005],
+  "thigh.L": [0.1, 0.9, 0.0],
+  "thigh.R": [-0.1, 0.9, 0.0]
+ },
+ "sockets": {
+  "socket_head": [0, 1.81, 0.0],
+  "socket_face": [0, 1.715, 0.105],
+  "socket_back": [0, 1.33, -0.19]
+ }
+}

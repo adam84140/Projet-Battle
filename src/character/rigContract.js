@@ -4,7 +4,7 @@
 // NON GELÉ (D-003) : il le sera après la validation GOLD du vrai Master Assault (M7).
 // Repère : Y en haut, personnage face à +Z, sa gauche = +X (droite = −X), 1 unité = 1 m.
 
-export const RIG_CONTRACT_VERSION = 'M3-0.2';
+export const RIG_CONTRACT_VERSION = 'M4-0.3';
 
 // Nom vu par Three.js après chargement glTF (PropertyBinding.sanitizeNodeName) :
 // « upperArm.L » (nom Blender, compatible miroir) devient « upperArmL ».
@@ -22,8 +22,10 @@ const L = [
   { name: 'spine', parent: 'hips', gameplay: 'spine', chain: 0, target: [0, 1.01, 0], tol: [0.02, 0.05, 0.05] },
   { name: 'spine1', parent: 'spine', chain: 1, target: [0, 1.17, 0], tol: [0.02, 0.06, 0.06] },
   { name: 'chest', parent: 'spine1', chain: 2, target: [0, 1.33, 0], tol: [0.02, 0.06, 0.06] },
-  { name: 'neck', parent: 'chest', gameplay: 'neck', target: [0, 1.48, 0.005], tol: [0.02, 0.04, 0.04] },
-  { name: 'head', parent: 'neck', gameplay: 'head', target: [0, 1.56, 0.017], tol: [0.02, 0.04, 0.04] },
+  // cou et tête : tolérance verticale élargie (D-021) pour l'anatomie de l'image 01 (base du cou ≈ 1,54 m,
+  // pivot du crâne ≈ 1,63 m) ; seules les rotations sont recopiées, la zone de touche est vérifiée par --fit
+  { name: 'neck', parent: 'chest', gameplay: 'neck', target: [0, 1.5, 0.005], tol: [0.02, 0.06, 0.04] },
+  { name: 'head', parent: 'neck', gameplay: 'head', target: [0, 1.59, 0.017], tol: [0.02, 0.07, 0.04] },
 ];
 const SIDE = [
   { name: 'clavicle', parent: 'chest', target: [0.06, 1.41, 0], tol: [0.05, 0.05, 0.05] },
@@ -81,6 +83,9 @@ export const ASSET = {
   heightTolM: 0.04,
   originTolM: 0.02, // pieds posés sur y = 0, centré en x et z
   aPoseArmFromVerticalDeg: [30, 60], // bras tendus vers le bas et l'extérieur (≈ 45°)
+  // portée minimale épaule -> poignet (bras + avant-bras) : la main gauche doit atteindre le garde-main
+  // de l'arme du jeu ; mesuré au point de contrôle A (D-021) : 0,565 m laisse la main gauche à 36-46 mm de l'arme, 0,60 m à 11 mm en visée basse, 0,61 m dans la tolérance
+  minArmReachM: 0.598, // 0,60 m à l’arrondi près (bras du gameplay : 0,30 + 0,30 m)
   maxElbowBendDeg: 20,
   lods: [
     { name: 'body_LOD0', minTris: 12000, maxTris: 18000, required: 'prototype' },

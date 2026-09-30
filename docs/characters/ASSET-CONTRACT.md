@@ -1,6 +1,6 @@
 # Contrat d'asset — Master Assault (remise à l'artiste)
 
-**Contrat `M3-0.2` (étapes M2 et M3, [audit](MASTER-ASSAULT-AUDIT.md)). NON GELÉ** : le squelette et les noms peuvent encore changer jusqu'à la validation GOLD du vrai Master Assault (M7, [DECISIONS](../DECISIONS.md) D-003, D-018 et D-019). Toute évolution passe par [`src/character/rigContract.js`](../../src/character/rigContract.js) (source unique lue par le jeu et par le validateur), puis par ce document, dans le même commit.
+**Contrat `M4-0.3` (étapes M2 à M4, [audit](MASTER-ASSAULT-AUDIT.md)). NON GELÉ** : le squelette et les noms peuvent encore changer jusqu'à la validation GOLD du vrai Master Assault (M7, [DECISIONS](../DECISIONS.md) D-003, D-018, D-019 et D-021). Toute évolution passe par [`src/character/rigContract.js`](../../src/character/rigContract.js) (source unique lue par le jeu et par le validateur), puis par ce document, dans le même commit.
 
 Ce document dit **exactement** ce qu'un artiste, ou une chaîne Blender automatisée, doit livrer pour le Master Assault (étape M4). Version courte pour démarrer la production : [M4-BLENDER-BRIEF](M4-BLENDER-BRIEF.md). L'apparence est fixée par la [spécification](MASTER-ASSAULT.md) et les images [01](../_attachments/ref-01-master-assault-turnaround.webp) et [02](../_attachments/ref-02-master-assault-production-sheet.webp) ; ce contrat fixe **tout le reste** : repère, squelette, points d'attache, maillages, pondération, matériau, masque d'équipe, expressions, clips, export. Un fichier conforme passe le validateur (§ 13) sans erreur.
 
@@ -12,7 +12,7 @@ Le jeu ne remplace pas son squelette de gameplay : l'asset en est une **peau** q
 
 | Fichier | Contenu | Stade |
 | --- | --- | --- |
-| `public/models/characters/assaut.glb` | corps `body_LOD0` (+ `body_LOD1`, `body_LOD2`), armature, points d'attache, accessoires `acc_*`, expressions, clips, un matériau `M_body` et son atlas | un seul fichier binaire glTF 2.0 |
+| `public/models/characters/assault.glb` | corps `body_LOD0` (+ `body_LOD1`, `body_LOD2`), armature, points d'attache, accessoires `acc_*`, expressions, clips, un matériau `M_body` et son atlas | un seul fichier binaire glTF 2.0 |
 | (facultatif) `public/models/weapons/fl4.glb` | fusil FL-4, voir § 11 | hors M4 sauf demande du propriétaire |
 | fichier source `.blend` | conservé par l'artiste ou le propriétaire, **pas dans le dépôt** | — |
 
@@ -58,8 +58,8 @@ Côté droit (`.R`) : mêmes noms en `.R`, positions en miroir (x → −x). Pos
 | `spine` | `spine` | `hips` | bas du dos | `spine` | 0 ; 1,01 ; 0 ± 0,02 ; 0,05 ; 0,05 | 0 ; 0 ; 1,01 |
 | `spine1` | `spine1` | `spine` | milieu du dos | part de `spine` | 0 ; 1,17 ; 0 ± 0,02 ; 0,06 ; 0,06 | 0 ; 0 ; 1,17 |
 | `chest` | `chest` | `spine1` | poitrine | part de `spine` | 0 ; 1,33 ; 0 ± 0,02 ; 0,06 ; 0,06 | 0 ; 0 ; 1,33 |
-| `neck` | `neck` | `chest` | cou | `neck` | 0 ; 1,48 ; 0,005 ± 0,02 ; 0,04 ; 0,04 | 0 ; −0,005 ; 1,48 |
-| `head` | `head` | `neck` | tête (base du crâne) | `head` | 0 ; 1,56 ; 0,017 ± 0,02 ; 0,04 ; 0,04 | 0 ; −0,017 ; 1,56 |
+| `neck` | `neck` | `chest` | cou (base) | `neck` | 0 ; 1,50 ; 0,005 ± 0,02 ; 0,06 ; 0,04 | 0 ; −0,005 ; 1,50 |
+| `head` | `head` | `neck` | tête (pivot du crâne) | `head` | 0 ; 1,59 ; 0,017 ± 0,02 ; 0,07 ; 0,04 | 0 ; −0,017 ; 1,59 |
 | `clavicle.L` | `clavicleL` | `chest` | clavicule | — (suit `chest`) | 0,06 ; 1,41 ; 0 ± 0,05 | 0,06 ; 0 ; 1,41 |
 | `upperArm.L` | `upperArmL` | `clavicle.L` | bras (épaule) | `shoulderL` | 0,25 ; 1,43 ; 0 ± 0,03 ; 0,04 ; 0,04 | 0,25 ; 0 ; 1,43 |
 | `lowerArm.L` | `lowerArmL` | `upperArm.L` | avant-bras (coude) | `elbowL` | longueur 0,30 ± 0,03 | — |
@@ -73,7 +73,8 @@ Règles :
 - **Tête d'os = articulation.** Seules les têtes (positions) comptent ; la queue et le *roll* sont libres (l'adaptateur calibre l'orientation de chaque os dans la pose de liaison). Exception : **`hand.*` sans os de doigts**, dont la queue doit pointer le long de la main, vers le bout des doigts (c'est la direction de la main). Convention conseillée partout : axe +Y de l'os vers l'os enfant (Blender le fait par défaut).
 - Les positions et longueurs viennent du squelette de gameplay : elles garantissent que **les mains atteignent les points de prise de l'arme** et que **la tête reste dans sa zone de touche** (sphère centrée à 1,724 m, rayon 0,17 m, debout). Hors tolérance, le validateur refuse le fichier.
 - Gauche et droite **symétriques** à 1 cm près (Armature > Symmetrize).
-- Os **déformants** : tous les os requis (`Deform` coché), sauf `root` qui peut ne pas l'être.
+- Os **déformants** : tous les os requis (`Deform` coché), **`root` compris** (sinon l'export « os de déformation seulement » le supprime).
+- **Portée des bras** : bras + avant-bras (épaule → poignet) **≥ 0,60 m** de chaque côté (règle `PORTEE_BRAS`, D-021) : plus courts, la main gauche n'atteint plus le garde-main de l'arme du jeu (mesuré : 0,565 m laisse 36 à 46 mm d'écart). Les positions du cou et de la tête ont une tolérance verticale large (anatomie de l'image 01 : base du cou ≈ 1,54 m, pivot du crâne ≈ 1,63 m).
 - Tous les os requis sont **directement** enfants des parents indiqués (pas d'os intermédiaire).
 
 ### Os facultatifs (acceptés, ignorés par l'adaptateur en M2)
@@ -241,7 +242,7 @@ Avant l'export :
 3. Os `socket_*` : `Deform` décoché (ou objets vides parentés aux os).
 4. Une action par clip, nommée exactement ; scène à 30 i/s.
 
-Export (File > Export > glTF 2.0). Les libellés ci-dessous sont ceux de Blender 4.x ; **ils varient selon la version : vérifier sur celle utilisée**, puis passer le validateur, qui fait foi.
+**Recommandé : `tools/blender/fl_export.py`** applique tous ces réglages par script (Blender 4.5 LTS), contrôle la scène avant l'export et lance le validateur ([README](../../tools/blender/README.md)). Export à la main (File > Export > glTF 2.0) : libellés de Blender 4.x ; **ils varient selon la version : vérifier sur celle utilisée**, puis passer le validateur, qui fait foi.
 
 | Réglage | Valeur |
 | --- | --- |
@@ -259,10 +260,11 @@ Export (File > Export > glTF 2.0). Les libellés ci-dessous sont ceux de Blender
 ## 13. Validation (`npm run check:glb`)
 
 ```bash
-npm run check:glb -- chemin/assaut.glb                     # stade production (livrable M4)
-npm run check:glb -- chemin/assaut.glb --stade prototype   # squelette et LOD0 seulement
-npm run check:glb -- chemin/assaut.glb --fit               # + essai réel dans le jeu (navigateur local)
-npm run check:glb -- chemin/assaut.glb --json              # rapport machine (chaîne automatisée)
+npm run check:glb -- chemin/assault.glb                     # stade production (livrable complet)
+npm run check:glb -- chemin/assault.glb --stade prototype   # squelette et LOD0 seulement (aperçu M4)
+npm run check:glb -- chemin/assault.glb --fit               # + essai réel dans le jeu (navigateur local)
+npm run check:glb -- chemin/assault.glb --json              # rapport machine (chaîne automatisée)
+npm run check:glb -- --file chemin/assault.glb --state prototype --fit   # mêmes options, alias anglais
 ```
 
 - Lit le fichier sans aucun service externe ; code de sortie **0 = accepté, 1 = refusé**. Chaque problème a un **code**, un message et **la correction à faire dans Blender**. Les avertissements (⚠) n'empêchent pas l'acceptation.
@@ -287,8 +289,10 @@ Le squelette de gameplay n'est jamais modifié : hitboxes, support d'arme, bouch
 - Artilleur et Commando : même squelette, mêmes points d'attache, mêmes clips, après le GOLD du Master Assault.
 - Compression, streaming, personnalisation au-delà des accessoires existants.
 
-## 16. Outils Blender proposés (non faits, à autoriser)
-Aucun script Blender n'existe encore dans le dépôt. Proposés pour avant la production (M4) :
-1. **Gabarit d'armature** (script Python Blender, sans dépendance) : crée l'armature de jeu aux noms, parents, positions et drapeaux `Deform` du contrat, et les points d'attache, depuis une copie des données de `rigContract.js`.
-2. **Export verrouillé** : applique les réglages du § 12 par script (`bpy.ops.export_scene.gltf`) puis lance `check:glb`.
-3. **Conversion Rigify / Auto-Rig Pro** vers l'armature de jeu (copie des transformations, cuisson des actions).
+## 16. Outils Blender (`tools/blender/`, M4)
+Scripts Python simples pour Blender 4.5 LTS, vérifiés sur de vrais exports ([README](../../tools/blender/README.md)) :
+1. **`fl_template.py`** : gabarit (unités, 30 i/s, armature des 23 os aux noms exacts en A-pose, points d'attache en objets vides, repères de hauteur et de zones de touche, palette des 8 couleurs du masque), avec les proportions du personnage (`--props`).
+2. **`fl_export.py`** : export verrouillé (§ 12) après contrôles dans Blender, puis `check:glb` automatique (`--fit` pour l'essai en jeu).
+3. **`fl_review.py`** : vues face, 3/4, profil et dos à l'échelle de l'image 01 et superposition des silhouettes.
+4. **`fl_selftest.py`** : auto-test de toute la chaîne.
+Conversion Rigify / Auto-Rig Pro : non faite (inutile tant que l'armature vient du gabarit).

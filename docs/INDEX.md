@@ -2,7 +2,7 @@
 
 Point d'entrée de la documentation du projet. Les règles permanentes de travail sont dans [CLAUDE.md](../CLAUDE.md) à la racine du dépôt.
 
-> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (M0 à M3 faites : rendu optimisé du personnage actuel, adaptateur de squelette, contrat d'asset, matériau d'équipe ; asset de production pas commencé ; aperçu jouable dès le premier GLB, D-020).**
+> **Jalon : MAP 1 GOLD — sous-jalon : MASTER CHARACTER ASSAULT (M0 à M3 faites ; **M4 en cours** : asset de production dans Blender, point de contrôle A fait ; aperçu jouable M5a dès le premier GLB valide, D-020).**
 > Point de contrôle stable : commit `05827b4807c67959e125c9681b5ffa953b113a29`.
 
 ## Commencer ici
@@ -25,6 +25,7 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | [MASTER-ASSAULT-M2](characters/MASTER-ASSAULT-M2.md) | **étape M2** : adaptateur de squelette, squelette d'essai synthétique, résultats, risques |
 | [MASTER-ASSAULT-M3](characters/MASTER-ASSAULT-M3.md) | **étape M3** : matériau d'équipe (masque à 8 couleurs, emblèmes en décalque, bleu / rouge depuis un seul asset), résultats, risques |
 | [M4-BLENDER-BRIEF](characters/M4-BLENDER-BRIEF.md) | **brief court pour l'artiste** : asset d'aperçu obligatoire, ce qui peut attendre, contenu de l'aperçu jouable |
+| [MASTER-ASSAULT-M4](characters/MASTER-ASSAULT-M4.md) | **étape M4 en cours** : méthode (Blender piloté par scripts), outils, points de contrôle A à D, résultats du point A |
 
 ## Carte 1 — *Castelmare*
 | Document | Contenu |
