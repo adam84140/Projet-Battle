@@ -108,5 +108,9 @@ Pour équilibrer le jeu (dégâts, cadences, temps de recharge, vitesse des clas
 ## Documentation et suite du projet
 
 - **Base de connaissances : [`docs/INDEX.md`](docs/INDEX.md)** — état vérifié, feuille de route, décisions, carte 1, personnages, systèmes. Le dossier `docs/` s'ouvre aussi comme coffre Obsidian.
+- **Installation sur un nouvel ordinateur : [`docs/SETUP_NEW_COMPUTER.md`](docs/SETUP_NEW_COMPUTER.md)** — guide étape par étape pour cloner, installer et lancer le jeu.
+- **État actuel : [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md)** — ce qui fonctionne, tests, bugs connus, performances.
+- **Pour Claude Code : [`docs/CLAUDE_HANDOFF.md`](docs/CLAUDE_HANDOFF.md)** — mémoire pour une session Claude reprenant le projet.
+- **Actifs externes : [`docs/EXTERNAL_ASSETS.md`](docs/EXTERNAL_ASSETS.md)** — Medieval Village MegaKit, Master Character, état de transfert.
 - **Règles de travail avec Claude Code : [`CLAUDE.md`](CLAUDE.md)** ; procédures dans `.claude/skills/`.
-- Jalon en cours : **carte 1 au niveau GOLD**, en commençant par le personnage de référence Assaut ([feuille de route](docs/ROADMAP.md)). Nouvelles cartes, multijoueur et progression attendent que la carte 1 soit GOLD.
+- **Jalon en cours :** **carte 1 au niveau GOLD**, priorité **ENVIRONNEMENT / PRODUCTION DU NIVEAU**. Master Character en pause (D-023). Voir [roadmap](docs/ROADMAP.md) et [décisions](docs/DECISIONS.md).
