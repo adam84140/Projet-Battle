@@ -188,3 +188,14 @@ Dans les deux cas, la session suivante :
 4. lance l'inventaire.
 
 Si un fichier dépasse 100 Mo, ou si le total dépasse quelques centaines de Mo, **arrêt** : le stockage (Git LFS, dépôt séparé) est à décider par le propriétaire.
+
+### 6.1 État de la livraison (vérifié le 2026-10-02)
+- **Licence lue** (`License_Standard.txt`) : **CC0 1.0 Universal** (domaine public), modèles de Quaternius, édition gratuite « Standard » (une partie des modèles du kit complet). La redistribution dans ce dépôt public est **permise**.
+- **Dossier Google Drive** partagé par le propriétaire (`vendor-drop/Medieval Village MegaKit[Standard]`) : `glTF/`, `Textures/`, `FBX/`, `OBJ/` et la licence. Le dossier `glTF/` compte **374 fichiers** (176 `.gltf`, 176 `.bin`, 22 `.png`, 60 397 537 octets) et aucun sous-dossier. Les textures utiles aux glTF sont **dans** ce dossier ; `Textures/` (32 PNG, 99,6 Mo) sert aux autres formats.
+- **Transfert vers le conteneur Cloud** :
+  - la politique réseau de l'environnement refuse `drive.google.com`, `drive.usercontent.google.com` et `docs.google.com` ; l'API `www.googleapis.com` demande une clé ;
+  - le connecteur Google Drive enregistre sur disque, **octet pour octet**, les fichiers d'environ 90 Ko et plus (vérifié : les 22 PNG, 54 Mo) ;
+  - en dessous d'environ 60 Ko, il renvoie le contenu **dans la conversation**, et il faudrait le recopier à la main : ce n'est **pas fiable**. Or **310 fichiers sur 374** font moins de 20 Ko (les `.gltf` et la plupart des `.bin`).
+- **Essai du 2026-09-30 / 10-01** : 265 fichiers sur 374 récupérés, dont les 22 PNG fiables ; une partie des petits fichiers a été recopiée à la main. Ces copies ne sont **pas utilisées** : elles sont rangées hors du dépôt, et rien n'est commité.
+
+**Méthode C (la plus simple maintenant)** : une seule archive, `glTF-geometrie.zip`, avec **uniquement les 352 fichiers `.gltf` et `.bin`** du dossier `glTF/` (6,3 Mo, environ 2 Mo compressés), déposée dans le dossier Drive `vendor-drop`. Une archive de cette taille arrive octet pour octet en un seul téléchargement ; les 22 PNG sont déjà récupérés. La méthode A (envoi Git depuis la machine du propriétaire) reste possible : la licence CC0 le permet.

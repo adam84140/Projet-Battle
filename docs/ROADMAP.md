@@ -12,7 +12,7 @@ Chaque priorité se propose puis s'autorise séparément. Règle permanente : un
 | # | Priorité | Résultat attendu | Statut |
 | --- | --- | --- | --- |
 | P1 | Chaîne d'assets d'environnement | charger un décor glTF / GLB dans la carte 1 : échelle, matériaux, ombres, collisions, libération (`disposeTree`), coût de rendu mesuré | **préparé** (2026-09-30) : chargeur par identifiant (non branché), plan d'intégration non destructif E1 à E7 ([MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md)) |
-| P2 | Import et inventaire d'un kit tiers | kit choisi par le propriétaire, licence notée, inventaire (pièces, dimensions, triangles, matériaux) | **outils prêts et testés** ; **bloqué : kit non livré** (livraison : plan, § 6) |
+| P2 | Import et inventaire d'un kit tiers | kit choisi par le propriétaire, licence notée, inventaire (pièces, dimensions, triangles, matériaux) | **outils prêts et testés** ; licence lue (CC0) ; **bloqué : fichiers .gltf / .bin pas encore transférés de façon fiable** (plan, § 6.1) |
 | P3 | Registre d'assets sémantique et remplaçable | identifiant sémantique → registre → asset du kit actuel ; gameplay, objectifs, collisions et navigation sans nom de fichier du fournisseur | **fait** : 35 identifiants, paquet du kit sans liaison, garde testée ([MAP1-ASSET-REGISTRY](map1/MAP1-ASSET-REGISTRY.md)) |
 | P4 | Préservation de la disposition de la carte 1 | drapeaux, bases, routes, limites et couverts de combat inchangés ; ordre des tirages de `World.js` inchangé | règle permanente, **protégée** par l'empreinte de `npm run test:env` |
 | P5 | Génération automatique / semi-procédurale | pièces du kit placées par règles et à graine fixe, à partir des données de `map.js` | proposition écrite (plan, § 4) |

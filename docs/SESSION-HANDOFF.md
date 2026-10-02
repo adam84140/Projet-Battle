@@ -38,7 +38,11 @@
 Voir [CURRENT-STATE](CURRENT-STATE.md), section « Tests » : build et `npm test` (huit suites) sur l'état commité.
 
 ## Problèmes connus et blocages
-- **Kit non livré** (archive trop grosse pour la session Cloud) : ingestion, inventaire réel et liaisons impossibles.
+- **Kit pas encore transféré de façon fiable** ([MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md), § 6.1).
+  - Licence lue : CC0 1.0, publication permise.
+  - Le dossier Google Drive du propriétaire est lisible par le connecteur, mais 310 fichiers sur 374 (`.gltf`, petits `.bin`) reviennent dans la conversation au lieu d'être enregistrés : on ne peut pas les copier de façon sûre.
+  - L'accès réseau à Google Drive est refusé par l'environnement.
+  - Les 22 PNG (54 Mo) sont récupérés octet pour octet, hors du dépôt (bloc-notes de la session, perdu si le conteneur change).
 - Le dépôt est **public** : committer un kit le redistribue. La licence doit le permettre.
 - Style du kit « médiéval » face au village méditerranéen de l'image 03 : à juger sur la planche visuelle (étape E2).
 - Problèmes de jeu inchangés : [CURRENT-STATE](CURRENT-STATE.md), « Problèmes connus ».
@@ -54,11 +58,11 @@ Voir [CURRENT-STATE](CURRENT-STATE.md), section « Tests » : build et `npm test
 
 ## Objectif exact de la prochaine session
 1. **Démarrer** selon `CLAUDE.md` : vérifier Git, lire ce fichier, `npm install`, `npm run build`, `npm test` (huit suites).
-2. **Vérifier la livraison du kit**, selon [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md), § 6 :
-   - méthode A : dossier `vendor-drop/medieval-village-megakit/` (licence + dossier glTF) poussé sur la branche ;
-   - méthode B : archive jointe ne contenant que ces deux éléments.
-   Sans kit, **s'arrêter** et redemander la livraison. Ne rien inventer du contenu du kit.
-3. **Lire la licence.** Si la redistribution dans un dépôt public n'est pas permise : **arrêt**, rien commité (méthode B) ; demander au propriétaire où stocker le kit.
+2. **Récupérer le kit de façon fiable**, selon [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md), § 6 et 6.1 :
+   - méthode C : archive `glTF-geometrie.zip` (les 352 `.gltf` et `.bin`, environ 2 Mo) dans le dossier Drive `vendor-drop`, téléchargée en un appel par le connecteur ; plus les 22 PNG du même dossier (fichiers lourds, enregistrés octet pour octet) ;
+   - ou méthode A : dossier `vendor-drop/medieval-village-megakit/` (licence + dossier glTF) poussé sur la branche.
+   **Jamais de recopie manuelle de contenu base64.** Vérifier chaque fichier (taille de la liste Drive, cohérence `.gltf` / `.bin`). Sans fichiers fiables, **s'arrêter** et redemander.
+3. **Licence** : déjà lue (CC0 1.0 Universal, Quaternius), publication permise. Vérifier que le fichier livré est le même.
 4. **Ingérer** : `node tools/env-kit/ingest.mjs --from <dossier> --pack medieval-village-megakit`. Puis :
    - vérifier `kit-manifest.json` (taille, fichiers manquants) ;
    - retirer `vendor-drop/` ;
