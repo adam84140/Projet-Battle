@@ -13,7 +13,7 @@ Mémoire pour une session Claude Code reprenant le projet.
 - **État :** jouable, jalon MAP 1 GOLD en cours (environnement / production du niveau)
 - **Dépôt :** https://github.com/adam84140/Projet-Battle (public)
 - **Branche de travail :** `claude/dazzling-cray-gn1bg5`
-- **Dernier commit stable :** `123e7d9` (docs sur kit et findings Google Drive)
+- **Dernier commit :** `963dc0d` (guides de passation) ; dernier commit de code : `ab7f4ad`
 - **Point de contrôle pré-Master-Character :** `05827b4807c67959e125c9681b5ffa953b113a29` (D-004)
 
 ### Gameplay
@@ -96,7 +96,9 @@ Voir [MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md), [SESSION-HANDOFF](S
 - Kit Medieval Village MegaKit (bloqué)
 - Master Character GLB (bloqué)
 
-### Struktur des dossiers importants
+### Structure des dossiers importants
+
+Fichiers réels (vérifié le 2026-10-02 sur `963dc0d`) :
 
 ```
 src/
@@ -104,33 +106,41 @@ src/
 ├── config.js                  # configuration du jeu (game design)
 ├── game/
 │   ├── Game.js               # boucle principale, gestion d'état
-│   ├── World.js              # génération procédurale de la carte
-│   ├── map.js                # géographie, spawns, objectifs
-│   ├── physics/              # moteur physique maison
-│   ├── bot/                  # IA des bots
-│   ├── Vehicle.js            # jeep et char
+│   ├── World.js              # construction procédurale du décor (ordre des tirages figé)
+│   ├── map.js                # limites, drapeaux, bases, routes, relief
+│   ├── physics.js            # collisions et boîtes caméra maison
+│   ├── nav.js                # grille de navigation des bots
+│   ├── BotBrain.js           # IA des bots
+│   ├── Soldier.js            # soldat (joueur et bots)
+│   ├── PlayerController.js   # contrôle du joueur
+│   ├── Input.js              # clavier / souris
 │   ├── Combat.js             # dégâts, projectiles, explosions
-│   └── ...
+│   ├── Conquest.js           # drapeaux, tickets, victoire
+│   ├── Vehicle.js            # jeep et char
+│   ├── Effects.js            # effets visuels
+│   └── Audio.js              # son synthétisé (Web Audio)
 ├── character/
-│   ├── Character.js          # classe personnage principal
+│   ├── Character.js          # personnage procédural
+│   ├── parts.js              # pièces et fusion (bakeSkinned / bakeIndexed)
 │   ├── renderPath.js         # M1 (SkinnedMesh) vs legacy (fusion par os)
-│   ├── rigAdapter.js         # M2 adaptateur squelette
-│   ├── rigContract.js        # M2 contrat asset + validateur
-│   ├── teamMaterial.js       # M3 masque couleurs d'équipe
 │   ├── animation.js          # animation procédurale + IK
-│   └── ...
+│   ├── rigAdapter.js         # M2 adaptateur squelette
+│   ├── rigContract.js        # M2 contrat d'asset + données du validateur
+│   ├── teamMaterial.js       # M3 masque couleurs d'équipe
+│   ├── weapons.js · accessories.js · face.js · emblems.js
 ├── environment/
-│   ├── catalog.js            # registre sémantique (35 identifiants)
+│   ├── catalog.js            # catalogue sémantique (35 identifiants)
 │   ├── registry.js           # résolution par paquet
-│   ├── kits/                 # définitions de paquets (medieval-village-megakit.js)
 │   ├── EnvAssetLibrary.js    # chargeur (non branché)
-│   └── ...
+│   └── kits/                 # index.js, medieval-village-megakit.js
 ├── ui/
 │   ├── HUD.js                # affichage en jeu (tickets, dégâts, compétences)
-│   ├── Menu.js               # menu principal, écrans
-│   └── ...
-└── sheet/
-    └── fiche.js              # génération de la fiche personnage
+│   ├── Screens.js            # menu principal, écrans
+│   ├── TouchControls.js      # commandes tactiles
+│   └── icons.js · portraits.js
+├── sheet/
+│   └── fiche.js              # fiche personnage (fiche.html)
+└── styles/                   # main.css, fiche.css
 ```
 
 ### Dépendances (très minimalistes)
@@ -212,6 +222,7 @@ git log -5 --oneline    # commits vérifiés ?
 - `threejs-performance` : avant tout commit touchant performance
 - `map1-level-design` : pour travail sur la carte 1
 - `character-production` : pour travail sur le personnage
+- `character-animation` : pour l'animateur procédural et les poses
 - `frontline-art-direction` : pour art direction
 
 **Règles dans [CLAUDE.md](../CLAUDE.md) :**
@@ -226,8 +237,10 @@ git log -5 --oneline    # commits vérifiés ?
 ```
 Branche       : claude/dazzling-cray-gn1bg5
 Remote        : origin https://github.com/adam84140/Projet-Battle
-Working tree  : clean
-Fichiers      : 160 en Git
+Dernier commit: 963dc0d (2026-10-02)
+Fichiers      : 163 en Git (avant l'ajout de .gitattributes)
+Fins de ligne : LF (.gitattributes : * text=auto eol=lf ; sous Windows, core.autocrlf=false dans le dépôt)
+Obsidian      : coffre = docs/ ; .obsidian/ et docs/.obsidian/ ignorés
 Taille        : node_modules ignorés, dist/ ignoré, test-results ignoré
 Secrets       : aucun détecté
 ```
@@ -298,7 +311,9 @@ git push -u origin claude/dazzling-cray-gn1bg5
 | --- | --- | --- | --- |
 | `05827b4` | 2026-09-21 | M0–M3 complet | point de contrôle stable pré-Master-Character |
 | `29a22aa` | 2026-09-28 | M4 point A fin | pause Master Character, début préparation carte 1 |
-| `123e7d9` | 2026-10-02 | docs | kit license et findings, handoff |
+| `ab7f4ad` | 2026-09-30 | carte 1 | registre d'assets d'environnement, outils de kit, `test:env` |
+| `123e7d9` | 2026-10-02 | docs | licence du kit et constats du transfert Google Drive |
+| `963dc0d` | 2026-10-02 | docs | guides de passation (nouvel ordinateur, sessions Claude) |
 
 **Jalon :** MAP 1 GOLD, priorité **ENVIRONNEMENT / PRODUCTION DU NIVEAU**
 

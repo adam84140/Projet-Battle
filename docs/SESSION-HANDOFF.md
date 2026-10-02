@@ -10,9 +10,16 @@
 | **Jalon actif** | **MAP 1 GOLD — ENVIRONNEMENT / PRODUCTION DU NIVEAU** ([D-024](DECISIONS.md), priorités P1 à P10 de la [ROADMAP](ROADMAP.md)) |
 | Master Character | **EN PAUSE** après le point A de M4 ([D-023](DECISIONS.md)) : ne pas reprendre ; infrastructure M0–M3 à préserver |
 
-## État Git (fin de la session du 2026-09-30 : préparation de l'environnement de la carte 1)
-- Dernier commit : registre d'assets d'environnement, outils de kit, test `test:env` et documentation, sur `29a22aa`. Poussé sur `origin/claude/dazzling-cray-gn1bg5`.
+## État Git (session du 2026-10-02 : reprise sur un poste Windows local)
+- Dernier commit poussé : `963dc0d` (guides de passation `CLAUDE_HANDOFF.md` et `SETUP_NEW_COMPUTER.md`), après `123e7d9` (licence du kit et constats sur le transfert Google Drive) et `ab7f4ad` (registre d'assets d'environnement, outils de kit, `test:env`). Branche `claude/dazzling-cray-gn1bg5`, à jour avec `origin`.
 - Pas de pull request, pas de merge vers `main`. Il n'y a d'ailleurs pas de branche `main` sur le dépôt distant, qui est **public**.
+
+## Reprise sur poste Windows (2026-10-02)
+- Poste local : Windows 10, Node 24.14.1, GPU NVIDIA RTX 3070 Ti (FPS réels mesurables, jamais faits), Blender non installé.
+- Playwright 1.56.1 exige Chromium build 1194 : `npx playwright install chromium` (installé hors du dépôt, dans `%LOCALAPPDATA%\ms-playwright`).
+- `npm test` sur `963dc0d` : smoke 48/48 · tactile 12/12 · caméra 6/6 · bots 8/8 · personnage 72/72 · **squelette 30/31** · matériau 18/18 · environnement 22/22. Seul échec : « copie JSON des scripts Blender à jour » (`tools/blender/rig_contract.json`), causé par les fins de ligne CRLF de Git pour Windows (`core.autocrlf=true` dans la configuration système), pas par le contrat.
+- Environnement corrigé : `core.autocrlf=false` pour ce dépôt, `.gitattributes` (`* text=auto eol=lf`), coffre Obsidian = `docs/` seulement, `.obsidian/` et `docs/.obsidian/` ignorés par Git (`docs/.obsidian/app.json` retiré de l'index).
+- **Non vérifié :** les fichiers déjà extraits en CRLF le restent sur ce poste tant qu'ils ne sont pas ré-extraits ; `test:rig` n'a pas été relancé après la correction.
 
 ## Ce qui a été fait
 - **État réel de la carte 1** audité et documenté ([MAP1-ENVIRONMENT-PLAN](map1/MAP1-ENVIRONMENT-PLAN.md), § 1) :

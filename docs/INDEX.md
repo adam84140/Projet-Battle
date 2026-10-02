@@ -13,6 +13,9 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 | [CURRENT-STATE](CURRENT-STATE.md) | ce qui fonctionne, tests, performances, problèmes connus (faits vérifiés) |
 | [ROADMAP](ROADMAP.md) | ordre des étapes jusqu'à MAP 1 GOLD |
 | [DECISIONS](DECISIONS.md) | décisions verrouillées ou en attente (ONE MAP FIRST, Master Character…) |
+| [CLAUDE_HANDOFF](CLAUDE_HANDOFF.md) | mémoire de reprise pour une session Claude Code : résumé, architecture, commandes |
+| [SETUP_NEW_COMPUTER](SETUP_NEW_COMPUTER.md) | installer le projet sur un nouvel ordinateur |
+| [EXTERNAL_ASSETS](EXTERNAL_ASSETS.md) | actifs externes attendus (kit village, asset du Master Assault) : licence, emplacement, état |
 
 ## Personnages
 | Document | Contenu |
@@ -64,7 +67,7 @@ Point d'entrée de la documentation du projet. Les règles permanentes de travai
 2. **Open folder as vault** (Ouvrir un dossier comme coffre).
 3. Choisir le dossier `docs/` du dépôt.
 
-Les liens sont des liens Markdown relatifs standard : ils fonctionnent aussi sur GitHub et dans n'importe quel éditeur. Les images vont dans `_attachments/`. L'état de l'espace de travail Obsidian (`.obsidian/workspace*.json`) est ignoré par Git. Claude lit directement les fichiers Markdown ; Obsidian n'est qu'un confort de lecture pour les humains et n'est jamais une dépendance du jeu.
+Les liens sont des liens Markdown relatifs standard : ils fonctionnent aussi sur GitHub et dans n'importe quel éditeur. Les images vont dans `_attachments/`. La configuration Obsidian (`docs/.obsidian/`, et `.obsidian/` si un coffre est ouvert par erreur à la racine) est propre à chaque machine et ignorée par Git. Claude lit directement les fichiers Markdown ; Obsidian n'est qu'un confort de lecture pour les humains et n'est jamais une dépendance du jeu.
 
 ## Entretien
 - Mettre à jour les documents dans le même commit que le travail qu'ils décrivent.
