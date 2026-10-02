@@ -4,12 +4,13 @@ dist/
 *.log
 test-results/
 
-# Obsidian (docs/ est un coffre) : état de l'espace de travail propre à chaque machine
-docs/.obsidian/workspace.json
-docs/.obsidian/workspace-mobile.json
-docs/.obsidian/workspaces.json
-docs/.obsidian/cache
+# Obsidian (docs/ est un coffre) : configuration propre à chaque machine
+.obsidian/
+docs/.obsidian/
 docs/.trash/
+
+# Claude Code : réglages locaux propres à chaque machine (plugins en portée locale)
+.claude/settings.local.json
 
 # Chaîne Blender : fichiers générés (régénérables par les scripts de art/ et tools/blender/)
 art/build/

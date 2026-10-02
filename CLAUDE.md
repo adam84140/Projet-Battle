@@ -78,6 +78,8 @@ Procédure : skill `threejs-performance`.
 ## Skills du projet
 Dans `.claude/skills/` : `gameplay-regression`, `visual-validation`, `threejs-performance`, `frontline-art-direction`, `character-production`, `character-animation`, `map1-level-design`. Les utiliser dès que la tâche correspond ; elles pointent vers les docs de référence et ne les remplacent pas.
 
+For Frontline Legends, project-specific skills and project documentation always take precedence over ECC. ECC is supplementary only. Do not use ECC checkpoint, update-docs, refactor-clean, quality-gate, learn, save-session, unified-memory, continuous-learning, or living-docs-governance unless explicitly authorized by the project owner.
+
 ## Git
 - Travailler sur la branche désignée par la session ; `git push -u origin <branche>` ; réessayer en cas d'erreur réseau.
 - Jamais de force push, jamais de merge vers `main`, pas de pull request sans demande explicite.
